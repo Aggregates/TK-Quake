@@ -58,7 +58,6 @@
     <Compile Include="Infrastructure\Font\Text.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
-    <Compile Include="Infrastructure\Map\BspFile.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vector.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
