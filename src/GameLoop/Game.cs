@@ -10,11 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-//using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
 
 namespace GameLoop
 {
@@ -25,7 +26,10 @@ namespace GameLoop
         private readonly TextureManager _textureManager;
         private readonly FontManager _fontManager;
         private readonly GameWindow _game;
-        
+        private static readonly string ResourcesPath =
+            Path.Combine(Path.GetDirectoryName(
+                Assembly.GetExecutingAssembly().Location), "Resources");
+
         public Game()
         {
             _game = new GameWindow();
@@ -55,15 +59,24 @@ namespace GameLoop
 
         private void RegisterTextures()
         {
-            _textureManager.Add("face", @"Resources\Textures\Face.bmp");
-            _textureManager.Add("faceAlpha", @"Resources\Textures\FaceAlpha.png");
-            _textureManager.Add("myriadPro", @"Resources\Fonts\MyriadPro.tga");
+            //guarantees support cross platform
+            var texturesPath = Path.Combine(ResourcesPath, "Textures");
+            var fontsPath = Path.Combine(ResourcesPath, "Fonts");
+
+            _textureManager.Add("face", Path.Combine(texturesPath, "Face.bmp"));
+            _textureManager.Add("faceAlpha",
+                Path.Combine(texturesPath, "FaceAlpha.png"));
+            _textureManager.Add("myriadPro",
+                Path.Combine(fontsPath, "MyriadPro.tga"));
         }
 
         private void RegisterFonts()
         {
+            var fontsPath = Path.Combine(ResourcesPath, "Fonts");
+
             Texture myriadText = _textureManager.Get("myriadPro");
-            Font myriadPro = new Font(myriadText, @"Resources\Fonts\MyriadPro.fnt");
+            Font myriadPro = new Font(myriadText,
+                Path.Combine(fontsPath, "MyriadPro.fnt"));
             _fontManager.Add("myriadPro", myriadPro);
         }
 
@@ -88,7 +101,7 @@ namespace GameLoop
             GL.MatrixMode(MatrixMode.Projection);   // Sets the current matrix to use Projection Matrix
             GL.LoadIdentity();                      // Clear matrix data and reset to Identity Matrix
             GL.Ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, -100, 100);
-            
+
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
         }
@@ -121,7 +134,7 @@ namespace GameLoop
         {
             /*
              * Apparently this event is not called at any time. So this may not work.
-             * But something is obviously calling it. 
+             * But something is obviously calling it.
              */
             _game.VSync = VSyncMode.On;
 
@@ -150,7 +163,7 @@ namespace GameLoop
         {
             // Update the GL Viewport dimensions
             GL.Viewport(0, 0, _game.Width, _game.Height);
-            
+
             // Update the GL projection matrix
             Setup2DGraphics(_game.Width, _game.Height);
         }
