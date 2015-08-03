@@ -1,0 +1,11 @@
+*.suo
+*.user
+
+[Pp]ublish
+[Bb]in
+[Oo]bj
+*.*~
+[Pp]ackages
+[Rr]esources
+
+*.pdf

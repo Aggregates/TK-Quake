@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3A707142-2A6F-4950-A083-B20738C40590}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GameLoop.Engine</RootNamespace>
+    <AssemblyName>GameLoop.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Debug\FramesPerSecond.cs" />
+    <Compile Include="Core\FastLoop.cs" />
+    <Compile Include="Extensions\GLX.cs" />
+    <Compile Include="Infrastructure\Abstract\IGameObject.cs" />
+    <Compile Include="Infrastructure\Abstract\ResourceManager.cs" />
+    <Compile Include="Infrastructure\Font\CharacterData.cs" />
+    <Compile Include="Infrastructure\Font\CharacterSprite.cs" />
+    <Compile Include="Infrastructure\Font\Font.cs" />
+    <Compile Include="Infrastructure\Font\FontManager.cs" />
+    <Compile Include="Infrastructure\Font\Text.cs" />
+    <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
+    <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Math\Point.cs" />
+    <Compile Include="Infrastructure\Math\Vector.cs" />
+    <Compile Include="Infrastructure\Texture\Color.cs" />
+    <Compile Include="Infrastructure\Texture\Sprite2.cs" />
+    <Compile Include="Infrastructure\Texture\Texture.cs" />
+    <Compile Include="Infrastructure\Texture\TextureManager.cs" />
+    <Compile Include="Infrastructure\Texture\Vertex.cs" />
+    <Compile Include="InterOp\CMessage.cs" />
+    <Compile Include="InterOp\PreciseTimer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\SpriteBatch.cs" />
+    <Compile Include="Core\Renderer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TargaImage\TargaImage.csproj">
+      <Project>{56f4bd87-2404-4263-80d5-6fa2161eb0a4}</Project>
+      <Name>TargaImage</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
