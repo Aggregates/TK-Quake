@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLoop", "GameLoop\GameLoop.csproj", "{1676BDA0-F1CC-4C97-90C9-3EC8ADD42BA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK-Quake", "TK-Quake\TK-Quake.csproj", "{1676BDA0-F1CC-4C97-90C9-3EC8ADD42BA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLoop.Test", "GameLoop.Test\GameLoop.Test.csproj", "{190E8198-32C5-48D8-AC2A-A1606F1E2863}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK-Quake.Test", "TK-Quake.Test\TK-Quake.Test.csproj", "{190E8198-32C5-48D8-AC2A-A1606F1E2863}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TargaImage", "TargaImage\TargaImage.csproj", "{56F4BD87-2404-4263-80D5-6FA2161EB0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLoop.Engine", "GameLoop.Engine\GameLoop.Engine.csproj", "{3A707142-2A6F-4950-A083-B20738C40590}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK-Quake.Engine", "TK-Quake.Engine\TK-Quake.Engine.csproj", "{3A707142-2A6F-4950-A083-B20738C40590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLoop.Cookbook", "GameLoop.Cookbook\GameLoop.Cookbook.csproj", "{8E4CEF37-94D6-46F5-BBFE-6B112DA0FCCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK-Quake.Cookbook", "TK-Quake.Cookbook\TK-Quake.Cookbook.csproj", "{8E4CEF37-94D6-46F5-BBFE-6B112DA0FCCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -102,9 +102,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameLoop.Engine\GameLoop.Engine.csproj">
+    <ProjectReference Include="..\TK-Quake.Engine\TK-Quake.Engine.csproj">
       <Project>{3a707142-2a6f-4950-a083-b20738c40590}</Project>
-      <Name>GameLoop.Engine</Name>
+      <Name>TK-Quake.Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\TargaImage\TargaImage.csproj">
       <Project>{56f4bd87-2404-4263-80d5-6fa2161eb0a4}</Project>
