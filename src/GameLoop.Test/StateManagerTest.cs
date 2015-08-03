@@ -19,7 +19,7 @@ namespace GameLoop.Test
             {
                 manager.Add(stateName, newState);
             }
-            catch (Exception e)
+            catch
             {
                 Assert.Fail();
             }
@@ -62,14 +62,14 @@ namespace GameLoop.Test
                 manager.Add(startStateName, startState);
                 Assert.IsTrue(manager.Registered(startStateName));
                 Assert.IsTrue(manager.ActiveScreen == startState);
-                
+
                 manager.Add(newStateName, newState);
                 Assert.IsTrue(manager.Registered(newStateName));
 
                 manager.ChangeScreen(newStateName);
                 Assert.IsTrue(manager.ActiveScreen == newState);
             }
-            catch (Exception e)
+            catch
             {
                 Assert.Fail();
             }
@@ -124,7 +124,7 @@ namespace GameLoop.Test
         {
             ScreenManager manager = new ScreenManager();
             SplashScreen startState = new SplashScreen(manager);
-            string startStateName = "startState"; 
+            string startStateName = "startState";
 
             try
             {
@@ -163,7 +163,7 @@ namespace GameLoop.Test
                 Assert.IsTrue(manager.ActiveScreen == startState);
                 manager.Remove(newStateName);
             }
-            catch (Exception e)
+            catch
             {
                 Assert.Fail();
             }
