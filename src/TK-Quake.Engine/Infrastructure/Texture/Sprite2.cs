@@ -1,13 +1,13 @@
-﻿using GameLoop.Engine.Core;
-using GameLoop.Engine.Infrastructure.Abstract;
-using GameLoop.Engine.Infrastructure.Math;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
+using TKQuake.Engine.Infrastructure.Abstract;
+using TKQuake.Engine.Infrastructure.Math;
 
-namespace GameLoop.Engine.Infrastructure.Texture
+namespace TKQuake.Engine.Infrastructure.Texture
 {
     /// <summary>
     /// A 2D Sprite

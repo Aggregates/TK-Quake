@@ -1,16 +1,16 @@
-﻿using GameLoop.Engine;
-using GameLoop.Engine.Core;
-using GameLoop.Engine.Infrastructure.GameScreen;
-using GameLoop.Engine.Infrastructure.Texture;
-using GameLoop.Sprites;
+﻿using TKQuake.Engine;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
+using TKQuake.Engine.Infrastructure.GameScreen;
+using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Sprites;
 
-namespace GameLoop.ScreenStates
+namespace TKQuake.ScreenStates
 {
     public class TestSpriteClassScreen : GameScreen
     {

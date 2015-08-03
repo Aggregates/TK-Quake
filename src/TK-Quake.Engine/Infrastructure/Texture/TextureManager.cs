@@ -1,5 +1,4 @@
-﻿using GameLoop.Engine.Infrastructure.Abstract;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,8 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Abstract;
 
-namespace GameLoop.Engine.Infrastructure.Texture
+namespace TKQuake.Engine.Infrastructure.Texture
 {
     public class TextureManager : ResourceManager<Texture>, IDisposable
     {

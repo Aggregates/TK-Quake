@@ -1,14 +1,14 @@
-﻿using GameLoop.Engine.Core;
-using GameLoop.Engine.Infrastructure.Abstract;
-using GameLoop.Engine.Infrastructure.Math;
-using GameLoop.Engine.Infrastructure.Texture;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
+using TKQuake.Engine.Infrastructure.Abstract;
+using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Engine.Infrastructure.Font
+namespace TKQuake.Engine.Infrastructure.Font
 {
     public class Text : IGameObject
     {

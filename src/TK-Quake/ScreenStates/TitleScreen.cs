@@ -1,5 +1,4 @@
-﻿using GameLoop.Engine.Infrastructure.GameScreen;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -7,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.GameScreen;
 
-namespace GameLoop.ScreenStates
+namespace TKQuake.ScreenStates
 {
     public class TitleScreen : GameScreen
     {

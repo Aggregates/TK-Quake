@@ -1,19 +1,19 @@
-﻿using GameLoop.Engine;
-using GameLoop.Engine.Core;
-using GameLoop.Engine.Debug;
-using GameLoop.Engine.Infrastructure.Font;
-using GameLoop.Engine.Infrastructure.GameScreen;
-using GameLoop.Engine.Infrastructure.Math;
-using GameLoop.Engine.Infrastructure.Texture;
-using GameLoop.Fonts;
+﻿using TKQuake.Engine;
+using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Fonts;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
+using TKQuake.Engine.Debug;
+using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.GameScreen;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.ScreenStates
+namespace TKQuake.ScreenStates
 {
     public class TestFontScreen : GameScreen
     {

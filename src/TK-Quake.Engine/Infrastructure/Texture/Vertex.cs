@@ -1,11 +1,11 @@
-﻿using GameLoop.Engine.Infrastructure.Math;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Math;
 
-namespace GameLoop.Engine.Infrastructure.Texture
+namespace TKQuake.Engine.Infrastructure.Texture
 {
     /// <summary>
     /// A vertex in a sprite

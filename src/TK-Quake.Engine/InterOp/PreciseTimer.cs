@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.InterOp
+namespace TKQuake.Engine.InterOp
 {
     /// <summary>
     /// User C Interops to calculate the time between frame renders in the game

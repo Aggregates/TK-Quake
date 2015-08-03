@@ -7,8 +7,8 @@
     <ProjectGuid>{8E4CEF37-94D6-46F5-BBFE-6B112DA0FCCC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameLoop.Cookbook</RootNamespace>
-    <AssemblyName>GameLoop.Cookbook</AssemblyName>
+    <RootNamespace>TKQuake.Cookbook</RootNamespace>
+    <AssemblyName>TKQuake.Cookbook</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

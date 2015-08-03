@@ -1,11 +1,11 @@
-﻿using GameLoop.Engine.Infrastructure.Texture;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Fonts
+namespace TKQuake.Fonts
 {
     public class MyriadPro : Sprite2
     {

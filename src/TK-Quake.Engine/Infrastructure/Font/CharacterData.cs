@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.Infrastructure.Font
+namespace TKQuake.Engine.Infrastructure.Font
 {
     public class CharacterData
     {

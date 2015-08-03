@@ -1,13 +1,13 @@
-﻿using GameLoop.Engine.Infrastructure.GameScreen;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.GameScreen;
 
-namespace GameLoop.ScreenStates
+namespace TKQuake.ScreenStates
 {
     public class SplashScreen : GameScreen
     {

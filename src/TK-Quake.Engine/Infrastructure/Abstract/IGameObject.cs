@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Abstract
 {
     /// <summary>
     /// Defines the core mechanics for any game object used in an OpenTK game

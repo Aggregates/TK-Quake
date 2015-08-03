@@ -1,13 +1,13 @@
-﻿using GameLoop.Engine.Infrastructure.Math;
-using GameLoop.Engine.Infrastructure.Texture;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Engine.Infrastructure.Font
+namespace TKQuake.Engine.Infrastructure.Font
 {
     public class Font
     {

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.Infrastructure.Math
+namespace TKQuake.Engine.Infrastructure.Math
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Point

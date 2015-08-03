@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.Debug
+namespace TKQuake.Engine.Debug
 {
     public class FramesPerSecond
     {

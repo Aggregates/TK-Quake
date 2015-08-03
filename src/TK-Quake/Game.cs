@@ -1,9 +1,5 @@
-﻿using GameLoop.Engine;
-using GameLoop.Engine.Core;
-using GameLoop.Engine.Infrastructure.Font;
-using GameLoop.Engine.Infrastructure.GameScreen;
-using GameLoop.Engine.Infrastructure.Texture;
-using GameLoop.ScreenStates;
+﻿using TKQuake.Engine;
+using TKQuake.Engine.Core;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -16,8 +12,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.GameScreen;
+using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.ScreenStates;
 
-namespace GameLoop
+namespace TKQuake
 {
     public class Game
     {

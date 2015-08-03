@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLoop.Engine.Infrastructure.Texture
+namespace TKQuake.Engine.Infrastructure.Texture
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Color

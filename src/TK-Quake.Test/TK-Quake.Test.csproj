@@ -6,8 +6,8 @@
     <ProjectGuid>{190E8198-32C5-48D8-AC2A-A1606F1E2863}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameLoop.Test</RootNamespace>
-    <AssemblyName>GameLoop.Test</AssemblyName>
+    <RootNamespace>TKQuake.Test</RootNamespace>
+    <AssemblyName>TKQuake.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

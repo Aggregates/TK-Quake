@@ -1,14 +1,14 @@
-﻿using GameLoop.Engine.Infrastructure.Font;
-using GameLoop.Engine.Infrastructure.Math;
-using GameLoop.Engine.Infrastructure.Texture;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Engine.Core
+namespace TKQuake.Engine.Core
 {
     public class Renderer
     {

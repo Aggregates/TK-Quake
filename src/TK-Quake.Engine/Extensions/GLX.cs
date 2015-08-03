@@ -1,12 +1,12 @@
-﻿using GameLoop.Engine.Infrastructure.Texture;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Engine.Extensions
+namespace TKQuake.Engine.Extensions
 {
     /// <summary>
     /// Extensionn class to OpenTK

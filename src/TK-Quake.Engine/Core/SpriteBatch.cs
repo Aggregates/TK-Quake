@@ -1,11 +1,11 @@
-﻿using GameLoop.Engine.Infrastructure.Texture;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure.Texture;
 
-namespace GameLoop.Engine.Core
+namespace TKQuake.Engine.Core
 {
     public class SpriteBatch
     {

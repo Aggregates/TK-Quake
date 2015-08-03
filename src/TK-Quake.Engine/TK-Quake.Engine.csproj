@@ -7,8 +7,8 @@
     <ProjectGuid>{3A707142-2A6F-4950-A083-B20738C40590}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameLoop.Engine</RootNamespace>
-    <AssemblyName>GameLoop.Engine</AssemblyName>
+    <RootNamespace>TKQuake.Engine</RootNamespace>
+    <AssemblyName>TKQuake.Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -58,6 +58,7 @@
     <Compile Include="Infrastructure\Font\Text.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Map\BspFile.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vector.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />

@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using GameLoop.Engine.Infrastructure.GameScreen;
-using GameLoop.ScreenStates;
+using TKQuake.Engine.Infrastructure.GameScreen;
+using TKQuake.ScreenStates;
 
-namespace GameLoop.Test
+namespace TKQuake.Test
 {
     [TestFixture]
     public class StateManagerTest
