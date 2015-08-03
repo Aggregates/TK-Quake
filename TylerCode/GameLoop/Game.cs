@@ -18,23 +18,22 @@ using System.Windows.Forms;
 
 namespace GameLoop
 {
-    public partial class GlForm : Form
+    public class Game
     {
-        private bool _glComponentLoaded = false;
         private bool _fullScreen = false;
-        private FastLoop _fastLoop;
-        private ScreenManager _stateManager;
-        private TextureManager _textureManager;
-        private FontManager _fontManager;
+        private readonly ScreenManager _stateManager;
+        private readonly TextureManager _textureManager;
+        private readonly FontManager _fontManager;
+        private readonly GameWindow _game;
         
-        public GlForm()
+        public Game()
         {
-            InitializeComponent();
-
-            _fastLoop = new FastLoop(GameLoop);
+            _game = new GameWindow();
             _stateManager = new ScreenManager();
             _textureManager = new TextureManager();
             _fontManager = new FontManager();
+
+            SetupViewport();
         }
 
         private void RegisterScreens()
@@ -73,8 +72,8 @@ namespace GameLoop
         /// </summary>
         private void SetupViewport()
         {
-            int height = glControl.Height;
-            int width = glControl.Width;
+            int height = _game.Height;
+            int width = _game.Width;
 
             GL.Ortho(0, width, height, 0, -1, 1);
             GL.Viewport(0, 0, width, height);
@@ -94,11 +93,16 @@ namespace GameLoop
             GL.LoadIdentity();
         }
 
+        public void Run()
+        {
+            _game.UpdateFrame += (sender, args) => GameLoop(args.Time);
+            _game.Load += Load;
+            _game.Resize += Resize;
+            _game.Run();
+        }
+
         private void GameLoop(double elapsedTime)
         {
-            if (!_glComponentLoaded)
-                return;
-
             // Clear the buffers before rendering frame
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -107,26 +111,17 @@ namespace GameLoop
             
             // Last part of update to finish off render
             GL.Finish();
-            glControl.Refresh();
-            glControl.SwapBuffers();
-
+            _game.SwapBuffers();
         }
 
-        private void GlForm_Load(object sender, EventArgs e)
-        {
-            //this._glComponentLoaded = true;
-        } 
-
-        private void glControl_Load(object sender, EventArgs e)
+        private void Load(object sender, EventArgs e)
         {
             /*
              * Apparently this event is not called at any time. So this may not work.
              * But something is obviously calling it. 
              */
 
-            this._glComponentLoaded = true;
             GL.ClearColor(System.Drawing.Color.CornflowerBlue);
-            //SetupViewport();
             RegisterTextures();
             RegisterFonts();
             RegisterScreens();
@@ -134,46 +129,25 @@ namespace GameLoop
             // Use fullscreen in production environments
             if (_fullScreen)
             {
-                FormBorderStyle = FormBorderStyle.None;
-                WindowState = FormWindowState.Maximized;
+                _game.WindowState = WindowState.Fullscreen;
             }
             else
             {
-                ClientSize = new System.Drawing.Size(1280, 720);
+                _game.WindowState = WindowState.Normal;
+                _game.ClientSize = new System.Drawing.Size(1280, 720);
             }
 
             // Set the viewport
-            Setup2DGraphics(ClientSize.Width, ClientSize.Height);
+            Setup2DGraphics(_game.Width, _game.Height);
         }
 
-        private void glControl_Resize(object sender, EventArgs e)
+        private void Resize(object sender, EventArgs e)
         {
-            if (!_glComponentLoaded)
-                return;
-        }
-
-        private void glControl_Paint(object sender, PaintEventArgs e)
-        {
-            if (!_glComponentLoaded)
-                return;
-        }
-
-        /// <summary>
-        /// Update the client size. This is all elements inside the window and does not include the
-        /// frame or title bar
-        /// </summary>
-        /// <param name="sender">The form</param>
-        /// <param name="e">Prameters sent by the form</param>
-        private void glControl_ClientSizeChanged(object sender, EventArgs e)
-        {
-            base.OnClientSizeChanged(e);
-            
             // Update the GL Viewport dimensions
-            GL.Viewport(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            GL.Viewport(0, 0, _game.Width, _game.Height);
             
             // Update the GL projection matrix
-            Setup2DGraphics(ClientSize.Width, ClientSize.Height);
+            Setup2DGraphics(_game.Width, _game.Height);
         }
-
     }
 }

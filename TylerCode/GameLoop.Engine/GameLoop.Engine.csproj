@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug\FramesPerSecond.cs" />
-    <Compile Include="Core\FastLoop.cs" />
     <Compile Include="Extensions\GLX.cs" />
     <Compile Include="Infrastructure\Abstract\IGameObject.cs" />
     <Compile Include="Infrastructure\Abstract\ResourceManager.cs" />
