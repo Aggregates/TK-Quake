@@ -41,21 +41,22 @@ namespace GameLoop.ScreenStates
              */
 
             _font = _fontManager.Get("myriadPro");
-            //_text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
-            _text = new Text("The quick brown fox jumped over the lazy dog", _font, 200);
-            _text.SetColor(new Color(1,1,1,1));
+            _text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
+            //_text = new Text("The quick brown fox jumped over the lazy dog", _font, 200);
+            //_text.SetColor(new Color(1,1,1,1));
 
         }
         
         public override void Update(double elapsedTime)
         {
-            //FramesPerSecond.Process(elapsedTime);
-            //_text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
+            FramesPerSecond.Process(elapsedTime);
+            _text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
+            //_text.SetColor(new Color(1, 1, 1, 1));
         }
 
         public override void Render()
         {
-            GL.ClearColor(System.Drawing.Color.Black);
+            GL.ClearColor(System.Drawing.Color.Green);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             _renderer.DrawText(_text);
         }

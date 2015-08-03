@@ -98,19 +98,22 @@ namespace GameLoop
             _game.UpdateFrame += (sender, args) => GameLoop(args.Time);
             _game.Load += Load;
             _game.Resize += Resize;
+            _game.RenderFrame += Render;
             _game.Run();
         }
 
         private void GameLoop(double elapsedTime)
         {
+            _stateManager.Update(elapsedTime);
+        }
+
+        private void Render(object sender, FrameEventArgs e)
+        {
             // Clear the buffers before rendering frame
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            _stateManager.Update(elapsedTime);
             _stateManager.Render();
-            
-            // Last part of update to finish off render
-            GL.Finish();
+
             _game.SwapBuffers();
         }
 
@@ -120,8 +123,10 @@ namespace GameLoop
              * Apparently this event is not called at any time. So this may not work.
              * But something is obviously calling it. 
              */
+            _game.VSync = VSyncMode.On;
 
             GL.ClearColor(System.Drawing.Color.CornflowerBlue);
+
             RegisterTextures();
             RegisterFonts();
             RegisterScreens();

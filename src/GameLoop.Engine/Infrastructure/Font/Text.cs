@@ -29,6 +29,7 @@ namespace GameLoop.Engine.Infrastructure.Font
             _text = text;
             _font = font;
             _maxWidth = maxWidth;
+            _color = Color.Black;
             CreateText(0, 0, _maxWidth);
         }
 
@@ -76,7 +77,7 @@ namespace GameLoop.Engine.Infrastructure.Font
             // Update the dimensions. Compiler won't let you simply set the Y value so
             // you have to set the whole variable
             Vector tempDimensions = _font.MeasureFont(this._text, this._maxWidth);
-            this.Dimensions = new Vector(tempDimensions.X, currentY, tempDimensions.Z);
+            this.Dimensions = maxWidth == -1 ? tempDimensions : new Vector(tempDimensions.X, currentY, tempDimensions.Z);
 
             // Set the color
             SetColor(this._color);

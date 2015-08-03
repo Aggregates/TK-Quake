@@ -21,7 +21,7 @@ namespace GameLoop.Sprites
             //X++;
             //ScaleX *= 1.001;
             //ScaleY *= 0.999;
-            this.ScaleUniform(1.001);
+            this.ScaleUniform(1.005);
         }
 
         public override void Render()

@@ -15,9 +15,9 @@ namespace GameLoop.Engine.Core
 
         public Renderer()
         {
-            GL.Enable(EnableCap.Texture2D);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            //GL.Enable(EnableCap.Texture2D);
+            //GL.Enable(EnableCap.Blend);
+            //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
 
         public void DrawImmediateModeVertex(Vector position, Color color, Point uvs)
