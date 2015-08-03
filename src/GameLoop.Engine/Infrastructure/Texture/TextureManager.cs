@@ -41,8 +41,8 @@ namespace GameLoop.Engine.Infrastructure.Texture
 
         public override void Remove(string key)
         {
-            Texture text = Get(key); 
-            
+            Texture text = Get(key);
+
             base.Remove(key);
             GL.DeleteTexture(text.Id);
         }
@@ -64,7 +64,7 @@ namespace GameLoop.Engine.Infrastructure.Texture
                 Paloma.TargaImage.LoadTargaImage(filename) :
                 new Bitmap(filename);
             Rectangle rect = new Rectangle(0,0,bmp.Width, bmp.Height);
-            
+
             // Lock the data in memory while we create the texture
             BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
@@ -72,14 +72,14 @@ namespace GameLoop.Engine.Infrastructure.Texture
             // Load the textue into OpenGL
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height,
                 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
-            
+
             // Unlock the data in memory
             bmp.UnlockBits(bmpData);
 
             Texture text = new Texture(textureId, bmp.Width, bmp.Height, filename);
             return text;
         }
-        
+
         public void Dispose()
         {
             foreach(string keyVal in Database.Keys)
