@@ -43,5 +43,17 @@ namespace GameLoop.Test
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void Angle_001_010_90()
+        {
+            Vector a = new Vector(1, 0, 0);
+            Vector b = new Vector(0, 1, 0);
+
+            double expected = Math.PI / 2;
+            double actual = a.Angle(b);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }

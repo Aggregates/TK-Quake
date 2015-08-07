@@ -14,6 +14,8 @@ namespace GameLoop.Engine.ViewPort
     public class Camera : IGameObject
     {
         public Vector Position { get; set; }
+        public double MoveSpeed { get; set; }
+        public double RotationSpeed { get; set; }
 
         /// <summary>
         /// Unit Vector from the Position to any point in space, one unit away
@@ -25,15 +27,27 @@ namespace GameLoop.Engine.ViewPort
         /// </summary>
         public Vector OrthogonalView { get { return ViewDirection * Up; } }
 
-        public readonly Vector Up = new Vector(0, 1, 0);
+        public readonly Vector Up = Vector.UnitY;
 
         private Matrix4 _cameraMatrix;
 
         public Camera()
         {
-            this.Position = new Vector(0, 0, 0);
+            this.MoveSpeed = 0.2;
+            this.RotationSpeed = 0.01;
+            this.Position = Vector.Zero;
             this.ViewDirection = new Vector(0, 0, -1);
             this._cameraMatrix = GetWorldToViewMatrix();
+        }
+
+        public void Move(double x, double y, double z)
+        {
+            Vector offset = Vector.Zero;
+
+            offset += OrthogonalView * x;
+            offset += ViewDirection * y;
+            offset.Y += z; // ?????
+
         }
 
         public void Move(Vector newPosition)
