@@ -58,6 +58,7 @@
     <Compile Include="Infrastructure\Font\Text.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Math\Matrix.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vector.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />
+    <Compile Include="ViewPort\Camera.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
