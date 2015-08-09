@@ -41,6 +41,7 @@ namespace TKQuake.ScreenStates
             GL.ClearColor(System.Drawing.Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             _renderer.DrawSprites(_spriteList);
+            _renderer.Render();
             GL.Finish();
         }
     }

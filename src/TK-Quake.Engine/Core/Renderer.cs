@@ -13,12 +13,9 @@ namespace TKQuake.Engine.Core
     public class Renderer
     {
 
-        public Renderer()
-        {
-            //GL.Enable(EnableCap.Texture2D);
-            //GL.Enable(EnableCap.Blend);
-            //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-        }
+        private SpriteBatch _batch = new SpriteBatch();
+
+        public Renderer() {  }
 
         public void DrawImmediateModeVertex(Vector position, Color color, Point uvs)
         {
@@ -37,25 +34,20 @@ namespace TKQuake.Engine.Core
 
         public void DrawSprite(Sprite2 sprite)
         {
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, sprite.Texture.Id);
+            _batch.AddSprite(sprite);
+        }
 
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-
-            GL.Begin(PrimitiveType.Triangles);
-
-            {
-                for(int i = 0; i < sprite.Vertices.Count; i++)
-                {
-                    DrawImmediateModeVertex(
-                        sprite.Vertices[i].Position,
-                        sprite.Vertices[i].Color,
-                        sprite.Vertices[i].UVs);
-                }
-            }
-
-            GL.End();
+        /// <summary>
+        /// Needs to be called every Frame.
+        ///
+        /// <remarks>
+        /// If there is anything left in the SpriteBatch that hasn't
+        /// been drawn by the end of the frame, this will ensure it gets drawn
+        /// </remarks>
+        /// </summary>
+        public void Render()
+        {
+            _batch.Draw();
         }
 
         public void DrawText(Text text)

@@ -59,6 +59,7 @@ namespace TKQuake.ScreenStates
             GL.ClearColor(System.Drawing.Color.Green);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             _renderer.DrawText(_text);
+            _renderer.Render();
         }
     }
 }
