@@ -23,22 +23,22 @@ namespace TKQuake.Engine.Core
 
         public BSPLoader() { }
 
-        public BSPLoader(string BSPFile)
+        public BSPLoader(string file)
         {
             BSPFile = file;
         }
 
-        public void setBSPFile(string file)
+        public void SetBSPFile(string file)
         {
             BSPFile = file;
         }
 
-        public string getBSPFile()
+        public string GetBSPFile()
         {
-            return(BSPFile);
+            return (BSPFile);
         }
 
-        public bool loadFile()
+        public bool LoadFile()
         {
             try
             {
@@ -85,6 +85,8 @@ namespace TKQuake.Engine.Core
                 Console.WriteLine("{0} Exception caught.", ex);
                 return (false);
             }
+
+			return (true);
         }
     }
 }
