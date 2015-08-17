@@ -43,17 +43,17 @@ namespace TKQuake.Engine.Core
             BSPFile = file;
         }
 
-        public void setBSPFile(string file)
+        public void SetBSPFile(string file)
         {
             BSPFile = file;
         }
 
-        public string getBSPFile()
+        public string GetBSPFile()
         {
-            return(BSPFile);
+            return (BSPFile);
         }
 
-        public bool loadFile()
+        public bool LoadFile()
         {
             try
             {
