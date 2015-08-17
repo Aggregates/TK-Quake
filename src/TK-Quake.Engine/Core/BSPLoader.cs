@@ -38,23 +38,16 @@ namespace TKQuake.Engine.Core
             //directoryParsers[16] = new BSP.Visdata();
         }
 
-        public BSPLoader(string file)
-        private struct Directory
-        {
-            public int offset;
-            public int length;
-        }
-
         private string BSPFile = "";
 
         public BSPLoader() { }
 
-        public BSPLoader(string BSPFile)
+        public BSPLoader(string file)
         {
             BSPFile = file;
         }
 
-        public void setBSPFile(string file)
+        public void SetBSPFile(string file)
         {
             BSPFile = file;
         }
