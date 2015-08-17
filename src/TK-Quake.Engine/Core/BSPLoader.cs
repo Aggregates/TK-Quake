@@ -39,11 +39,22 @@ namespace TKQuake.Engine.Core
         }
 
         public BSPLoader(string file)
+        private struct Directory
+        {
+            public int offset;
+            public int length;
+        }
+
+        private string BSPFile = "";
+
+        public BSPLoader() { }
+
+        public BSPLoader(string BSPFile)
         {
             BSPFile = file;
         }
 
-        public void SetBSPFile(string file)
+        public void setBSPFile(string file)
         {
             BSPFile = file;
         }
@@ -75,7 +86,7 @@ namespace TKQuake.Engine.Core
 				int version = BitConverter.ToInt32 (buf, 0);
 
                 // Verify version number.
-				if (version != BSP_VERSION)
+                if (version != BSP_VERSION)
                 {
                     return (false);
                 }
