@@ -43,28 +43,27 @@ namespace TKQuake.Engine.Core
             BSPFile = file;
         }
 
-        public void SetBSPFile(string file)
+        public void setBSPFile(string file)
         {
             BSPFile = file;
         }
 
-        public string GetBSPFile()
+        public string getBSPFile()
         {
-            return (BSPFile);
+            return(BSPFile);
         }
 
-        public bool LoadFile()
+        public bool loadFile()
         {
             try
             {
-                FileStream file = File.Open(BSPFile, FileMode.Open);
+                BinaryReader file = new BinaryReader(File.Open(BSPFile, FileMode.Open));
 
-                // Extract the magic bytes.
-				byte[] buf = new byte[4];
-				file.Read (buf, 0, 4);
-                string magic = System.Text.Encoding.UTF8.GetString(buf);
+                // Load the header.
+                string magic = System.Text.Encoding.UTF8.GetString(file.ReadBytes(4));
+                int version = file.ReadInt32();
 
-                // Verify magic bytes.
+                // Verify header.
                 if (magic.CompareTo(MAGIC_STRING) != 0)
                 {
                     return (false);
