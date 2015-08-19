@@ -1,13 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
+using System;
 using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Test
 {
-    [TestClass]
+    [TestFixture]
     public class VectorTest
     {
-        [TestMethod]
+        [Test]
         public void CrossProduct_100_010_001()
         {
             Vector a = new Vector(1, 0, 0);
@@ -19,7 +19,7 @@ namespace TKQuake.Test
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void CrossProduct_3N31_492_N15N239()
         {
             Vector a = new Vector(3, -3, 1);
@@ -31,7 +31,7 @@ namespace TKQuake.Test
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void CrossProduct_3N31_N1212N4_000()
         {
             Vector a = new Vector(3, -3, 1);
@@ -43,7 +43,7 @@ namespace TKQuake.Test
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void Angle_001_010_90()
         {
             Vector a = new Vector(1, 0, 0);
