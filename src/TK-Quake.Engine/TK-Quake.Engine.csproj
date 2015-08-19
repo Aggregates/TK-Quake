@@ -86,6 +86,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />
+    <Compile Include="Core\Directory.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Texture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
