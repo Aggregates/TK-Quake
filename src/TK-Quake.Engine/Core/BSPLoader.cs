@@ -38,10 +38,6 @@ namespace TKQuake.Engine.Core
             //directoryParsers[16] = new BSP.Visdata();
         }
 
-        private string BSPFile = "";
-
-        public BSPLoader() { }
-
         public BSPLoader(string file)
         {
             BSPFile = file;
@@ -144,7 +140,7 @@ namespace TKQuake.Engine.Core
 
         public BSP.Plane.PlaneEntry GetPlane(int plane)
         {
-            return(((BSP.Plane)directoryParsers[0]).GetPlane(plane));
+            return(((Entity)directoryParsers[0]).GetEntities());
         }
     }
 }
