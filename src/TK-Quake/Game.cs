@@ -15,6 +15,7 @@ using System.Reflection;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Input;
 using TKQuake.ScreenStates;
 
 namespace TKQuake
@@ -26,6 +27,7 @@ namespace TKQuake
         private readonly TextureManager _textureManager;
         private readonly FontManager _fontManager;
         private readonly GameWindow _game;
+        private readonly InputSystem _inputSystem;
         private static readonly string ResourcesPath =
             Path.Combine(Path.GetDirectoryName(
                 Assembly.GetExecutingAssembly().Location), "Resources");
@@ -36,6 +38,7 @@ namespace TKQuake
             _stateManager = new ScreenManager();
             _textureManager = new TextureManager();
             _fontManager = new FontManager();
+            _inputSystem = new InputSystem();
 
             SetupViewport();
         }
@@ -113,6 +116,10 @@ namespace TKQuake
             _game.Resize += Resize;
             _game.RenderFrame += Render;
             _game.Run();
+            _game.KeyDown += (sender, args)
+                => _inputSystem.ProcessKeyboardInput(args.Key);
+            _game.MouseDown += (sender, args)
+                => _inputSystem.ProcessMouseInput(args.Button);
         }
 
         private void GameLoop(double elapsedTime)
