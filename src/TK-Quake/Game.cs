@@ -115,11 +115,16 @@ namespace TKQuake
             _game.Load += Load;
             _game.Resize += Resize;
             _game.RenderFrame += Render;
-            _game.Run();
+
+            //Input processing
             _game.KeyDown += (sender, args)
                 => _inputSystem.ProcessKeyboardInput(args.Key);
             _game.MouseDown += (sender, args)
                 => _inputSystem.ProcessMouseInput(args.Button);
+            //end Input processing
+
+            //start game loop
+            _game.Run();
         }
 
         private void GameLoop(double elapsedTime)
