@@ -13,12 +13,17 @@ namespace TKQuake.Engine.Core
         private const int    BSP_VERSION     = 0x2E;
         private const int    NUM_DIRECTORIES = 17;
 
+<<<<<<< HEAD
         private BSP.Directory[] directoryParsers = new BSP.Directory[NUM_DIRECTORIES];
+=======
+        private Directory[] directoryParsers = new Directory[NUM_DIRECTORIES];
+>>>>>>> Added Directory abstract class along with Entity and Texture subclasses.
 
         private string BSPFile = "";
 
         public BSPLoader()
         {
+<<<<<<< HEAD
             directoryParsers[ 0] = new BSP.Entity();
             directoryParsers[ 1] = new BSP.Texture();
             directoryParsers[ 2] = new BSP.Plane();
@@ -36,6 +41,25 @@ namespace TKQuake.Engine.Core
             //directoryParsers[14] = new BSP.Lightmap();
             //directoryParsers[15] = new BSP.Lightvol();
             //directoryParsers[16] = new BSP.Visdata();
+=======
+            directoryParsers[ 0] = new Entity();
+            directoryParsers[ 1] = new Texture();
+            //directoryParsers[ 2] = new Plane();
+            //directoryParsers[ 3] = new Node();
+            //directoryParsers[ 4] = new Leaf();
+            //directoryParsers[ 5] = new Leafface();
+            //directoryParsers[ 6] = new Leafbrush();
+            //directoryParsers[ 7] = new Model();
+            //directoryParsers[ 8] = new Brush();
+            //directoryParsers[ 9] = new Brushside();
+            //directoryParsers[10] = new Vertex();
+            ////directoryParsers[11] = new Meshvert();
+            //directoryParsers[12] = new Effect();
+            //directoryParsers[13] = new Face();
+            //directoryParsers[14] = new Lightmap();
+            //directoryParsers[15] = new Lightvol();
+            //directoryParsers[16] = new Visdata();
+>>>>>>> Added Directory abstract class along with Entity and Texture subclasses.
         }
 
         public BSPLoader(string file)
