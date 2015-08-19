@@ -15,13 +15,18 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         public Vector Position { get; set; }
         public double MoveSpeed { get; set; }
         public double RotationSpeed { get; set; }
-        public Matrix4 Matrix { get; private set; }
-        public bool Alive { get; private set; }
+        public Matrix4 Matrix { get; protected set; }
+        public bool Alive { get; protected set; }
         public Sprite2 Sprite { get; set; }
 
         public virtual void Move(Vector position)
         {
             this.Position = position;
+        }
+
+        public virtual void Move(double x, double y, double z)
+        {
+            Move(new Vector(x, y, z));
         }
 
         public virtual void Spawn()
