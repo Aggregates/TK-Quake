@@ -13,15 +13,30 @@ namespace TKQuake.Engine.Core
         private const int    BSP_VERSION     = 0x2E;
         private const int    NUM_DIRECTORIES = 17;
 
-        private struct Directory
-        {
-            public int offset;
-            public int length;
-        }
+        private Directory[] directoryParsers = new Directory[NUM_DIRECTORIES];
 
         private string BSPFile = "";
 
-        public BSPLoader() { }
+        public BSPLoader()
+        {
+            directoryParsers[ 0] = new Entity();
+            directoryParsers[ 1] = new Texture();
+            //directoryParsers[ 2] = new Plane();
+            //directoryParsers[ 3] = new Node();
+            //directoryParsers[ 4] = new Leaf();
+            //directoryParsers[ 5] = new Leafface();
+            //directoryParsers[ 6] = new Leafbrush();
+            //directoryParsers[ 7] = new Model();
+            //directoryParsers[ 8] = new Brush();
+            //directoryParsers[ 9] = new Brushside();
+            //directoryParsers[10] = new Vertex();
+            ////directoryParsers[11] = new Meshvert();
+            //directoryParsers[12] = new Effect();
+            //directoryParsers[13] = new Face();
+            //directoryParsers[14] = new Lightmap();
+            //directoryParsers[15] = new Lightvol();
+            //directoryParsers[16] = new Visdata();
+        }
 
         public BSPLoader(string file)
         {
@@ -42,36 +57,50 @@ namespace TKQuake.Engine.Core
         {
             try
             {
-                BinaryReader file = new BinaryReader(File.Open(BSPFile, FileMode.Open));
+                FileStream file = File.Open(BSPFile, FileMode.Open);
 
-                // Load the header.
-                string magic = System.Text.Encoding.UTF8.GetString(file.ReadBytes(4));
-                int version = file.ReadInt32();
+                // Extract the magic bytes.
+				byte[] buf = new byte[4];
+				file.Read (buf, 0, 4);
+                string magic = System.Text.Encoding.UTF8.GetString(buf);
 
-                // Verify header.
+                // Verify magic bytes.
                 if (magic.CompareTo(MAGIC_STRING) != 0)
                 {
                     return (false);
                 }
 
-                if (version != BSP_VERSION)
+				// Extract version number.
+  				file.Read (buf, 0, 4);
+				int version = BitConverter.ToInt32 (buf, 0);
+
+                // Verify version number.
+				if (version != BSP_VERSION)
                 {
                     return (false);
                 }
 
                 // Read in the directory information.
-                Directory[] directories = new Directory[17];
-
                 for (int i = 0; i < NUM_DIRECTORIES; i++)
                 {
-                    directories[i].offset = file.ReadInt32();
-                    directories[i].length = file.ReadInt32();
+                    int offset, length;
+
+                    file.Read (buf, 0, 4);
+                    offset = BitConverter.ToInt32 (buf, 0);
+
+                    file.Read (buf, 0, 4);
+                    length = BitConverter.ToInt32 (buf, 0);
+
+                    // Save the current position in the file.
+                    long pos = file.Position;
+
+                    directoryParsers[i].ParseDirectoryEntry(file, offset, length);
+
+                    // Restore original position in the file.
+                    file.Seek (pos, SeekOrigin.Begin);
                 }
 
-                // Parse each directory.
-                for (int i = 0; i < NUM_DIRECTORIES; i++)
-                {
-                }
+                file.Close ();
             }
 
             catch (FileNotFoundException)
@@ -87,6 +116,11 @@ namespace TKQuake.Engine.Core
             }
 
 			return (true);
+        }
+
+        public string GetEntities()
+        {
+            return(((Entity)directoryParsers[0]).GetEntities());
         }
     }
 }
