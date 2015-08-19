@@ -90,6 +90,9 @@
     <Compile Include="Core\BSP\Entity.cs" />
     <Compile Include="Core\BSP\Texture.cs" />
     <Compile Include="Core\BSP\Plane.cs" />
+    <Compile Include="Core\Directory.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Texture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

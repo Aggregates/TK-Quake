@@ -57,13 +57,14 @@ namespace TKQuake.Engine.Core
         {
             try
             {
-                BinaryReader file = new BinaryReader(File.Open(BSPFile, FileMode.Open));
+                FileStream file = File.Open(BSPFile, FileMode.Open);
 
-                // Load the header.
-                string magic = System.Text.Encoding.UTF8.GetString(file.ReadBytes(4));
-                int version = file.ReadInt32();
+                // Extract the magic bytes.
+				byte[] buf = new byte[4];
+				file.Read (buf, 0, 4);
+                string magic = System.Text.Encoding.UTF8.GetString(buf);
 
-                // Verify header.
+                // Verify magic bytes.
                 if (magic.CompareTo(MAGIC_STRING) != 0)
                 {
                     return (false);
