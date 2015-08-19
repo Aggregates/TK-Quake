@@ -47,9 +47,6 @@ namespace TKQuake.Engine.Infrastructure.Input
                 KeyboardMap[key].Execute();
         }
 
-        ///<summary>
-        ///Executes the registered command for the given mouse button.
-        ///</summary>
         public void ProcessMouseInput(MouseButton button)
         {
             if (MouseButtonMap.ContainsKey(button))

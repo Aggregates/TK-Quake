@@ -125,6 +125,10 @@ namespace TKQuake
 
             //start game loop
             _game.Run();
+            _game.KeyDown += (sender, args)
+                => _inputSystem.ProcessKeyboardInput(args.Key);
+            _game.MouseDown += (sender, args)
+                => _inputSystem.ProcessMouseInput(args.Button);
         }
 
         private void GameLoop(double elapsedTime)
