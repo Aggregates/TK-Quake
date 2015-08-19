@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Cookbook.Screens;
 using TKQuake.Engine.Extensions;
+using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
 
 namespace TKQuake.Cookbook
@@ -14,9 +16,7 @@ namespace TKQuake.Cookbook
     public class Program
     {
         private GameWindow game;
-
-        const float rotation_speed = 180.0f;
-        float angle = 0.0f;
+        private GameScreen currentScreen;
 
         public static void Main(string[] args)
         {
@@ -26,94 +26,51 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
+            currentScreen = new CameraTestScreen();
+
             using (game = new GameWindow())
             {
                 game.Load += game_Load;
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
                 game.RenderFrame += game_RenderFrame;
+                game.KeyDown += game_KeyDown;
+                game.KeyUp += game_KeyUp;
+                game.KeyPress += game_KeyPress;
 
                 game.Run(60.0);
             }
         }
 
-        private void game_RenderFrame(object sender, FrameEventArgs e)
+        private void game_KeyPress(object sender, KeyPressEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            /*
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Ortho(-10, 10, -10, 10, 0.0, 4.0);
-            */
-
-            Matrix4 lookat = Matrix4.LookAt(0, 5, 5, 0, 0, 0, 0, 1, 0);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref lookat);
-
-            angle += rotation_speed * (float)e.Time;
-            GL.Rotate(angle, 0.0f, 1.0f, 0.0f);
-
-
-            GL.Begin(PrimitiveType.Quads);
-            {
-                /*GLX.Color3(Color.Red);
-                GL.Vertex2(-1.0f, 1.0f);
-                GLX.Color3(Color.Green);
-                GL.Vertex2(0.0f, -1.0f);
-                GLX.Color3(Color.Blue);
-                GL.Vertex2(1.0f, 1.0f);
-                 */
-                DrawCube();
-            }
-            GL.End();
-
-            game.SwapBuffers();
+            Console.WriteLine(e.KeyChar);
         }
 
-        private void DrawCube()
+        void game_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
-            GLX.Color3(Color.Red);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
-            GL.Vertex3(1.0f, -1.0f, -1.0f);
+            //throw new NotImplementedException();
+        }
 
-            GLX.Color3(Color.Green);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
-            GL.Vertex3(1.0f, -1.0f, -1.0f);
-            GL.Vertex3(1.0f, -1.0f, 1.0f);
-            GL.Vertex3(-1.0f, -1.0f, 1.0f);
+        void game_KeyDown(object sender, KeyboardKeyEventArgs e)
+        {
+            ((CameraTestScreen)currentScreen).HandleInput(e.Key);
+        }
 
-            GLX.Color3(Color.Blue);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
-            GL.Vertex3(-1.0f, -1.0f, 1.0f);
-            GL.Vertex3(-1.0f, 1.0f, 1.0f);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
-
-            GLX.Color3(Color.Red);
-            GL.Vertex3(-1.0f, -1.0f, 1.0f);
-            GL.Vertex3(1.0f, -1.0f, 1.0f);
-            GL.Vertex3(1.0f, 1.0f, 1.0f);
-            GL.Vertex3(-1.0f, 1.0f, 1.0f);
-
-            GLX.Color3(Color.Green);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
-            GL.Vertex3(-1.0f, 1.0f, 1.0f);
-            GL.Vertex3(1.0f, 1.0f, 1.0f);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
-
-            GLX.Color3(Color.Blue);
-            GL.Vertex3(1.0f, -1.0f, -1.0f);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
-            GL.Vertex3(1.0f, 1.0f, 1.0f);
-            GL.Vertex3(1.0f, -1.0f, 1.0f);
+        private void game_RenderFrame(object sender, FrameEventArgs e)
+        {
+            currentScreen.Render(e);
+            game.SwapBuffers();
         }
 
         private void game_UpdateFrame(object sender, FrameEventArgs e)
         {
             if (game.Keyboard[Key.Escape])
                 game.Exit();
+
+            currentScreen.Update(0, e);
+
+
         }
 
         private void game_Resize(object sender, EventArgs e)
