@@ -86,9 +86,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />
-    <Compile Include="Core\Directory.cs" />
-    <Compile Include="Core\Entity.cs" />
-    <Compile Include="Core\Texture.cs" />
+    <Compile Include="Core\BSP\Directory.cs" />
+    <Compile Include="Core\BSP\Entity.cs" />
+    <Compile Include="Core\BSP\Texture.cs" />
+    <Compile Include="Core\BSP\Plane.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -111,4 +112,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Core\BSP\" />
+  </ItemGroup>
 </Project>
