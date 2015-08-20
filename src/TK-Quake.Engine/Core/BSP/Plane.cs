@@ -1,0 +1,58 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TKQuake.Engine.Core.BSP
+{
+    class Plane : Directory
+    {
+        public struct PlaneEntry
+        {
+            public float[] normal;
+            public float   dist;
+        }
+
+        private const int PLANE_SIZE = 16;
+
+        private PlaneEntry[] planes;
+
+        public Plane() { }
+
+        public override void ParseDirectoryEntry(FileStream file, int offset, int length)
+        {
+            // Create textures array.
+            planes = new PlaneEntry[length / PLANE_SIZE];
+
+            // Seek to the specified offset within the file.
+            file.Seek (offset, SeekOrigin.Begin);
+
+            // Create buffer to hold data.
+            byte[] buf = new byte[PLANE_SIZE];
+
+            for (int i = 0; i < (length / PLANE_SIZE); i++)
+            {
+                file.Read (buf, 0, PLANE_SIZE);
+
+                planes[i].normal = new float[3];
+                planes[i].normal[0] = BitConverter.ToSingle(buf, 0 * sizeof(float));
+                planes[i].normal[1] = BitConverter.ToSingle(buf, 1 * sizeof(float));
+                planes[i].normal[2] = BitConverter.ToSingle(buf, 2 * sizeof(float));
+                planes[i].dist      = BitConverter.ToSingle(buf, 3 * sizeof(float));
+            }
+        }
+
+        public PlaneEntry[] GetPlanes()
+        {
+            return(planes);
+        }
+
+        public PlaneEntry GetPlane(int plane)
+        {
+            return(planes[plane]);
+        }
+    }
+}
+
