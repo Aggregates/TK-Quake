@@ -27,9 +27,16 @@ namespace TKQuake.Engine.Core
         public readonly Vector Up = Vector.UnitY;
 
         /// <summary>
-        /// The angle the camera is turned around the upward axis (the head)
+        /// The angle (in radians) the camera is facing by rotating around the
+        /// upward Y-Axis as if the camera moves its "head" left to right
         /// </summary>
         public double YawAngle { get; set; }
+
+        /// <summary>
+        /// The angle (in radians) the camera is facing by rotating around the
+        /// X-Axis as if the camera tilts it's "head" up and down
+        /// </summary>
+        public double PitchAngle { get; set; }
 
         public Camera()
         {
@@ -37,6 +44,8 @@ namespace TKQuake.Engine.Core
             RotationSpeed = 0.2;
             Position = Vector.Zero;
             ViewDirection = new Vector(0, 0, -1);
+            YawAngle = 0;
+            PitchAngle = 0;
             this.Matrix = WorldToLocalMatrix();
         }
 
@@ -44,7 +53,7 @@ namespace TKQuake.Engine.Core
         {
             // When the YawAngle is 0, the camera will look down the negative Z axis
 
-            ViewDirection = new Vector(Math.Sin(YawAngle), 0, -Math.Cos(YawAngle));
+            ViewDirection = new Vector(Math.Sin(YawAngle), Math.Sin(PitchAngle), -Math.Cos(YawAngle));
             ViewDirection.Normalise();
             return GLX.MarixLookAt(Position, Position + ViewDirection, Up);
         }
