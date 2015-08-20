@@ -140,7 +140,7 @@ namespace TKQuake.Engine.Core
 
         public BSP.Plane.PlaneEntry GetPlane(int plane)
         {
-            return(((Entity)directoryParsers[0]).GetEntities());
+            return(((BSP.Plane)directoryParsers[0]).GetPlane(plane));
         }
     }
 }
