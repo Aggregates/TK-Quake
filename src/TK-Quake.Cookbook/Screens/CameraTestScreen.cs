@@ -64,6 +64,12 @@ namespace TKQuake.Cookbook.Screens
 
         public override void Update(double elapsedTime, FrameEventArgs e)
         {
+            var state = Keyboard.GetState();
+            if (state[Key.W]) HandleInput(Key.W);
+            if (state[Key.A]) HandleInput(Key.A);
+            if (state[Key.S]) HandleInput(Key.S);
+            if (state[Key.D]) HandleInput(Key.D);
+
             base.Update(elapsedTime, e);
         }
 

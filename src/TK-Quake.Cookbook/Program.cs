@@ -34,8 +34,6 @@ namespace TKQuake.Cookbook
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
                 game.RenderFrame += game_RenderFrame;
-                game.KeyDown += game_KeyDown;
-                game.KeyUp += game_KeyUp;
                 game.KeyPress += game_KeyPress;
 
                 game.Run(60.0);
@@ -45,16 +43,6 @@ namespace TKQuake.Cookbook
         private void game_KeyPress(object sender, KeyPressEventArgs e)
         {
             Console.WriteLine(e.KeyChar);
-        }
-
-        void game_KeyUp(object sender, KeyboardKeyEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        void game_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-            ((CameraTestScreen)currentScreen).HandleInput(e.Key);
         }
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
