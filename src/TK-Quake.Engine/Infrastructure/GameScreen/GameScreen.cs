@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +23,8 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
 
         public abstract void Update(double elapsedTime);
         public abstract void Render();
+
+        public virtual void Update(double elapsedTime, FrameEventArgs e) { Update(elapsedTime); }
+        public virtual void Render(FrameEventArgs e) { Render(); }
     }
 }

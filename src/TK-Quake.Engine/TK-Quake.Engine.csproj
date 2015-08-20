@@ -47,9 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Camera.cs" />
     <Compile Include="Debug\FramesPerSecond.cs" />
     <Compile Include="Extensions\GLX.cs" />
+    <Compile Include="Infrastructure\Abstract\ILivableEntity.cs" />
     <Compile Include="Infrastructure\Abstract\IGameObject.cs" />
+    <Compile Include="Infrastructure\Abstract\PlayerEntity.cs" />
     <Compile Include="Infrastructure\Abstract\ResourceManager.cs" />
     <Compile Include="Infrastructure\Font\CharacterData.cs" />
     <Compile Include="Infrastructure\Font\CharacterSprite.cs" />
