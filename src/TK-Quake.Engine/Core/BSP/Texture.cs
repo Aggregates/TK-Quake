@@ -5,28 +5,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TKQuake.Engine.Core
+namespace TKQuake.Engine.Core.BSP
 {
     class Texture : Directory
     {
-        public struct Tex
+        public struct TextureEntry
         {
-            string name;
-            int    flags;       // Surface flags.
-            int    contents;    // Content flags.
+            public string name;
+            public int    flags;       // Surface flags.
+            public int    contents;    // Content flags.
         }
 
         private const int TEXTURE_SIZE = 72;
         private const int NAME_LENGTH  = 64;
 
-        private Tex[] textures;
+        private TextureEntry[] textures;
 
         public Texture() { }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
             // Create textures array.
-            textures = new Tex[length / TEXTURE_SIZE];
+            textures = new TextureEntry[length / TEXTURE_SIZE];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -44,14 +44,14 @@ namespace TKQuake.Engine.Core
             }
         }
 
-        public Tex[] GetTextures()
+        public TextureEntry[] GetTextures()
         {
             return(textures);
         }
 
-        public Tex GetTexture(int texture)
+        public TextureEntry GetTexture(int texture)
         {
-            return(textures[i]);
+            return(textures[texture]);
         }
     }
 }
