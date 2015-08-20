@@ -13,29 +13,29 @@ namespace TKQuake.Engine.Core
         private const int    BSP_VERSION     = 0x2E;
         private const int    NUM_DIRECTORIES = 17;
 
-        private Directory[] directoryParsers = new Directory[NUM_DIRECTORIES];
+        private BSP.Directory[] directoryParsers = new BSP.Directory[NUM_DIRECTORIES];
 
         private string BSPFile = "";
 
         public BSPLoader()
         {
-            directoryParsers[ 0] = new Entity();
-            directoryParsers[ 1] = new Texture();
-            //directoryParsers[ 2] = new Plane();
-            //directoryParsers[ 3] = new Node();
-            //directoryParsers[ 4] = new Leaf();
-            //directoryParsers[ 5] = new Leafface();
-            //directoryParsers[ 6] = new Leafbrush();
-            //directoryParsers[ 7] = new Model();
-            //directoryParsers[ 8] = new Brush();
-            //directoryParsers[ 9] = new Brushside();
-            //directoryParsers[10] = new Vertex();
-            ////directoryParsers[11] = new Meshvert();
-            //directoryParsers[12] = new Effect();
-            //directoryParsers[13] = new Face();
-            //directoryParsers[14] = new Lightmap();
-            //directoryParsers[15] = new Lightvol();
-            //directoryParsers[16] = new Visdata();
+            directoryParsers[ 0] = new BSP.Entity();
+            directoryParsers[ 1] = new BSP.Texture();
+            directoryParsers[ 2] = new BSP.Plane();
+            //directoryParsers[ 3] = new BSP.Node();
+            //directoryParsers[ 4] = new BSP.Leaf();
+            //directoryParsers[ 5] = new BSP.Leafface();
+            //directoryParsers[ 6] = new BSP.Leafbrush();
+            //directoryParsers[ 7] = new BSP.Model();
+            //directoryParsers[ 8] = new BSP.Brush();
+            //directoryParsers[ 9] = new BSP.Brushside();
+            //directoryParsers[10] = new BSP.Vertex();
+            //directoryParsers[11] = new BSP.Meshvert();
+            //directoryParsers[12] = new BSP.Effect();
+            //directoryParsers[13] = new BSP.Face();
+            //directoryParsers[14] = new BSP.Lightmap();
+            //directoryParsers[15] = new BSP.Lightvol();
+            //directoryParsers[16] = new BSP.Visdata();
         }
 
         public BSPLoader(string file)
@@ -120,7 +120,27 @@ namespace TKQuake.Engine.Core
 
         public string GetEntities()
         {
-            return(((Entity)directoryParsers[0]).GetEntities());
+            return(((BSP.Entity)directoryParsers[0]).GetEntities());
+        }
+
+        public BSP.Texture.TextureEntry[] GetTextures()
+        {
+            return(((BSP.Texture)directoryParsers[0]).GetTextures());
+        }
+
+        public BSP.Texture.TextureEntry GetTexture(int texture)
+        {
+            return(((BSP.Texture)directoryParsers [0]).GetTexture (texture));
+        }
+
+        public BSP.Plane.PlaneEntry[] GetPlanes()
+        {
+            return(((BSP.Plane)directoryParsers[0]).GetPlanes());
+        }
+
+        public BSP.Plane.PlaneEntry GetPlane(int plane)
+        {
+            return(((BSP.Plane)directoryParsers[0]).GetPlane(plane));
         }
     }
 }
