@@ -56,6 +56,10 @@ namespace TKQuake.Cookbook.Screens
                         _camera.Move(x, 0, z);
                         break;
                     }
+                case Key.Left: { _camera.YawAngle -= 0.01f; break; }
+                case Key.Right: { _camera.YawAngle += 0.01f; break; }
+                case Key.Up: { _camera.PitchAngle = Math.Min(_camera.PitchAngle + 0.01f, Math.PI / 2); break; }
+                case Key.Down: { _camera.PitchAngle = Math.Max(_camera.PitchAngle - 0.01f, -Math.PI / 2); break; }
 
                 default: break;
 
@@ -69,6 +73,10 @@ namespace TKQuake.Cookbook.Screens
             if (state[Key.A]) HandleInput(Key.A);
             if (state[Key.S]) HandleInput(Key.S);
             if (state[Key.D]) HandleInput(Key.D);
+            if (state[Key.Left]) HandleInput(Key.Left);
+            if (state[Key.Right]) HandleInput(Key.Right);
+            if (state[Key.Up]) HandleInput(Key.Up);
+            if (state[Key.Down]) HandleInput(Key.Down);
 
             base.Update(elapsedTime, e);
         }
@@ -99,9 +107,9 @@ namespace TKQuake.Cookbook.Screens
                         GLX.Color3(Color.Green);
                         GL.Vertex3(-1f, 4f, 0f);
                         GLX.Color3(Color.Blue);
-                        GL.Vertex3(-1f, 0f, 0f);
+                        GL.Vertex3(-1f, -4f, 0f);
                         GLX.Color3(Color.White);
-                        GL.Vertex3(1f, 0f, 0f);
+                        GL.Vertex3(1f, -4f, 0f);
                     }
                     GL.End();
                     GL.PopMatrix();
