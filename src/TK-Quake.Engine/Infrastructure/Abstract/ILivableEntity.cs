@@ -15,15 +15,19 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         void Move(Vector position);
 
         /// <summary>
-        /// Creates the object in the game world by making it "live"
+        /// Spanws the player in the world with initial health
         /// </summary>
-        void Spawn();
+        void Spawn(double health = 100);
 
         /// <summary>
         /// Kills the object and removes it from the world
         /// </summary>
         void Die();
 
+        /// <summary>
+        /// Inflicts damage on the player and kills them if their health falls below zero
+        /// </summary>
+        /// <param name="damage">The amount of damage to inflict</param>
         void Hit(double damage);
     }
 }

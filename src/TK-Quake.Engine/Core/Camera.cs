@@ -11,6 +11,9 @@ using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Core
 {
+    /// <summary>
+    /// Representation of a virtual camera system in the world through which the player sees
+    /// </summary>
     public class Camera : PlayerEntity
     {
         /// <summary>
@@ -49,6 +52,10 @@ namespace TKQuake.Engine.Core
             this.Matrix = WorldToLocalMatrix();
         }
 
+        /// <summary>
+        /// Calculates the matrix orientation with which to render the world through the camera's eyes at the current position
+        /// </summary>
+        /// <returns>The local view matrix represenation of the camera</returns>
         public Matrix4 WorldToLocalMatrix()
         {
             // When the YawAngle is 0, the camera will look down the negative Z axis
@@ -58,11 +65,18 @@ namespace TKQuake.Engine.Core
             return GLX.MarixLookAt(Position, Position + ViewDirection, Up);
         }
 
+        /// <summary>
+        /// Updates the camera's view frustum
+        /// </summary>
+        /// <param name="elapsedTime"></param>
         public override void Update(double elapsedTime)
         {
             this.Matrix = WorldToLocalMatrix();
         }
 
+        /// <summary>
+        /// Renders the world through the camera's eyes. Must be done before rendering other objects to the screen
+        /// </summary>
         public override void Render()
         {
             GL.MatrixMode(MatrixMode.Modelview);

@@ -9,6 +9,9 @@ using TKQuake.Engine.Infrastructure.Texture;
 
 namespace TKQuake.Engine.Infrastructure.Abstract
 {
+    /// <summary>
+    /// A living entity that interacts with the game world
+    /// </summary>
     public abstract class PlayerEntity : ILivableEntity, IGameObject
     {
         public double Health { get; set;}
@@ -39,16 +42,28 @@ namespace TKQuake.Engine.Infrastructure.Abstract
             Move(new Vector(dx, dy, dz));
         }
 
-        public virtual void Spawn()
+        /// <summary>
+        /// Spanws the player in the world with initial health
+        /// </summary>
+        /// <param name="health">The initial health of the Player</param>
+        public virtual void Spawn(double health = 100)
         {
+            this.Health = health;
             Alive = true;
         }
 
+        /// <summary>
+        /// Kills the object and removes it from the world
+        /// </summary>
         public virtual void Die()
         {
             Alive = false;
         }
 
+        /// <summary>
+        /// Inflicts damage on the player and kills them if their health falls below zero
+        /// </summary>
+        /// <param name="damage">The amount of damage to inflict</param>
         public virtual void Hit(double damage)
         {
             Health -= damage;
@@ -58,6 +73,9 @@ namespace TKQuake.Engine.Infrastructure.Abstract
 
         public virtual void Update(double elapsedTime) { }
 
+        /// <summary>
+        /// Renders the underlying sprite for the Player to the OpenGL window
+        /// </summary>
         public virtual void Render()
         {
             Sprite.Render();
