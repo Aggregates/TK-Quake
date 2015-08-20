@@ -26,34 +26,26 @@ namespace TKQuake.Engine.Core
 
         public readonly Vector Up = Vector.UnitY;
 
+        /// <summary>
+        /// The angle the camera is turned around the upward axis (the head)
+        /// </summary>
+        public double YawAngle { get; set; }
+
         public Camera()
         {
             MoveSpeed = 0.2;
             RotationSpeed = 0.2;
             Position = Vector.Zero;
             ViewDirection = new Vector(0, 0, -1);
-            this.Matrix = Matrix4.Identity;
-        }
-
-        public override void Move(double x, double y, double z)
-        {
-            // This code comes from
-            // http://neokabuto.blogspot.com.au/2014/01/opentk-tutorial-5-basic-camera.html
-            // The line "offset.Y += z;" looks suspicious
-
-            Vector offset = Vector.Zero;
-            offset += OrthogonalView * x;
-            offset += ViewDirection* y;
-            offset.Y += z;
-
-            offset.Normalise();
-            offset *= MoveSpeed;
-            Position += offset;
-
+            this.Matrix = WorldToLocalMatrix();
         }
 
         public Matrix4 WorldToLocalMatrix()
         {
+            // When the YawAngle is 0, the camera will look down the negative Z axis
+
+            ViewDirection = new Vector(Math.Sin(YawAngle), 0, -Math.Cos(YawAngle));
+            ViewDirection.Normalise();
             return GLX.MarixLookAt(Position, Position + ViewDirection, Up);
         }
 

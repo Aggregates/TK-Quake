@@ -26,7 +26,7 @@ namespace TKQuake.Engine.Extensions
             Vector3 view = new Vector3((float)viewDirection.X, (float)viewDirection.Y, (float)viewDirection.Z);
             Vector3 upVec = new Vector3((float)up.X, (float)up.Y, (float)up.Z);
 
-            return Matrix4.LookAt(pos, pos + view, upVec);
+            return Matrix4.LookAt(pos, view, upVec);
         }
     }
 }

@@ -19,14 +19,24 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         public bool Alive { get; protected set; }
         public Sprite2 Sprite { get; set; }
 
-        public virtual void Move(Vector position)
+        /// <summary>
+        /// Increments the current position by each component in the vector
+        /// </summary>
+        /// <param name="amount">The amount in 3D space to move by</param>
+        public virtual void Move(Vector amount)
         {
-            this.Position = position;
+            this.Position += amount;
         }
 
-        public virtual void Move(double x, double y, double z)
+        /// <summary>
+        /// Moves the entity by incrementing each of its vector coordinates by a small change
+        /// </summary>
+        /// <param name="dx">The change in the X-Axis direction</param>
+        /// <param name="dy">The change in the Y-Axis direction</param>
+        /// <param name="dz">The change in the Z-Axis direction</param>
+        public virtual void Move(double dx, double dy, double dz)
         {
-            Move(new Vector(x, y, z));
+            Move(new Vector(dx, dy, dz));
         }
 
         public virtual void Spawn()
