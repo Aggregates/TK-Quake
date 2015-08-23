@@ -24,12 +24,12 @@ namespace TKQuake.Engine.Loader
             directoryParsers[ 2] = new BSP.Plane();
             directoryParsers[ 3] = new BSP.Node();
             directoryParsers[ 4] = new BSP.Leaf();
-            directoryParsers[ 5] = new BSP.LeafFace();
-            directoryParsers[ 6] = new BSP.LeafBrush();
-            directoryParsers[ 7] = new BSP.Model();
-            directoryParsers[ 8] = new BSP.Brush();
-            directoryParsers[ 9] = new BSP.BrushSide();
-            directoryParsers[10] = new BSP.Vertex();
+            directoryParsers[ 5] = new BSP.Leafface();
+            //directoryParsers[ 6] = new BSP.Leafbrush();
+            //directoryParsers[ 7] = new BSP.Model();
+            //directoryParsers[ 8] = new BSP.Brush();
+            //directoryParsers[ 9] = new BSP.Brushside();
+            //directoryParsers[10] = new BSP.Vertex();
             //directoryParsers[11] = new BSP.Meshvert();
             //directoryParsers[12] = new BSP.Effect();
             //directoryParsers[13] = new BSP.Face();
@@ -75,7 +75,7 @@ namespace TKQuake.Engine.Loader
 				int version = BitConverter.ToInt32 (buf, 0);
 
                 // Verify version number.
-				if (version != BSP_VERSION)
+                if (version != BSP_VERSION)
                 {
                     return (false);
                 }
