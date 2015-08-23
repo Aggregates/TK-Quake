@@ -87,6 +87,8 @@
     <Compile Include="Infrastructure\Math\Vertex.cs" />
     <Compile Include="Infrastructure\Mesh.cs" />
     <Compile Include="Infrastructure\MeshManager.cs" />
+    <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
+    <Compile Include="Infrastructure\Physics\Octree.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />

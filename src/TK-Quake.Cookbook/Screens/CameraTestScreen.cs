@@ -13,6 +13,7 @@ using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Physics;
 using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
