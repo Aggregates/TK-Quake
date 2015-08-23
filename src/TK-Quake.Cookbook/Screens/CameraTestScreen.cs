@@ -25,8 +25,8 @@ namespace TKQuake.Cookbook.Screens
                 case Key.W:
                     {
                         // Forward
-                        double x = (float)Math.Cos(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle + Math.PI / 2) * 0.1f;
+                        double x = (float)Math.Cos(_camera.Rotation.Y + Math.PI / 2);
+                        double z = (float)Math.Sin(_camera.Rotation.Y + Math.PI / 2);
                         _camera.Move(-x, 0, -z);
                         break;
                     }
@@ -34,8 +34,8 @@ namespace TKQuake.Cookbook.Screens
                 case Key.S:
                     {
                         // Back
-                        double x = (float)Math.Cos(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle + Math.PI / 2) * 0.1f;
+                        double x = (float)Math.Cos(_camera.Rotation.Y + Math.PI / 2);
+                        double z = (float)Math.Sin(_camera.Rotation.Y + Math.PI / 2);
                         _camera.Move(x, 0, z);
                         break;
                     }
@@ -43,23 +43,23 @@ namespace TKQuake.Cookbook.Screens
                 case Key.A:
                     {
                         // Strafe left
-                        double x = (float)Math.Cos(_camera.YawAngle) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle) * 0.1f;
+                        double x = (float)Math.Cos(_camera.Rotation.Y);
+                        double z = (float)Math.Sin(_camera.Rotation.Y);
                         _camera.Move(-x, 0, -z);
                         break;
                     }
                 case Key.D:
                     {
                         // Strafe right
-                        double x = (float)Math.Cos(_camera.YawAngle) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle) * 0.1f;
+                        double x = (float)Math.Cos(_camera.Rotation.Y);
+                        double z = (float)Math.Sin(_camera.Rotation.Y);
                         _camera.Move(x, 0, z);
                         break;
                     }
-                case Key.Left: { _camera.YawAngle -= 0.01f; break; }
-                case Key.Right: { _camera.YawAngle += 0.01f; break; }
-                case Key.Up: { _camera.PitchAngle = Math.Min(_camera.PitchAngle + 0.01f, Math.PI / 2); break; }
-                case Key.Down: { _camera.PitchAngle = Math.Max(_camera.PitchAngle - 0.01f, -Math.PI / 2); break; }
+                case Key.Left: { _camera.Rotate(0, -1, 0); break; }
+                case Key.Right: { _camera.Rotate(0, 1, 0); break; }
+                case Key.Up: { _camera.Rotate(1, 0, 0); break; }
+                case Key.Down: { _camera.Rotate(-1, 0, 0); break; }
 
                 default: break;
 
