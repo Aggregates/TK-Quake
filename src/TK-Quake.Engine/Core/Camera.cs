@@ -16,39 +16,12 @@ namespace TKQuake.Engine.Core
     /// </summary>
     public class Camera : PlayerEntity
     {
-        /// <summary>
-        /// Unit Vector from the Position to any point in space, one unit away,
-        /// that defines where the Camera is looking
-        /// </summary>
-        public Vector ViewDirection { get; set; }
-
-        /// <summary>
-        /// The Vector orthogonal to the view direction
-        /// </summary>
-        public Vector OrthogonalView { get { return ViewDirection.CrossProduct(Up); } }
-
-        public readonly Vector Up = Vector.UnitY;
-
-        /// <summary>
-        /// The angle (in radians) the camera is facing by rotating around the
-        /// upward Y-Axis as if the camera moves its "head" left to right
-        /// </summary>
-        public double YawAngle { get; set; }
-
-        /// <summary>
-        /// The angle (in radians) the camera is facing by rotating around the
-        /// X-Axis as if the camera tilts it's "head" up and down
-        /// </summary>
-        public double PitchAngle { get; set; }
 
         public Camera()
         {
-            MoveSpeed = 0.2;
-            RotationSpeed = 0.2;
+            MoveSpeed = 0.1;
+            RotationSpeed = 0.01;
             Position = Vector.Zero;
-            ViewDirection = new Vector(0, 0, -1);
-            YawAngle = 0;
-            PitchAngle = 0;
             this.Matrix = WorldToLocalMatrix();
         }
 
@@ -59,10 +32,17 @@ namespace TKQuake.Engine.Core
         public Matrix4 WorldToLocalMatrix()
         {
             // When the YawAngle is 0, the camera will look down the negative Z axis
+            return GLX.MarixLookAt(Position, Position + ViewDirection, Vector.UnitY);
+        }
 
-            ViewDirection = new Vector(Math.Sin(YawAngle), Math.Sin(PitchAngle), -Math.Cos(YawAngle));
-            ViewDirection.Normalise();
-            return GLX.MarixLookAt(Position, Position + ViewDirection, Up);
+        public override void Rotate(double dx, double dy, double dz)
+        {
+            // Stop the angle from exceeding 45degees
+
+            dx = (Rotation.X + dx > Math.PI / 2) ? 0 : dx;
+            dx = (Rotation.X + dx < -Math.PI / 2) ? 0 : dx;
+
+            base.Rotate(dx, dy, dz);
         }
 
         /// <summary>

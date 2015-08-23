@@ -12,15 +12,30 @@ namespace TKQuake.Engine.Infrastructure.Abstract
     /// <summary>
     /// A living entity that interacts with the game world
     /// </summary>
-    public abstract class PlayerEntity : ILivableEntity, IGameObject
+    public abstract class PlayerEntity : ILivableEntity
     {
         public double Health { get; set;}
-        public Vector Position { get; set; }
-        public double MoveSpeed { get; set; }
-        public double RotationSpeed { get; set; }
         public Matrix4 Matrix { get; protected set; }
         public bool Alive { get; protected set; }
         public Sprite2 Sprite { get; set; }
+
+        // ILivableEntity properties
+        public Vector Position { get; set; }
+        public Vector Rotation { get; set; }
+        public double MoveSpeed { get; set; }
+        public double RotationSpeed { get; set; }
+
+        public Vector ViewDirection
+        {
+            get
+            {
+                Vector v = new Vector(System.Math.Sin(Rotation.Y), System.Math.Sin(Rotation.X), -System.Math.Cos(Rotation.Y));
+                v.Normalise();
+                return v;
+            }
+        }
+        public Vector OrthogonalDirection { get { return ViewDirection.CrossProduct(Vector.UnitY); } }
+
 
         /// <summary>
         /// Increments the current position by each component in the vector
@@ -28,7 +43,17 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         /// <param name="amount">The amount in 3D space to move by</param>
         public virtual void Move(Vector amount)
         {
-            this.Position += amount;
+            this.Position += (amount * MoveSpeed);
+        }
+
+        public virtual void Rotate(Vector rotation)
+        {
+            this.Rotation += (rotation * RotationSpeed);
+        }
+
+        public virtual void Rotate(double dx, double dy, double dz)
+        {
+            this.Rotate(new Vector(dx, dy, dz));
         }
 
         /// <summary>
@@ -80,5 +105,6 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         {
             Sprite.Render();
         }
+
     }
 }
