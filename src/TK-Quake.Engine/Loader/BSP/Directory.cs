@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TKQuake.Engine.Core.BSP
+namespace TKQuake.Engine.Loader.BSP
 {
     abstract class Directory
     {

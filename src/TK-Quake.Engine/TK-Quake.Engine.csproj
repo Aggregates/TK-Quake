@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Camera.cs" />
-    <Compile Include="Core\BSPLoader.cs" />
     <Compile Include="Debug\FramesPerSecond.cs" />
     <Compile Include="Extensions\GLX.cs" />
     <Compile Include="Infrastructure\Components\IComponent.cs" />
@@ -86,13 +85,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />
-    <Compile Include="Core\BSP\Directory.cs" />
-    <Compile Include="Core\BSP\Entity.cs" />
-    <Compile Include="Core\BSP\Texture.cs" />
-    <Compile Include="Core\BSP\Plane.cs" />
-    <Compile Include="Core\Directory.cs" />
-    <Compile Include="Core\Entity.cs" />
-    <Compile Include="Core\Texture.cs" />
+    <Compile Include="Loader\BSPLoader.cs" />
+    <Compile Include="Loader\BSP\Directory.cs" />
+    <Compile Include="Loader\BSP\Entity.cs" />
+    <Compile Include="Loader\BSP\Leaf.cs" />
+    <Compile Include="Loader\BSP\LeafBrush.cs" />
+    <Compile Include="Loader\BSP\LeafFace.cs" />
+    <Compile Include="Loader\BSP\Node.cs" />
+    <Compile Include="Loader\BSP\Plane.cs" />
+    <Compile Include="Loader\BSP\Texture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -116,6 +117,6 @@
   </Target>
   -->
   <ItemGroup>
-    <Folder Include="Core\BSP\" />
+    <Folder Include="Loader\BSP\" />
   </ItemGroup>
 </Project>

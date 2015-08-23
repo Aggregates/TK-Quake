@@ -5,11 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TKQuake.Engine.Core.BSP
+namespace TKQuake.Engine.Loader.BSP
 {
     class Entity : Directory
     {
-        private string entities = "";
+        public struct EntityEntry
+        {
+            public string entities;
+        }
+
+        private EnityEntry entities;
 
         public Entity() { }
 
@@ -25,10 +30,10 @@ namespace TKQuake.Engine.Core.BSP
             file.Read (buf, 0, length);
 
             // Convert entity data to a string.
-            entities = System.Text.Encoding.UTF8.GetString(buf);
+            entities.entities = System.Text.Encoding.UTF8.GetString(buf);
         }
 
-        public string GetEntities()
+        public EntityEntry GetEntities()
         {
             return(entities);
         }

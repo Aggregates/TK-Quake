@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TKQuake.Engine.Core
+namespace TKQuake.Engine.Loader
 {
     class BSPLoader
     {
@@ -22,9 +22,9 @@ namespace TKQuake.Engine.Core
             directoryParsers[ 0] = new BSP.Entity();
             directoryParsers[ 1] = new BSP.Texture();
             directoryParsers[ 2] = new BSP.Plane();
-            //directoryParsers[ 3] = new BSP.Node();
-            //directoryParsers[ 4] = new BSP.Leaf();
-            //directoryParsers[ 5] = new BSP.Leafface();
+            directoryParsers[ 3] = new BSP.Node();
+            directoryParsers[ 4] = new BSP.Leaf();
+            directoryParsers[ 5] = new BSP.Leafface();
             //directoryParsers[ 6] = new BSP.Leafbrush();
             //directoryParsers[ 7] = new BSP.Model();
             //directoryParsers[ 8] = new BSP.Brush();
@@ -118,7 +118,7 @@ namespace TKQuake.Engine.Core
 			return (true);
         }
 
-        public string GetEntities()
+        public BSP.Entity.EntityEntry GetEntities()
         {
             return(((BSP.Entity)directoryParsers[0]).GetEntities());
         }
