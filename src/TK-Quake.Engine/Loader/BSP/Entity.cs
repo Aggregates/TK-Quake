@@ -14,7 +14,7 @@ namespace TKQuake.Engine.Loader.BSP
             public string entities;
         }
 
-        private EntityEntry entities;
+        private EnityEntry entities;
 
         public Entity() { }
 
