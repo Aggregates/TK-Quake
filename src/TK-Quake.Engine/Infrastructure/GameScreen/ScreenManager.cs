@@ -7,7 +7,7 @@ using TKQuake.Engine.Infrastructure.Abstract;
 
 namespace TKQuake.Engine.Infrastructure.GameScreen
 {
-    public class ScreenManager : ResourceManager<GameScreen>, IGameObject
+    public class ScreenManager : ResourceManager<GameScreen>
     {
         public GameScreen ActiveScreen { get; private set; }
 
@@ -62,6 +62,6 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
             if (ActiveScreen != null)
                 ActiveScreen.Render();
         }
-        
+
     }
 }
