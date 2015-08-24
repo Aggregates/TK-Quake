@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,23 +17,15 @@ namespace TKQuake.Engine.Core
     /// </summary>
     public class Camera : PlayerEntity
     {
+        public Matrix4 Matrix { get; set; }
 
         public Camera()
         {
             MoveSpeed = 0.1;
             RotationSpeed = 0.01;
             Position = Vector.Zero;
-            this.Matrix = WorldToLocalMatrix();
-        }
 
-        /// <summary>
-        /// Calculates the matrix orientation with which to render the world through the camera's eyes at the current position
-        /// </summary>
-        /// <returns>The local view matrix represenation of the camera</returns>
-        public Matrix4 WorldToLocalMatrix()
-        {
-            // When the YawAngle is 0, the camera will look down the negative Z axis
-            return GLX.MarixLookAt(Position, Position + ViewDirection, Vector.UnitY);
+            Components.Add(new CameraComponent(this));
         }
 
         public override void Rotate(double dx, double dy, double dz)
@@ -44,28 +37,46 @@ namespace TKQuake.Engine.Core
 
             base.Rotate(dx, dy, dz);
         }
+    }
 
-        /// <summary>
-        /// Updates the camera's view frustum
-        /// </summary>
-        /// <param name="elapsedTime"></param>
-        public override void Update(double elapsedTime)
+    class CameraComponent : IComponent
+    {
+        private readonly Camera _camera;
+        public CameraComponent(Camera camera)
         {
-            this.Matrix = WorldToLocalMatrix();
+            _camera = camera;
         }
 
-        /// <summary>
-        /// Renders the world through the camera's eyes. Must be done before rendering other objects to the screen
-        /// </summary>
-        public override void Render()
+        public void Startup()
         {
+            
+        }
+
+        public void Shutdown()
+        {
+            
+        }
+
+        public void Update(double elapsedTime)
+        {
+            _camera.Matrix = WorldToLocalMatrix();
+
             GL.MatrixMode(MatrixMode.Modelview);
 
             // Unable to directly pass Matrix property as ref object
             // http://stackoverflow.com/a/4519028
-            Matrix4 mat = Matrix;
+            Matrix4 mat = _camera.Matrix;
             GL.LoadMatrix(ref mat);
         }
 
+        /// <summary>
+        /// Calculates the matrix orientation with which to render the world through the camera's eyes at the current position
+        /// </summary>
+        /// <returns>The local view matrix represenation of the camera</returns>
+        public Matrix4 WorldToLocalMatrix()
+        {
+            // When the YawAngle is 0, the camera will look down the negative Z axis
+            return GLX.MarixLookAt(_camera.Position, _camera.Position + _camera.ViewDirection, Vector.UnitY);
+        }
     }
 }

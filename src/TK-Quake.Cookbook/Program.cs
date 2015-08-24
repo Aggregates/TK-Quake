@@ -16,7 +16,7 @@ namespace TKQuake.Cookbook
     public class Program
     {
         private GameWindow game;
-        private GameScreen currentScreen;
+        private CameraTestScreen currentScreen;
 
         public static void Main(string[] args)
         {
@@ -47,7 +47,7 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            currentScreen.Render(e);
+            //currentScreen.Render(e);
             game.SwapBuffers();
         }
 
@@ -56,9 +56,7 @@ namespace TKQuake.Cookbook
             if (game.Keyboard[Key.Escape])
                 game.Exit();
 
-            currentScreen.Update(0, e);
-
-
+            currentScreen.Update(e.Time);
         }
 
         private void game_Resize(object sender, EventArgs e)

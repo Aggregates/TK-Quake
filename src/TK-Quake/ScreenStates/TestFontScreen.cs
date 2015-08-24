@@ -20,7 +20,7 @@ namespace TKQuake.ScreenStates
         public static new string StateNameKey = "TestFontScreen";
 
         private Font _font;
-        private Text _text;
+        private TextEntity _text;
 
         public TestFontScreen(ScreenManager screenManager
             , TextureManager texManager
@@ -32,7 +32,7 @@ namespace TKQuake.ScreenStates
 
             this._renderer = new Renderer();
             this._spriteList = new List<Sprite2>();
-            
+
             /*
             _spriteList.Add( new MyriadPro(texManager.Get("myriadPro")) );
             _spriteList[0].SetUVs(new Point((float)(4.0/255.0), 0), new Point((float)(14.0/255.0),(float)(23.0/255.0)));
@@ -41,16 +41,17 @@ namespace TKQuake.ScreenStates
              */
 
             _font = _fontManager.Get("myriadPro");
-            _text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
+            _text = new TextEntity(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
             //_text = new Text("The quick brown fox jumped over the lazy dog", _font, 200);
             //_text.SetColor(new Color(1,1,1,1));
 
         }
-        
+
+        /*
         public override void Update(double elapsedTime)
         {
             FramesPerSecond.Process(elapsedTime);
-            _text = new Text(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
+            _text = new TextEntity(string.Format("FPS: {0}", FramesPerSecond.CurrentFPS), _font);
             //_text.SetColor(new Color(1, 1, 1, 1));
         }
 
@@ -61,5 +62,6 @@ namespace TKQuake.ScreenStates
             _renderer.DrawText(_text);
             _renderer.Render();
         }
+        */
     }
 }

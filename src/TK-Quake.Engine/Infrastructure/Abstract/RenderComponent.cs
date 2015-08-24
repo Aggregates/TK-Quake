@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Abstract
 {
     /// <summary>
-    /// Defines the core mechanics for any game object used in an OpenTK game
+    /// Renders a given entity
     /// </summary>
     public class RenderComponent : IComponent
     {
@@ -18,8 +19,9 @@ namespace TKQuake.Engine.Infrastructure.Abstract
             _entity = entity;
         }
 
-        public void Update(double elapsedTime) {
-
+        public void Update(double elapsedTime)
+        {
+            var renderer = Renderer.Singleton();
         }
 
         public void Startup() {

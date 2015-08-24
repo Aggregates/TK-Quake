@@ -27,6 +27,7 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
             _face.SetScale(0.5);
         }
 
+        /*
         public override void Update(double elapsedTime)
         {
             _face.Update(elapsedTime);
@@ -37,5 +38,6 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
             GL.ClearColor(System.Drawing.Color.Blue);
             _face.Render();
         }
+        */
     }
 }
