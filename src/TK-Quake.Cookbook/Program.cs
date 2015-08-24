@@ -16,7 +16,7 @@ namespace TKQuake.Cookbook
     public class Program
     {
         private GameWindow game;
-        private CameraTestScreen currentScreen;
+        private GameScreen currentScreen;
 
         public static void Main(string[] args)
         {

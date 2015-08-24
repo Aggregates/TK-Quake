@@ -23,12 +23,16 @@ namespace TKQuake.Cookbook.Screens
         {
             Children.Add(_camera);
             Components.Add(new MovementInputComponent(_camera));
+            Components.Add(new PlanesComponent());
         }
+    }
 
-        public new void Update(double elapsedTime)
+    class PlanesComponent : IComponent
+    {
+        public void Startup() { }
+        public void Shutdown() { }
+        public void Update(double elapsedTime)
         {
-            base.Update(elapsedTime);
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
 
@@ -54,7 +58,6 @@ namespace TKQuake.Cookbook.Screens
                     GL.PopMatrix();
                 }
             }
-
         }
     }
 
