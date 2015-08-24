@@ -10,28 +10,8 @@ namespace TKQuake.Engine.Infrastructure.Abstract
     /// <summary>
     /// A livable entity that resides in the game world such as the player or NPC
     /// </summary>
-    public interface ILivableEntity : IGameObject
+    public interface ILivableEntity : IEntity
     {
-
-        Vector Position { get; set; }
-
-        /// <summary>
-        /// The angle (in radians) the entity is facing by rotating around the
-        /// each of the axis. In OpenGL, the Y-axis is up
-        /// </summary>
-        Vector Rotation { get; set; }
-
-        /// <summary>
-        /// Unit Vector from the Position to any point in space, one unit away,
-        /// that defines where the Camera is looking
-        /// </summary>
-        Vector ViewDirection { get; }
-
-        /// <summary>
-        /// The unit Vector orthogonal to the view direction
-        /// </summary>
-        Vector OrthogonalDirection { get; }
-
         double MoveSpeed { get; set; }
         double RotationSpeed { get; set; }
 

@@ -12,7 +12,7 @@ namespace TKQuake.Engine.Infrastructure.Abstract
     /// <summary>
     /// A living entity that interacts with the game world
     /// </summary>
-    public abstract class PlayerEntity : ILivableEntity
+    public abstract class PlayerEntity : Entity, ILivableEntity
     {
         public double Health { get; set;}
         public Matrix4 Matrix { get; protected set; }
@@ -20,12 +20,11 @@ namespace TKQuake.Engine.Infrastructure.Abstract
         public Sprite2 Sprite { get; set; }
 
         // ILivableEntity properties
-        public Vector Position { get; set; }
-        public Vector Rotation { get; set; }
         public double MoveSpeed { get; set; }
         public double RotationSpeed { get; set; }
 
-        public Vector ViewDirection
+        //todo: move into entity
+        public new Vector ViewDirection
         {
             get
             {
@@ -34,7 +33,9 @@ namespace TKQuake.Engine.Infrastructure.Abstract
                 return v;
             }
         }
-        public Vector OrthogonalDirection { get { return ViewDirection.CrossProduct(Vector.UnitY); } }
+
+        //todo: move into entity
+        public new Vector OrthogonalDirection { get { return ViewDirection.CrossProduct(Vector.UnitY); } }
 
 
         /// <summary>
@@ -95,8 +96,6 @@ namespace TKQuake.Engine.Infrastructure.Abstract
             if (Health <= 0)
                 Die();
         }
-
-        public virtual void Update(double elapsedTime) { }
 
         /// <summary>
         /// Renders the underlying sprite for the Player to the OpenGL window
