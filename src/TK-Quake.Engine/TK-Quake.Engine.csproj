@@ -94,6 +94,10 @@
     <Compile Include="Loader\BSP\Node.cs" />
     <Compile Include="Loader\BSP\Plane.cs" />
     <Compile Include="Loader\BSP\Texture.cs" />
+    <Compile Include="Loader\BSP\Brush.cs" />
+    <Compile Include="Loader\BSP\BrushSide.cs" />
+    <Compile Include="Loader\BSP\Model.cs" />
+    <Compile Include="Loader\BSP\Vertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
