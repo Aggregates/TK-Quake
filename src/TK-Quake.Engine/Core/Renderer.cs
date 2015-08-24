@@ -61,5 +61,10 @@ namespace TKQuake.Engine.Core
             }
         }
 
+        private static Renderer _instance;
+        public static Renderer Singleton()
+        {
+            return _instance ?? (_instance = new Renderer());
+        }
     }
 }

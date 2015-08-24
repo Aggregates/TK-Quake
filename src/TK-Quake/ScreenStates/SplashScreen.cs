@@ -12,21 +12,22 @@ namespace TKQuake.ScreenStates
     public class SplashScreen : GameScreen
     {
         private const double DISPLAY_TIME = 3.0; // In Seconds
-        private double _timeRemaining;
+        //private double _timeRemaining;
 
         public static new string StateNameKey = "SplashScreen";
-        
+
         public SplashScreen(ScreenManager manager)
         {
             this._screenManager = manager;
-            this._timeRemaining = DISPLAY_TIME;
+            //this._timeRemaining = DISPLAY_TIME;
         }
-        
+
+        /*
         public override void Update(double elapsedTime)
         {
             // Subtract from the time remaining
             _timeRemaining -= elapsedTime;
-            
+
             if (_timeRemaining <= 0)
             {
                 _timeRemaining = DISPLAY_TIME;
@@ -40,6 +41,6 @@ namespace TKQuake.ScreenStates
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Finish();
         }
-       
+        */
     }
 }

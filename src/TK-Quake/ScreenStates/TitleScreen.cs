@@ -14,13 +14,14 @@ namespace TKQuake.ScreenStates
     {
         public static new string StateNameKey = "TitleScreen";
 
-        private double _rotation = 0;
+        //private double _rotation = 0;
 
         public TitleScreen(ScreenManager manager)
         {
             base._screenManager = manager;
         }
 
+        /*
         public override void Update(double elapsedTime)
         {
             _rotation = 10 * elapsedTime;
@@ -42,7 +43,6 @@ namespace TKQuake.ScreenStates
             GL.Vertex3(50, 150, 0);
             GL.Vertex3(150, 150, 0);
             GL.End();
-             */
 
             GL.ClearColor(System.Drawing.Color.Black);
 
@@ -62,6 +62,6 @@ namespace TKQuake.ScreenStates
 
             // GL.Finish();
         }
-
+        */
     }
 }

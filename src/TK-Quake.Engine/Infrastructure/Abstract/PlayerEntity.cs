@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Infrastructure.Abstract
     public abstract class PlayerEntity : Entity, ILivableEntity
     {
         public double Health { get; set;}
-        public Matrix4 Matrix { get; protected set; }
+        //public Matrix4 Matrix { get; protected set; }
         public bool Alive { get; protected set; }
         public Sprite2 Sprite { get; set; }
 

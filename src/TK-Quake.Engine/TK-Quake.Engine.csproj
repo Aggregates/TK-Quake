@@ -58,6 +58,7 @@
     <Compile Include="Infrastructure\Abstract\RenderComponent.cs" />
     <Compile Include="Infrastructure\Abstract\PlayerEntity.cs" />
     <Compile Include="Infrastructure\Abstract\ResourceManager.cs" />
+    <Compile Include="Infrastructure\Abstract\TextComponent.cs" />
     <Compile Include="Infrastructure\Font\CharacterData.cs" />
     <Compile Include="Infrastructure\Font\CharacterSprite.cs" />
     <Compile Include="Infrastructure\Font\Font.cs" />

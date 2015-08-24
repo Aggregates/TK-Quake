@@ -53,15 +53,7 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
 
         public void Update(double elapsedTime)
         {
-            if (ActiveScreen != null)
-                ActiveScreen.Update(elapsedTime);
+            ActiveScreen?.Update(elapsedTime);
         }
-
-        public void Render()
-        {
-            if (ActiveScreen != null)
-                ActiveScreen.Render();
-        }
-
     }
 }

@@ -137,7 +137,7 @@ namespace TKQuake
             // Clear the buffers before rendering frame
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            _stateManager.Render();
+            //_stateManager.Render();
 
             _game.SwapBuffers();
         }

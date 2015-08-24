@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Extensions;
+using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
@@ -16,9 +17,14 @@ namespace TKQuake.Cookbook.Screens
 {
     public class CameraTestScreen : GameScreen
     {
-        private Camera _camera = new Camera();
+        private readonly Camera _camera = new Camera();
 
-        public void HandleInput(Key k)
+        public CameraTestScreen()
+        {
+            Children.Add(_camera);
+        }
+
+        private void HandleInput(Key k)
         {
             switch(k)
             {
@@ -60,14 +66,13 @@ namespace TKQuake.Cookbook.Screens
                 case Key.Right: { _camera.Rotate(0, 1, 0); break; }
                 case Key.Up: { _camera.Rotate(1, 0, 0); break; }
                 case Key.Down: { _camera.Rotate(-1, 0, 0); break; }
-
-                default: break;
-
             }
         }
 
-        public override void Update(double elapsedTime, FrameEventArgs e)
+        public new void Update(double elapsedTime)
         {
+            base.Update(elapsedTime);
+
             var state = Keyboard.GetState();
             if (state[Key.W]) HandleInput(Key.W);
             if (state[Key.A]) HandleInput(Key.A);
@@ -78,20 +83,9 @@ namespace TKQuake.Cookbook.Screens
             if (state[Key.Up]) HandleInput(Key.Up);
             if (state[Key.Down]) HandleInput(Key.Down);
 
-            base.Update(elapsedTime, e);
-        }
-
-        public override void Update(double elapsedTime)
-        {
-            _camera.Update(elapsedTime);
-        }
-
-        public override void Render()
-        {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             GL.Enable(EnableCap.DepthTest);
-            _camera.Render();
 
             // Display some planes
             for (int x = -10; x <= 10; x++)
