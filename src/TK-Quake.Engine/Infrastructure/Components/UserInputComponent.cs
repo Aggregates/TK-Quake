@@ -35,6 +35,7 @@ namespace TKQuake.Engine.Infrastructure.Components
 
         public void HandleInput(Key k, double elapsedTime)
         {
+            ICommand command = null;
             switch(k)
             {
                 case Key.W:
@@ -44,8 +45,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                         double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
                         var to = new Math.Vector(-x, 0, -z);
-                        var command = new MoveCommand(to, _entity.MoveSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(MoveCommand),
+                            to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
 
@@ -56,8 +57,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                         double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
                         var to = new Math.Vector(x, 0, z);
-                        var command = new MoveCommand(to, _entity.MoveSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(MoveCommand),
+                            to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
 
@@ -68,8 +69,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                         double z = (float)Sin(_entity.Rotation.Y);
 
                         var to = new Math.Vector(-x, 0, -z);
-                        var command = new MoveCommand(to, _entity.MoveSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(MoveCommand),
+                            to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
                 case Key.D:
@@ -79,43 +80,45 @@ namespace TKQuake.Engine.Infrastructure.Components
                         double z = (float)Sin(_entity.Rotation.Y);
 
                         var to = new Math.Vector(x, 0, z);
-                        var command = new MoveCommand(to, _entity.MoveSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(MoveCommand),
+                            to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
                 case Key.Left:
                     {
                         var rotation = new Math.Vector(0, -1, 0);
-                        var command = new RotateCommand(rotation, _entity.RotationSpeed * elapsedTime);
-                        command.Execute(_entity);
-
+                        command = CommandFactory.Create(typeof(RotateCommand),
+                            rotation, _entity.RotationSpeed * elapsedTime);
                         break;
                     }
                 case Key.Right:
                     {
                         var rotation = new Math.Vector(0, 1, 0);
-                        var command = new RotateCommand(rotation, _entity.RotationSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(RotateCommand),
+                            rotation, _entity.RotationSpeed * elapsedTime);
 
                         break;
                     }
                 case Key.Up:
                     {
                         var rotation = new Math.Vector(1, 0, 0);
-                        var command = new RotateCommand(rotation, _entity.RotationSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(RotateCommand),
+                            rotation, _entity.RotationSpeed * elapsedTime);
 
                         break;
                     }
                 case Key.Down:
                     {
                         var rotation = new Math.Vector(-1, 0, 0);
-                        var command = new RotateCommand(rotation, _entity.RotationSpeed * elapsedTime);
-                        command.Execute(_entity);
+                        command = CommandFactory.Create(typeof(RotateCommand),
+                            rotation, _entity.RotationSpeed * elapsedTime);
 
                         break;
                     }
             }
+
+            if (command != null)
+                CommandCentre.PushCommand(command, _entity);
         }
     }
 }

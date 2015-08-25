@@ -10,6 +10,7 @@ using TKQuake.Cookbook.Screens;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Input;
 
 namespace TKQuake.Cookbook
 {
@@ -51,6 +52,8 @@ namespace TKQuake.Cookbook
                 game.Exit();
 
             currentScreen.Update(e.Time);
+
+            CommandCentre.ExecuteAllCommands();
         }
 
         private void game_Resize(object sender, EventArgs e)
