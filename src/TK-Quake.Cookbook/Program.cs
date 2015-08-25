@@ -36,7 +36,7 @@ namespace TKQuake.Cookbook
                 game.UpdateFrame += game_UpdateFrame;
                 game.RenderFrame += game_RenderFrame;
 
-                game.Run(60.0);
+                game.Run(60.0, 60.0);
             }
         }
 
