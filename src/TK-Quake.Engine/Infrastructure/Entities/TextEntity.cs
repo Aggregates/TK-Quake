@@ -7,12 +7,14 @@ using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.Components;
 
-namespace TKQuake.Engine.Infrastructure.Font
+namespace TKQuake.Engine.Infrastructure.Entities
 {
-    public class Text : IGameObject
+    public class TextEntity : Entity
     {
-        private Font _font;
+        private Font.Font _font;
         private string _text;
         private Color _color;
         private double _maxWidth = -1;
@@ -23,7 +25,7 @@ namespace TKQuake.Engine.Infrastructure.Font
 
         public List<CharacterSprite> CharacterSprites { get; private set; }
 
-        public Text(string text, Font font, double maxWidth = -1)
+        public TextEntity(string text, Font.Font font, double maxWidth = -1)
         {
             CharacterSprites = new List<CharacterSprite>();
             _text = text;
@@ -31,6 +33,8 @@ namespace TKQuake.Engine.Infrastructure.Font
             _maxWidth = maxWidth;
             _color = Color.Black;
             CreateText(0, 0, _maxWidth);
+
+            Components.Add(new TextComponent(this));
         }
 
         private void CreateText(double x, double y, double maxWidth)
@@ -97,13 +101,9 @@ namespace TKQuake.Engine.Infrastructure.Font
                 s.Sprite.SetColor(color);
             }
         }
-        
-        public void Update(double elapsedTime)  { }
 
         public void Render()
         {
-            Renderer renderer = new Renderer();
-            renderer.DrawText(this);
         }
     }
 }

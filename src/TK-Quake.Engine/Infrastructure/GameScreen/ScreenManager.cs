@@ -7,7 +7,7 @@ using TKQuake.Engine.Infrastructure.Abstract;
 
 namespace TKQuake.Engine.Infrastructure.GameScreen
 {
-    public class ScreenManager : ResourceManager<GameScreen>, IGameObject
+    public class ScreenManager : ResourceManager<GameScreen>
     {
         public GameScreen ActiveScreen { get; private set; }
 
@@ -53,15 +53,7 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
 
         public void Update(double elapsedTime)
         {
-            if (ActiveScreen != null)
-                ActiveScreen.Update(elapsedTime);
+            ActiveScreen?.Update(elapsedTime);
         }
-
-        public void Render()
-        {
-            if (ActiveScreen != null)
-                ActiveScreen.Render();
-        }
-        
     }
 }

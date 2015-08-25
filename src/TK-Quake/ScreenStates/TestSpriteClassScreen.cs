@@ -31,11 +31,7 @@ namespace TKQuake.ScreenStates
             _spriteList[1].SetPosition(256, 256);
         }
 
-        public override void Update(double elapsedTime)
-        {
-            //throw new NotImplementedException();
-        }
-
+        /*
         public override void Render()
         {
             GL.ClearColor(System.Drawing.Color.Black);
@@ -44,5 +40,6 @@ namespace TKQuake.ScreenStates
             _renderer.Render();
             GL.Finish();
         }
+        */
     }
 }

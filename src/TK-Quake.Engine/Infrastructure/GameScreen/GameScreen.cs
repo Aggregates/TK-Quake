@@ -8,10 +8,11 @@ using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.GameScreen
 {
-    public abstract class GameScreen : IGameObject
+    public abstract class GameScreen : Entity
     {
         protected ScreenManager _screenManager;
         protected TextureManager _textureManager;
@@ -20,11 +21,5 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
         protected FontManager _fontManager;
 
         public static string StateNameKey;
-
-        public abstract void Update(double elapsedTime);
-        public abstract void Render();
-
-        public virtual void Update(double elapsedTime, FrameEventArgs e) { Update(elapsedTime); }
-        public virtual void Render(FrameEventArgs e) { Render(); }
     }
 }

@@ -15,7 +15,8 @@ namespace TKQuake.Sprites
         {
 
         }
-        
+
+        /*
         public override void Update(double elapsedTime)
         {
             //X++;
@@ -23,12 +24,13 @@ namespace TKQuake.Sprites
             //ScaleY *= 0.999;
             this.ScaleUniform(1.005);
         }
+        */
 
         public override void Render()
         {
             double halfHeight = Height / 2;
             double halfWidth = Width / 2;
-            
+
             // Enable rendering of texture
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, this.Texture.Id);
@@ -39,7 +41,7 @@ namespace TKQuake.Sprites
 
             GL.Begin(PrimitiveType.Triangles);
             {
-                
+
                 // Top Triangle
 
                 GL.TexCoord2(TopLeft.X, TopLeft.Y);

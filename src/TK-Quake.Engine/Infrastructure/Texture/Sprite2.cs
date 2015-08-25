@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Texture
 {
     /// <summary>
     /// A 2D Sprite
     /// </summary>
-    public class Sprite2 : IGameObject
+    public class Sprite2 : Entity
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -38,7 +39,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
         private Texture _texture;
         public Texture Texture {
-            get 
+            get
             {
                 return _texture;
             }
@@ -46,7 +47,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
             {
                 _texture = value;
                 SetPosition(
-                    new Vector(X + value.Center.X, Y + value.Center.Y, Z), 
+                    new Vector(X + value.Center.X, Y + value.Center.Y, Z),
                     value.Width,
                     value.Height);
             }
@@ -56,7 +57,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
         public Vector Center
         {
-            get 
+            get
             {
                 double halfWidth = RenderWidth / 2;
                 double halfHeight = RenderHeight / 2;
@@ -65,7 +66,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
                     Vertices[0].Position.Z);
             }
         }
-        
+
         /// <summary>
         /// Texture Height * Scale
         /// </summary>
@@ -92,7 +93,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
         /// </summary>
         public double Width
         {
-            get { return (int)(Texture.Width * ScaleX); } 
+            get { return (int)(Texture.Width * ScaleX); }
         }
 
         public double RenderWidth
@@ -134,7 +135,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
         {
             SetPosition(position, this.Width, this.Height);
         }
-        
+
         private void SetPosition(Vector position, double width, double height)
         {
             double halfWidth = width / 2;
@@ -146,7 +147,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
             Vertices[0].Position = new Vector(position.X - halfWidth, position.Y + halfHeight, position.Z);
             Vertices[1].Position = new Vector(position.X + halfWidth, position.Y + halfHeight, position.Z);
             Vertices[2].Position = new Vector(position.X - halfWidth, position.Y - halfHeight, position.Z);
-            
+
             // TopRight, BottomRight, BottomLeft
             Vertices[3].Position = new Vector(position.X + halfWidth, position.Y + halfHeight, position.Z);
             Vertices[4].Position = new Vector(position.X + halfWidth, position.Y - halfHeight, position.Z);
@@ -194,7 +195,6 @@ namespace TKQuake.Engine.Infrastructure.Texture
             this.ScaleY *= scale;
         }
 
-        public virtual void Update(double elapsedTime) { }
         public virtual void Render()
         {
             Renderer renderer = new Renderer();

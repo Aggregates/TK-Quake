@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Abstract;
+using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Core
 {
@@ -50,7 +52,7 @@ namespace TKQuake.Engine.Core
             _batch.Draw();
         }
 
-        public void DrawText(Text text)
+        public void DrawText(TextEntity text)
         {
             foreach (CharacterSprite s in text.CharacterSprites)
             {
@@ -60,5 +62,10 @@ namespace TKQuake.Engine.Core
             }
         }
 
+        private static Renderer _instance;
+        public static Renderer Singleton()
+        {
+            return _instance ?? (_instance = new Renderer());
+        }
     }
 }

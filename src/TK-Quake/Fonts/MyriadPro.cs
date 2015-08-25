@@ -14,15 +14,5 @@ namespace TKQuake.Fonts
         {
 
         }
-
-        public override void Update(double elapsedTime)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public override void Render()
-        {
-            //throw new NotImplementedException();
-        }
     }
 }

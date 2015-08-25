@@ -8,90 +8,35 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Extensions;
+using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Components;
+using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Cookbook.Screens
 {
     public class CameraTestScreen : GameScreen
     {
-        private Camera _camera = new Camera();
+        private readonly Camera _camera = new Camera();
 
-        public void HandleInput(Key k)
+        public CameraTestScreen()
         {
-            switch(k)
-            {
-                case Key.W:
-                    {
-                        // Forward
-                        double x = (float)Math.Cos(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        _camera.Move(-x, 0, -z);
-                        break;
-                    }
-
-                case Key.S:
-                    {
-                        // Back
-                        double x = (float)Math.Cos(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle + Math.PI / 2) * 0.1f;
-                        _camera.Move(x, 0, z);
-                        break;
-                    }
-
-                case Key.A:
-                    {
-                        // Strafe left
-                        double x = (float)Math.Cos(_camera.YawAngle) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle) * 0.1f;
-                        _camera.Move(-x, 0, -z);
-                        break;
-                    }
-                case Key.D:
-                    {
-                        // Strafe right
-                        double x = (float)Math.Cos(_camera.YawAngle) * 0.1f;
-                        double z = (float)Math.Sin(_camera.YawAngle) * 0.1f;
-                        _camera.Move(x, 0, z);
-                        break;
-                    }
-                case Key.Left: { _camera.YawAngle -= 0.01f; break; }
-                case Key.Right: { _camera.YawAngle += 0.01f; break; }
-                case Key.Up: { _camera.PitchAngle = Math.Min(_camera.PitchAngle + 0.01f, Math.PI / 2); break; }
-                case Key.Down: { _camera.PitchAngle = Math.Max(_camera.PitchAngle - 0.01f, -Math.PI / 2); break; }
-
-                default: break;
-
-            }
+            Children.Add(_camera);
+            Components.Add(new UserInputComponent(_camera));
+            Components.Add(new PlanesComponent());
         }
+    }
 
-        public override void Update(double elapsedTime, FrameEventArgs e)
-        {
-            var state = Keyboard.GetState();
-            if (state[Key.W]) HandleInput(Key.W);
-            if (state[Key.A]) HandleInput(Key.A);
-            if (state[Key.S]) HandleInput(Key.S);
-            if (state[Key.D]) HandleInput(Key.D);
-            if (state[Key.Left]) HandleInput(Key.Left);
-            if (state[Key.Right]) HandleInput(Key.Right);
-            if (state[Key.Up]) HandleInput(Key.Up);
-            if (state[Key.Down]) HandleInput(Key.Down);
-
-            base.Update(elapsedTime, e);
-        }
-
-        public override void Update(double elapsedTime)
-        {
-            _camera.Update(elapsedTime);
-        }
-
-        public override void Render()
+    class PlanesComponent : IComponent
+    {
+        public void Startup() { }
+        public void Shutdown() { }
+        public void Update(double elapsedTime)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
             GL.Enable(EnableCap.DepthTest);
-            _camera.Render();
 
             // Display some planes
             for (int x = -10; x <= 10; x++)
@@ -115,7 +60,8 @@ namespace TKQuake.Cookbook.Screens
                     GL.PopMatrix();
                 }
             }
-
         }
     }
+
+
 }
