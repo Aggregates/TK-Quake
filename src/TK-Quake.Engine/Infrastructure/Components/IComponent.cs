@@ -1,6 +1,6 @@
 using System;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Components
 {
     public interface IComponent
     {

@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Components;
 using System.Threading.Tasks;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Entities
 {
     public abstract class Entity
     {

@@ -12,6 +12,8 @@ using TKQuake.Engine.Debug;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Entities;
+using TKQuake.Engine.Infrastructure.Components;
 
 namespace TKQuake.ScreenStates
 {

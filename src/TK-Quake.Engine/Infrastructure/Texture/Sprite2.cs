@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Texture
 {
