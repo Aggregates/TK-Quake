@@ -17,8 +17,6 @@ namespace TKQuake.Engine.Core
     /// </summary>
     public class Camera : PlayerEntity
     {
-        public Matrix4 Matrix { get; set; }
-
         public Camera()
         {
             MoveSpeed = 0.1;
@@ -41,42 +39,22 @@ namespace TKQuake.Engine.Core
 
     class CameraComponent : IComponent
     {
-        private readonly Camera _camera;
-        public CameraComponent(Camera camera)
+        private readonly IEntity _entity;
+        public CameraComponent(IEntity entity)
         {
-            _camera = camera;
+            _entity = entity;
         }
 
-        public void Startup()
-        {
-            
-        }
-
-        public void Shutdown()
-        {
-            
-        }
+        public void Startup() { }
+        public void Shutdown() { }
 
         public void Update(double elapsedTime)
         {
-            _camera.Matrix = WorldToLocalMatrix();
-
+            var mat = GLX.MarixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector.UnitY);
             GL.MatrixMode(MatrixMode.Modelview);
 
-            // Unable to directly pass Matrix property as ref object
             // http://stackoverflow.com/a/4519028
-            Matrix4 mat = _camera.Matrix;
             GL.LoadMatrix(ref mat);
-        }
-
-        /// <summary>
-        /// Calculates the matrix orientation with which to render the world through the camera's eyes at the current position
-        /// </summary>
-        /// <returns>The local view matrix represenation of the camera</returns>
-        public Matrix4 WorldToLocalMatrix()
-        {
-            // When the YawAngle is 0, the camera will look down the negative Z axis
-            return GLX.MarixLookAt(_camera.Position, _camera.Position + _camera.ViewDirection, Vector.UnitY);
         }
     }
 }
