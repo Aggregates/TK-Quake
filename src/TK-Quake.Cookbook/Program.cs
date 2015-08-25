@@ -34,15 +34,9 @@ namespace TKQuake.Cookbook
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
                 game.RenderFrame += game_RenderFrame;
-                game.KeyPress += game_KeyPress;
 
                 game.Run(60.0);
             }
-        }
-
-        private void game_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            Console.WriteLine(e.KeyChar);
         }
 
         private void game_RenderFrame(object sender, FrameEventArgs e)

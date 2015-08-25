@@ -75,6 +75,8 @@
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />
     <Compile Include="Infrastructure\Texture\Vertex.cs" />
     <Compile Include="Infrastructure\Input\ICommand.cs" />
+    <Compile Include="Infrastructure\Input\MoveCommand.cs" />
+    <Compile Include="Infrastructure\Input\RotateCommand.cs" />
     <Compile Include="InterOp\CMessage.cs" />
     <Compile Include="InterOp\PreciseTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

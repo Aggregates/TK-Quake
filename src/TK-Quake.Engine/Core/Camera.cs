@@ -21,8 +21,8 @@ namespace TKQuake.Engine.Core
     {
         public Camera()
         {
-            MoveSpeed = 0.1;
-            RotationSpeed = 0.01;
+            MoveSpeed = 10;
+            RotationSpeed = 1;
             Position = Vector.Zero;
 
             Components.Add(new CameraComponent(this));
