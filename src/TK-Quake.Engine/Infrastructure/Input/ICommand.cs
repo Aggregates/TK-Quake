@@ -1,3 +1,5 @@
+using TKQuake.Engine.Infrastructure.Entities;
+
 namespace TKQuake.Engine.Infrastructure.Input
 {
     ///<summary>
@@ -8,6 +10,6 @@ namespace TKQuake.Engine.Infrastructure.Input
         ///<summary>
         ///Executes the implemented command.
         ///</summary>
-        void Execute();
+        void Execute(IEntity entity);
     }
 }
