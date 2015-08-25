@@ -19,6 +19,10 @@ namespace TKQuake.Engine.Infrastructure.Components
         public void Shutdown() { }
         public void Update(double elapsedTime) {
             var state = Keyboard.GetState();
+
+            //hacky "run" modifier
+            elapsedTime = state[Key.LShift] ? elapsedTime * 2 : elapsedTime;
+
             if (state[Key.W]) HandleInput(Key.W, elapsedTime);
             if (state[Key.A]) HandleInput(Key.A, elapsedTime);
             if (state[Key.S]) HandleInput(Key.S, elapsedTime);
