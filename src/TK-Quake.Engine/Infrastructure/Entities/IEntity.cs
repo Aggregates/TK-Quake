@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Components;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Entities
 {
     public interface IEntity
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Entities
 {
     /// <summary>
     /// A living entity that interacts with the game world

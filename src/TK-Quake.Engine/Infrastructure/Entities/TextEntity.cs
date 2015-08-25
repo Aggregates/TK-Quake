@@ -7,12 +7,14 @@ using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.Components;
 
-namespace TKQuake.Engine.Infrastructure.Font
+namespace TKQuake.Engine.Infrastructure.Entities
 {
     public class TextEntity : Entity
     {
-        private Font _font;
+        private Font.Font _font;
         private string _text;
         private Color _color;
         private double _maxWidth = -1;
@@ -23,7 +25,7 @@ namespace TKQuake.Engine.Infrastructure.Font
 
         public List<CharacterSprite> CharacterSprites { get; private set; }
 
-        public TextEntity(string text, Font font, double maxWidth = -1)
+        public TextEntity(string text, Font.Font font, double maxWidth = -1)
         {
             CharacterSprites = new List<CharacterSprite>();
             _text = text;

@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Font;
+using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Core;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Components
 {
     /// <summary>
     /// Defines the core mechanics for any game object used in an OpenTK game

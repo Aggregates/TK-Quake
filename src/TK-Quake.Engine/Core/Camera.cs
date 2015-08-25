@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Entities;
+using TKQuake.Engine.Infrastructure.Components;
 
 namespace TKQuake.Engine.Core
 {

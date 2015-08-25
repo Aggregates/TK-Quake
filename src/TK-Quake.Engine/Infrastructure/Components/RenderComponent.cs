@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Entities;
 
-namespace TKQuake.Engine.Infrastructure.Abstract
+namespace TKQuake.Engine.Infrastructure.Components
 {
     /// <summary>
     /// Renders a given entity
