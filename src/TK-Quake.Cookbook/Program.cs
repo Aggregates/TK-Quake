@@ -10,6 +10,7 @@ using TKQuake.Cookbook.Screens;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Input;
 
 namespace TKQuake.Cookbook
 {
@@ -34,15 +35,9 @@ namespace TKQuake.Cookbook
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
                 game.RenderFrame += game_RenderFrame;
-                game.KeyPress += game_KeyPress;
 
                 game.Run(60.0);
             }
-        }
-
-        private void game_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            Console.WriteLine(e.KeyChar);
         }
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
@@ -57,6 +52,8 @@ namespace TKQuake.Cookbook
                 game.Exit();
 
             currentScreen.Update(e.Time);
+
+            CommandCentre.ExecuteAllCommands();
         }
 
         private void game_Resize(object sender, EventArgs e)

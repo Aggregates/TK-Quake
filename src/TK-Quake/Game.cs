@@ -15,6 +15,7 @@ using System.Reflection;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
+using TKQuake.Engine.Infrastructure.Input;
 using TKQuake.ScreenStates;
 
 namespace TKQuake
@@ -112,6 +113,8 @@ namespace TKQuake
             _game.Load += Load;
             _game.Resize += Resize;
             _game.RenderFrame += Render;
+
+            //start game loop
             _game.Run();
         }
 
