@@ -2,6 +2,7 @@ using System;
 using OpenTK.Input;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Entities;
+using static System.Math;
 
 namespace TKQuake.Engine.Infrastructure.Components
 {
@@ -34,8 +35,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.W:
                     {
                         // Forward
-                        double x = (float)System.Math.Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        double z = (float)System.Math.Sin(_entity.Rotation.Y + System.Math.PI / 2);
+                        double x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
+                        double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
                         _entity.Move(-x, 0, -z);
                         break;
                     }
@@ -43,8 +44,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.S:
                     {
                         // Back
-                        double x = (float)System.Math.Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        double z = (float)System.Math.Sin(_entity.Rotation.Y + System.Math.PI / 2);
+                        double x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
+                        double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
                         _entity.Move(x, 0, z);
                         break;
                     }
@@ -52,16 +53,16 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.A:
                     {
                         // Strafe left
-                        double x = (float)System.Math.Cos(_entity.Rotation.Y);
-                        double z = (float)System.Math.Sin(_entity.Rotation.Y);
+                        double x = (float)Cos(_entity.Rotation.Y);
+                        double z = (float)Sin(_entity.Rotation.Y);
                         _entity.Move(-x, 0, -z);
                         break;
                     }
                 case Key.D:
                     {
                         // Strafe right
-                        double x = (float)System.Math.Cos(_entity.Rotation.Y);
-                        double z = (float)System.Math.Sin(_entity.Rotation.Y);
+                        double x = (float)Cos(_entity.Rotation.Y);
+                        double z = (float)Sin(_entity.Rotation.Y);
                         _entity.Move(x, 0, z);
                         break;
                     }
