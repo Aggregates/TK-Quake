@@ -20,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,6 +42,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core, Version=2.6.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Package>nunit</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +100,12 @@
     <Compile Include="Loader\BSP\BrushSide.cs" />
     <Compile Include="Loader\BSP\Model.cs" />
     <Compile Include="Loader\BSP\Vertex.cs" />
+    <Compile Include="Loader\BSP\Effect.cs" />
+    <Compile Include="Loader\BSP\Face.cs" />
+    <Compile Include="Loader\BSP\LightMap.cs" />
+    <Compile Include="Loader\BSP\LightVol.cs" />
+    <Compile Include="Loader\BSP\MeshVert.cs" />
+    <Compile Include="Loader\BSP\VisData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

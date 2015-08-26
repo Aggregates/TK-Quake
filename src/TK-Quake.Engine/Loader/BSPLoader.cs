@@ -30,12 +30,12 @@ namespace TKQuake.Engine.Loader
             directoryParsers[ 8] = new BSP.Brush();
             directoryParsers[ 9] = new BSP.BrushSide();
             directoryParsers[10] = new BSP.Vertex();
-            //directoryParsers[11] = new BSP.Meshvert();
-            //directoryParsers[12] = new BSP.Effect();
-            //directoryParsers[13] = new BSP.Face();
-            //directoryParsers[14] = new BSP.Lightmap();
-            //directoryParsers[15] = new BSP.Lightvol();
-            //directoryParsers[16] = new BSP.Visdata();
+            directoryParsers[11] = new BSP.MeshVert();
+            directoryParsers[12] = new BSP.Effect();
+            directoryParsers[13] = new BSP.Face();
+            directoryParsers[14] = new BSP.LightMap();
+            directoryParsers[15] = new BSP.LightVol();
+            directoryParsers[16] = new BSP.VisData();
         }
 
         public BSPLoader(string file)
