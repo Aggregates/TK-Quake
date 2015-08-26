@@ -18,3 +18,4 @@ strict:
 
 clean:
 	$(RM) $(RM_OPTS) bin
+	$(RM) $(RM_OPTS) obj
