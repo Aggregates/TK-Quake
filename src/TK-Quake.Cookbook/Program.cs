@@ -27,6 +27,11 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
+            TKQuake.Engine.Loader.BSPLoader bsp = new TKQuake.Engine.Loader.BSPLoader ();
+            bsp.SetBSPFile ("/home/bidski/Projects/COMP3320/q3dm6.bsp");
+            bsp.LoadFile ();
+            bsp.DumpBSP ();
+
             currentScreen = new CameraTestScreen();
 
             using (game = new GameWindow())
