@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Plane : Directory
+    public class Plane : Directory
     {
         public struct PlaneEntry
         {
@@ -23,8 +23,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            planes = new PlaneEntry[length / PLANE_SIZE];
+            size = length / PLANE_SIZE;
+
+            // Create planes array.
+            planes = new PlaneEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -32,7 +34,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[PLANE_SIZE];
 
-            for (int i = 0; i < (length / PLANE_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, PLANE_SIZE);
 

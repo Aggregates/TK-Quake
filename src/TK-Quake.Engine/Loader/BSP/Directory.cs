@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    abstract class Directory
+    public abstract class Directory
     {
         abstract public void ParseDirectoryEntry(FileStream file, int offset, int length);
+
+        protected int size;
+
+        public int GetSize()
+        {
+            return(size);
+        }
     }
 }
 

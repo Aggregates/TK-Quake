@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Brush : Directory
+    public class Brush : Directory
     {
         public struct BrushEntry
         {
@@ -24,8 +24,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            brushes = new BrushEntry[length / BRUSH_SIZE];
+            size = length / BRUSH_SIZE;
+
+            // Create brushes array.
+            brushes = new BrushEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -33,7 +35,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[BRUSH_SIZE];
 
-            for (int i = 0; i < (length / BRUSH_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, BRUSH_SIZE);
 

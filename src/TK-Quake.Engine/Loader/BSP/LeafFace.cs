@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class LeafFace : Directory
+    public class LeafFace : Directory
     {
         public struct LeafFaceEntry
         {
@@ -22,8 +22,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            leafFaces = new LeafFaceEntry[length / LEAF_FACE_SIZE];
+            size = length / LEAF_FACE_SIZE;
+
+            // Create leaffaces array.
+            leafFaces = new LeafFaceEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -31,7 +33,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[LEAF_FACE_SIZE];
 
-            for (int i = 0; i < (length / LEAF_FACE_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, LEAF_FACE_SIZE);
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class LightVol : Directory
+    public class LightVol : Directory
     {
         public struct LightVolEntry
         {
@@ -24,8 +24,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            lightVols = new LightVolEntry[length / LIGHT_VOL_SIZE];
+            size = length / LIGHT_VOL_SIZE;
+
+            // Create lightvols array.
+            lightVols = new LightVolEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -33,7 +35,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[LIGHT_VOL_SIZE];
 
-            for (int i = 0; i < (length / LIGHT_VOL_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, LIGHT_VOL_SIZE);
 

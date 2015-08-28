@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class LightMap : Directory
+    public class LightMap : Directory
     {
         public struct LightMapEntry
         {
@@ -24,8 +24,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            lightMaps = new LightMapEntry[length / LIGHT_MAP_SIZE];
+            size = length / LIGHT_MAP_SIZE;
+
+            // Create lightmaps array.
+            lightMaps = new LightMapEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -33,7 +35,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[LIGHT_MAP_SIZE];
 
-            for (int i = 0; i < (length / LIGHT_MAP_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, LIGHT_MAP_SIZE);
 

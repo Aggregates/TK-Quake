@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class MeshVert : Directory
+    public class MeshVert : Directory
     {
         public struct MeshVertEntry
         {
@@ -22,8 +22,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            meshVerts = new MeshVertEntry[length / MESH_VERT_SIZE];
+            size = length / MESH_VERT_SIZE;
+
+            // Create meshverts array.
+            meshVerts = new MeshVertEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -31,7 +33,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[MESH_VERT_SIZE];
 
-            for (int i = 0; i < (length / MESH_VERT_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, MESH_VERT_SIZE);
 

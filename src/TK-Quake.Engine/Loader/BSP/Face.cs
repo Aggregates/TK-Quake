@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Face : Directory
+    public class Face : Directory
     {
         public struct FaceEntry
         {
@@ -35,8 +35,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            faces = new FaceEntry[length / FACE_SIZE];
+            size = length / FACE_SIZE;
+
+            // Create faces array.
+            faces = new FaceEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -44,7 +46,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[FACE_SIZE];
 
-            for (int i = 0; i < (length / FACE_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, FACE_SIZE);
 

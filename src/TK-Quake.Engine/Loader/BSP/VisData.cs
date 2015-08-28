@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class VisData : Directory
+    public class VisData : Directory
     {
         public struct VisDataEntry
         {
@@ -24,8 +24,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            visDatas = new VisDataEntry[length / VIS_DATA_SIZE];
+            size = length / VIS_DATA_SIZE;
+
+            // Create visdata array.
+            visDatas = new VisDataEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -33,7 +35,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[VIS_DATA_SIZE];
 
-            for (int i = 0; i < (length / VIS_DATA_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, VIS_DATA_SIZE);
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Entity : Directory
+    public class Entity : Directory
     {
         public struct EntityEntry
         {
@@ -20,6 +20,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
+            size = length;
+
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
 
@@ -31,6 +33,10 @@ namespace TKQuake.Engine.Loader.BSP
 
             // Convert entity data to a string.
             entities.entities = System.Text.Encoding.UTF8.GetString(buf);
+
+            // Remove non-printable characters from the entities.
+            System.Text.RegularExpressions.Regex rgx = new System.Text.RegularExpressions.Regex("[^\\n -~]");
+            entities.entities = rgx.Replace(entities.entities, "");
         }
 
         public EntityEntry GetEntities()

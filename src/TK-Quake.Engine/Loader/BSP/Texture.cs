@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Texture : Directory
+    public class Texture : Directory
     {
         public struct TextureEntry
         {
@@ -25,8 +25,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
+            size = length / TEXTURE_SIZE;
+
             // Create textures array.
-            textures = new TextureEntry[length / TEXTURE_SIZE];
+            textures = new TextureEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -34,13 +36,17 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[TEXTURE_SIZE];
 
-            for (int i = 0; i < (length / TEXTURE_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, TEXTURE_SIZE);
 
                 textures[i].name     = System.Text.Encoding.UTF8.GetString(buf, 0, NAME_LENGTH);
                 textures[i].flags    = BitConverter.ToInt32(buf, NAME_LENGTH);
                 textures[i].contents = BitConverter.ToInt32(buf, NAME_LENGTH + 4);
+
+                // Remove non-printable characters from the textures name.
+                System.Text.RegularExpressions.Regex rgx = new System.Text.RegularExpressions.Regex("[^ -~]");
+                textures[i].name = rgx.Replace(textures[i].name, "");
             }
         }
 

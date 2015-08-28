@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Vertex : Directory
+    public class Vertex : Directory
     {
         public struct VertexEntry
         {
@@ -25,8 +25,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            vertexes = new VertexEntry[length / VERTEX_SIZE];
+            size = length / VERTEX_SIZE;
+
+            // Create vertexes array.
+            vertexes = new VertexEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -34,7 +36,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[VERTEX_SIZE];
 
-            for (int i = 0; i < (length / VERTEX_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, VERTEX_SIZE);
 

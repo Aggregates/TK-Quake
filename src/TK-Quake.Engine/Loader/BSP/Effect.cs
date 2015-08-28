@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader.BSP
 {
-    class Effect : Directory
+    public class Effect : Directory
     {
         public struct EffectEntry
         {
@@ -25,8 +25,10 @@ namespace TKQuake.Engine.Loader.BSP
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
-            // Create textures array.
-            effects = new EffectEntry[length / EFFECT_SIZE];
+            size = length / EFFECT_SIZE;
+
+            // Create effects array.
+            effects = new EffectEntry[size];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
@@ -34,7 +36,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[EFFECT_SIZE];
 
-            for (int i = 0; i < (length / EFFECT_SIZE); i++)
+            for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, EFFECT_SIZE);
 
