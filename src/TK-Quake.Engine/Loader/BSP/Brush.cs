@@ -11,8 +11,8 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public struct BrushEntry
         {
-            public int   brushside;
-            public int   n_brushsides;
+            public int   brushSide;
+            public int   n_brushSides;
             public int   texture;
         }
 
@@ -37,8 +37,8 @@ namespace TKQuake.Engine.Loader.BSP
             {
                 file.Read (buf, 0, BRUSH_SIZE);
 
-                brushes[i].brushside    = BitConverter.ToInt32(buf,  0 * sizeof(int));
-                brushes[i].n_brushsides = BitConverter.ToInt32(buf,  1 * sizeof(int));
+                brushes[i].brushSide    = BitConverter.ToInt32(buf,  0 * sizeof(int));
+                brushes[i].n_brushSides = BitConverter.ToInt32(buf,  1 * sizeof(int));
                 brushes[i].texture      = BitConverter.ToInt32(buf,  2 * sizeof(int));
             }
         }

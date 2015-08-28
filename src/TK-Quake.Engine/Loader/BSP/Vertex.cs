@@ -12,7 +12,7 @@ namespace TKQuake.Engine.Loader.BSP
         public struct VertexEntry
         {
             public float[]  position;
-            public float[,] texcoord;
+            public float[,] texCoord;
             public float[]  normal;
             public byte[]   colour;
         }
@@ -39,16 +39,16 @@ namespace TKQuake.Engine.Loader.BSP
                 file.Read (buf, 0, VERTEX_SIZE);
 
                 vertexes[i].position = new float[3];
-                vertexes[i].texcoord = new float[2, 2];
+                vertexes[i].texCoord = new float[2, 2];
                 vertexes[i].normal   = new float[3];
                 vertexes[i].colour   = new byte[4];
                 vertexes[i].position[0]    = BitConverter.ToSingle(buf,  0 * sizeof(float));
                 vertexes[i].position[1]    = BitConverter.ToSingle(buf,  1 * sizeof(float));
                 vertexes[i].position[2]    = BitConverter.ToSingle(buf,  2 * sizeof(float));
-                vertexes[i].texcoord[0, 0] = BitConverter.ToSingle(buf,  3 * sizeof(float));
-                vertexes[i].texcoord[0, 1] = BitConverter.ToSingle(buf,  4 * sizeof(float));
-                vertexes[i].texcoord[1, 0] = BitConverter.ToSingle(buf,  5 * sizeof(float));
-                vertexes[i].texcoord[1, 1] = BitConverter.ToSingle(buf,  6 * sizeof(float));
+                vertexes[i].texCoord[0, 0] = BitConverter.ToSingle(buf,  3 * sizeof(float));
+                vertexes[i].texCoord[0, 1] = BitConverter.ToSingle(buf,  4 * sizeof(float));
+                vertexes[i].texCoord[1, 0] = BitConverter.ToSingle(buf,  5 * sizeof(float));
+                vertexes[i].texCoord[1, 1] = BitConverter.ToSingle(buf,  6 * sizeof(float));
                 vertexes[i].normal[0]      = BitConverter.ToSingle(buf,  7 * sizeof(float));
                 vertexes[i].normal[1]      = BitConverter.ToSingle(buf,  8 * sizeof(float));
                 vertexes[i].normal[2]      = BitConverter.ToSingle(buf,  9 * sizeof(float));

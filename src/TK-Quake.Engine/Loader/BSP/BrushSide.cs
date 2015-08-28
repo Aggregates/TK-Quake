@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Loader.BSP
             public int texture;
         }
 
-        private const int BRUSHSIDE_SIZE = 8;
+        private const int BRUSH_SIDE_SIZE = 8;
 
         private BrushSideEntry[] brushSides;
 
@@ -24,24 +24,24 @@ namespace TKQuake.Engine.Loader.BSP
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
             // Create textures array.
-            brushSides = new BrushSideEntry[length / BRUSHSIDE_SIZE];
+            brushSides = new BrushSideEntry[length / BRUSH_SIDE_SIZE];
 
             // Seek to the specified offset within the file.
             file.Seek (offset, SeekOrigin.Begin);
 
             // Create buffer to hold data.
-            byte[] buf = new byte[BRUSHSIDE_SIZE];
+            byte[] buf = new byte[BRUSH_SIDE_SIZE];
 
-            for (int i = 0; i < (length / BRUSHSIDE_SIZE); i++)
+            for (int i = 0; i < (length / BRUSH_SIDE_SIZE); i++)
             {
-                file.Read (buf, 0, BRUSHSIDE_SIZE);
+                file.Read (buf, 0, BRUSH_SIDE_SIZE);
 
                 brushSides[i].plane   = BitConverter.ToInt32(buf,  0 * sizeof(int));
                 brushSides[i].texture = BitConverter.ToInt32(buf,  2 * sizeof(int));
             }
         }
 
-        public BrushSideEntry[] GetBrushSidees()
+        public BrushSideEntry[] GetBrushSides()
         {
             return(brushSides);
         }

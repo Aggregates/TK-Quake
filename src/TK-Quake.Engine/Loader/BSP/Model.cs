@@ -13,9 +13,9 @@ namespace TKQuake.Engine.Loader.BSP
         {
             public float[] mins;
             public float[] maxs;
-            public int     faces;
+            public int     face;
             public int     n_faces;
-            public int     brushes;
+            public int     brush;
             public int     n_brushes;
         }
 
@@ -48,9 +48,9 @@ namespace TKQuake.Engine.Loader.BSP
                 models[i].maxs[0]   = BitConverter.ToSingle(buf, 3 * sizeof(float));
                 models[i].maxs[1]   = BitConverter.ToSingle(buf, 4 * sizeof(float));
                 models[i].maxs[2]   = BitConverter.ToSingle(buf, 5 * sizeof(float));
-                models[i].faces     = BitConverter.ToInt32(buf,  6 * sizeof(int));
+                models[i].face      = BitConverter.ToInt32(buf,  6 * sizeof(int));
                 models[i].n_faces   = BitConverter.ToInt32(buf,  7 * sizeof(int));
-                models[i].brushes   = BitConverter.ToInt32(buf,  8 * sizeof(int));
+                models[i].brush     = BitConverter.ToInt32(buf,  8 * sizeof(int));
                 models[i].n_brushes = BitConverter.ToInt32(buf,  9 * sizeof(int));
             }
         }

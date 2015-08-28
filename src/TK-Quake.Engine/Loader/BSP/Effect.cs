@@ -12,8 +12,8 @@ namespace TKQuake.Engine.Loader.BSP
         public struct EffectEntry
         {
             public string name;
-            public int brush;
-            public int unknown;
+            public int    brush;
+            public int    unknown;
         }
 
         private const int EFFECT_SIZE = 72;

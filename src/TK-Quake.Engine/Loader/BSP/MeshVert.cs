@@ -39,7 +39,7 @@ namespace TKQuake.Engine.Loader.BSP
             }
         }
 
-        public MeshVertEntry[] GetMeshVertes()
+        public MeshVertEntry[] GetMeshVerts()
         {
             return(meshVerts);
         }
