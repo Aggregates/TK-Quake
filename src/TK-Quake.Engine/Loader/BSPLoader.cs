@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Loader
 {
-    class BSPLoader
+    public class BSPLoader
     {
         private struct LumpEntry
         {
@@ -174,9 +174,9 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("");
 
             file.WriteLine("********* Entity Lump *********");
-            file.WriteLine(String.Format("Size : {0}", header.lumps[(int)DirectoryTypes.Entity].length));
+            file.WriteLine(String.Format("Size : {0}", directoryParsers[(int)DirectoryTypes.Entity].GetSize()));
 
-            if (header.lumps[0].length != 0)
+            if (directoryParsers[(int)DirectoryTypes.Entity].GetSize() != 0)
             {
                 file.WriteLine(String.Format("Buffer : {0}", GetEntities().entities));
             }
@@ -185,7 +185,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Texture Lump *********");
 
-            for (int i = 0; i < GetTextures().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Texture].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Texture {0}", i));
                 file.WriteLine(String.Format("\tName : {0}", GetTexture(i).name));
@@ -197,7 +197,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Plane Lump *********");
 
-            for (int i = 0; i < GetPlanes().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Plane].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Plane {0}", i));
                 file.WriteLine(String.Format("\tNormal : {0} {1} {2}", GetPlane(i).normal[0], GetPlane(i).normal[1], GetPlane(i).normal[2]));
@@ -208,11 +208,11 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Node Lump *********");
 
-            for (int i = 0; i < GetNodes().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Node].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Node {0}", i));
                 file.WriteLine(String.Format("\tPlane index : {0}", GetNode(i).plane));
-                file.WriteLine(String.Format("\tChildren index : {0} {1}", GetNode(i).children[0], GetNode(i).children[1], GetNode(i).children[2]));
+                file.WriteLine(String.Format("\tChildren index : {0} {1}", GetNode(i).children[0], GetNode(i).children[1]));
                 file.WriteLine(String.Format("\tMin Bounding Box : {0} {1} {2}", GetNode(i).mins[0], GetNode(i).mins[1], GetNode(i).mins[2]));
                 file.WriteLine(String.Format("\tMax Bounding Box : {0} {1} {2}", GetNode(i).maxs[0], GetNode(i).maxs[1], GetNode(i).maxs[2]));
             }
@@ -221,7 +221,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Leaf Lump *********");
 
-            for (int i = 0; i < GetLeafs().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Leaf].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Leaf {0}", i));
                 file.WriteLine(String.Format("\tCluster {0}", GetLeaf(i).cluster));
@@ -237,7 +237,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* LeafFace Lump *********");
 
-            for (int i = 0; i < GetLeafFaces().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.LeafFace].GetSize(); i++)
             {
                 file.WriteLine(String.Format("LeafFace {0}", i));
                 file.WriteLine(String.Format("\tFaceIndex {0}", GetLeafFace(i).face));
@@ -247,7 +247,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* LeafBrush Lump *********");
 
-            for (int i = 0; i < GetLeafBrushes().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.LeafBrush].GetSize(); i++)
             {
                 file.WriteLine(String.Format("LeafBrush {0}", i));
                 file.WriteLine(String.Format("\tBrushIndex {0}", GetLeafBrush(i).brush));
@@ -257,7 +257,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Model Lump *********");
 
-            for (int i = 0; i < GetModels().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Model].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Model {0}", i));
                 file.WriteLine(String.Format("\tMin Bounding Box : {0} {1} {2}", GetModel(i).mins[0], GetModel(i).mins[1], GetModel(i).mins[2]));
@@ -272,7 +272,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Brush Lump *********");
 
-            for (int i = 0; i < GetBrushes().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Brush].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Brush {0}", i));
                 file.WriteLine(String.Format("\tBrushSide {0}", GetBrush(i).brushSide));
@@ -284,7 +284,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* BrushSide Lump *********");
 
-            for (int i = 0; i < GetBrushSides().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.BrushSide].GetSize(); i++)
             {
                 file.WriteLine(String.Format("BrushSide {0}", i));
                 file.WriteLine(String.Format("\tPlaneIndex {0}", GetBrushSide(i).plane));
@@ -295,7 +295,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Vertex Lump *********");
 
-            for (int i = 0; i < GetVertexes().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Vertex].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Vertex {0}", i));
                 file.WriteLine(String.Format("\tPosition : {0} {1} {2}", GetVertex(i).position[0], GetVertex(i).position[1], GetVertex(i).position[2]));
@@ -309,7 +309,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* MeshVert Lump *********");
 
-            for (int i = 0; i < GetMeshVerts().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.MeshVert].GetSize(); i++)
             {
                 file.WriteLine(String.Format("MeshVert {0}", i));
                 file.WriteLine(String.Format("\tVertex Index : {0}", GetMeshVert(i).offset));
@@ -319,7 +319,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Effect Lump *********");
 
-            for (int i = 0; i < GetEffects().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Effect].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Effect {0}", i));
                 file.WriteLine(String.Format("\tName : {0}", GetEffect(i).name));
@@ -331,7 +331,7 @@ namespace TKQuake.Engine.Loader
 
             file.WriteLine("********* Face Lump *********");
 
-            for (int i = 0; i < GetFaces().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Face].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Face {0}", i));
                 file.WriteLine(String.Format("\tTextureIndex : {0}", GetFace(i).texture));
@@ -354,12 +354,12 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("");
 
             file.WriteLine("********* LightMap Lump *********");
-            file.WriteLine(String.Format("NbLightMaps {0}", GetLightMaps().GetLength(0)));
+            file.WriteLine(String.Format("NbLightMaps {0}", directoryParsers[(int)DirectoryTypes.LightMap]));
             file.WriteLine("");
 
             file.WriteLine("********* LightVol Lump *********");
 
-            for (int i = 0; i < GetLightVols().GetLength(0); i++)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.LightVol].GetSize(); i++)
             {
                 file.WriteLine(String.Format("LightVol {0}", i));
                 file.WriteLine(String.Format("\tAmbient : {0} {1} {2}", GetLightVol(i).ambient[0], GetLightVol(i).ambient[1], GetLightVol(i).ambient[2]));
@@ -370,8 +370,13 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("");
 
             file.WriteLine("********* VisData Lump *********");
-            file.WriteLine(String.Format("\tNbCluster {0}", GetVisData(0).n_vecs));
-            file.WriteLine(String.Format("\tBytePerCluster {0}", GetVisData(0).sz_vecs));
+
+            if (directoryParsers[(int)DirectoryTypes.LightVol].GetSize() > 0)
+            {
+                file.WriteLine(String.Format("\tNbCluster {0}", GetVisData(0).n_vecs));
+                file.WriteLine(String.Format("\tBytePerCluster {0}", GetVisData(0).sz_vecs));
+            }
+
             file.WriteLine("");
         }
 
