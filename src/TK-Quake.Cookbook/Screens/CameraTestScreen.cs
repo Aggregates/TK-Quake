@@ -32,9 +32,9 @@ namespace TKQuake.Cookbook.Screens
             var c = new ObjectComponent();
             a.Startup();
             //b.Startup("nerfrevolver1.obj");
-            //c.Startup("soldier.obj");
+            c.Startup("soldier.obj");
             //Components.Add(new PlanesComponent());            
-            Components.Add(a);
+            Components.Add(c);
             //Components.Add(b);
         }
     }
@@ -115,17 +115,7 @@ namespace TKQuake.Cookbook.Screens
             var materials = results.Materials;
             var groups = results.Groups;                                   
             
-            GLX.Color3(customColor);
-
-            // Fixed function pipeline, old now. Programmable funtion pipeline is preferred           
-            // Immediate mode is deprecated
-
-            //GL.Begin(PrimitiveType.Points);
-            //foreach (var vertice in vertices)
-            //{
-            //    GL.Vertex3(vertice.X, vertice.Y, vertice.Z);                
-            //}
-            //GL.End();
+            GLX.Color3(customColor);           
 
             if (firstRun)
             {
@@ -135,63 +125,28 @@ namespace TKQuake.Cookbook.Screens
                 Console.WriteLine("Materials: " + materials.Count);
                 Console.WriteLine("Groups: " + groups.Count);
                 Console.WriteLine("Faces: " + groups[0].Faces.Count);
+
                 firstRun = false;
             }
-                        
-
-            //foreach (var group in groups)
-            //{
-            //    Console.WriteLine(group.Faces);
-            //    Console.ReadKey();
-            //}
-
-            //foreach (var texture in textures)
-            //{
-            //    Console.WriteLine("Textures: " + texture.X + " " + texture.Y);
-            //    Console.ReadKey();
-            //}
-
-            GL.Begin(PrimitiveType.Points); // you can also use Points, Lines, Quads                                
-            foreach (var vertice in vertices)
-            {
-                GL.Vertex3(vertice.X, vertice.Y, vertice.Z);
-            }
-            GL.End();
-
-            //foreach (var normal in normals)
-            //{
-            //    gl.vertex3(normal.x, normal.y, normal.z);
-            //}
-
             
-
-            //GL.DrawArrays(BeginMode.Triangles, 0, 3);     
-
-            /*for (var x = 0; x < vertices.Count; x++)
+            GL.Begin(PrimitiveType.Triangles); // you can also use Points, Lines, Quads                                
+            foreach (var group in groups)
             {
-                GL.Begin(PrimitiveType.Points);
-                GL.Vertex3(vertices[x].X, vertices[x].Y, vertices[x].Z);                
-                GL.Normal3(normals[x].X, normals[x].Y, normals[x].Z);
-                GL.End();
-
-            }*/
-
-            /*
-            GL.Begin(PrimitiveType.Points);                               
-            foreach (var vertice in vertices)
-            {                                                                                                                           
-                GL.Vertex3(vertice.X, vertice.Y, vertice.Z);                                                    
+                foreach (var face in group.Faces)
+                {
+                    for (var i = 0; i < face.Count; i++)
+                    {
+                        var faceVertex = face[i];
+                        var vertex = vertices[faceVertex.VertexIndex -1];
+                        var normal = normals[faceVertex.NormalIndex -1];
+                        var texture = textures[faceVertex.TextureIndex - 1];
+                        GL.Vertex3(vertex.X, vertex.Y, vertex.Z);
+                        GL.Normal3(normal.X, normal.Y, normal.Z);
+                        GL.TexCoord2(texture.X, texture.Y);                        
+                    }
+                }
             }            
-            GL.End();
-
-            GL.Begin(PrimitiveType.Lines);
-            foreach (var normal in normals)
-            {               
-                GL.Normal3(normal.X, normal.Y, normal.Z);
-            }
-            GL.End();
-            
-    */
+            GL.End();                                
         }
     }
     
