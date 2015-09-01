@@ -27,8 +27,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         public void Update(double elapsedTime)
         {
-            var direction = new Vector3(0f, (float)(_entity.Position.Y - Force), 0f) * (float)elapsedTime;
-            _entity.Position += direction;
+            var direction = new Vector3(0f, Force, 0f) * (float)elapsedTime;
+            _entity.Position -= direction;
 
         }
     }

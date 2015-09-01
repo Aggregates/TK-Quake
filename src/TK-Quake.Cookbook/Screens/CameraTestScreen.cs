@@ -90,11 +90,11 @@ namespace TKQuake.Cookbook.Screens
             // Add gun entitiy
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 0, 0);
-            gunEntity.Scale = 0.05f;
-            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
-            gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
-            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+            gunEntity.Position = new Vector3(0, 10, -10);
+            gunEntity.Rotation = new Vector3(0f, (float)-(Math.PI / 2), 0);
+            gunEntity.Scale = 0.5f;
+            gunEntity.Components.Add(new GravityComponent(gunEntity));
+
             Children.Add(gunEntity);
 
             foreach (var entity in Children)
