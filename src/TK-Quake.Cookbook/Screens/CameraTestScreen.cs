@@ -44,7 +44,7 @@ namespace TKQuake.Cookbook.Screens
 
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = Vector3.Zero;
+            gunEntity.Position = new Vector3(0, 1, -10);
 
             Children.Add(gunEntity);
         }

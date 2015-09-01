@@ -40,8 +40,8 @@ namespace TKQuake.Engine.Core
             GL.Begin(PrimitiveType.Triangles);
             foreach (var index in mesh.Indices)
             {
-                GL.Vertex3(mesh.Vertices[index]);
-                GL.Normal3(mesh.Normals[index]);
+                GL.Vertex3(mesh.Vertices[index] + entity.Position);
+                GL.Normal3(mesh.Normals[index] + entity.Position);
                 GL.TexCoord2(mesh.Textures[index]);
             }
             GL.End();
