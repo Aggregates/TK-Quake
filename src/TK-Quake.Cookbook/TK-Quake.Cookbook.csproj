@@ -57,8 +57,13 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Screens\face.obj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CjClutter.ObjLoader.Loader\CjClutter.ObjLoader.Loader.csproj">
+      <Project>{1fd37682-98d6-442f-8e15-646247c690dc}</Project>
+      <Name>CjClutter.ObjLoader.Loader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TK-Quake.Engine\TK-Quake.Engine.csproj">
       <Project>{3a707142-2a6f-4950-a083-b20738c40590}</Project>
       <Name>TK-Quake.Engine</Name>
