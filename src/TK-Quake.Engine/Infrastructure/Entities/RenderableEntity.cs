@@ -6,7 +6,7 @@ using TKQuake.Engine.Infrastructure.Components;
 
 namespace TKQuake.Engine.Infrastructure.Entities
 {
-    public class RenderableEntity : Entity
+    public class RenderableEntity : Entity, IEntity
     {
         private RenderableEntity() {
             Components.Add(new RenderComponent(this));

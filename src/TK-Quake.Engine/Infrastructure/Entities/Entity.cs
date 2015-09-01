@@ -8,7 +8,7 @@ using OpenTK;
 
 namespace TKQuake.Engine.Infrastructure.Entities
 {
-    public abstract class Entity
+    public class Entity
     {
         public string Id { get; set; }
         public IList<IComponent> Components { get; set; } = new List<IComponent>();

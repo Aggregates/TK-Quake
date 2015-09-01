@@ -16,26 +16,37 @@ using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
 using ObjLoader.Loader.Loaders;
+using TKQuake.Engine.Infrastructure;
 
 namespace TKQuake.Cookbook.Screens
 {
     public class CameraTestScreen : GameScreen
     {
         private readonly Camera _camera = new Camera();        
+        private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
         public CameraTestScreen()
         {            
-            Children.Add(_camera);
+            _renderer = Renderer.Singleton();
+
+            InitEntities();
             Components.Add(new UserInputComponent(_camera));
-            var a = new ObjectComponent();
-            var b = new ObjectComponent();
-            var c = new ObjectComponent();
-            a.Startup();
-            //b.Startup("nerfrevolver1.obj");
-            c.Startup("soldier.obj");
-            //Components.Add(new PlanesComponent());            
-            Components.Add(c);
-            //Components.Add(b);
+        }
+
+        private void InitEntities()
+        {
+            Children.Add(_camera);
+
+            //register the mesh to the renderer
+            var fileStream = File.OpenRead("nerfrevolver.obj");
+            var mesh = _objLoader.Load(fileStream).ToMesh();
+            _renderer.RegisterMesh("gun", mesh);
+
+            var gunEntity = RenderableEntity.Create();
+            gunEntity.Id = "gun";
+            gunEntity.Position = Vector3.Zero;
+
+            Children.Add(gunEntity);
         }
     }
 

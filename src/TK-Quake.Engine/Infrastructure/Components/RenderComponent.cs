@@ -15,6 +15,7 @@ namespace TKQuake.Engine.Infrastructure.Components
     public class RenderComponent : IComponent
     {
         private readonly RenderableEntity _entity;
+        private readonly Renderer _renderer = Renderer.Singleton();
 
         public RenderComponent(RenderableEntity entity) {
             _entity = entity;
@@ -22,7 +23,7 @@ namespace TKQuake.Engine.Infrastructure.Components
 
         public void Update(double elapsedTime)
         {
-            var renderer = Renderer.Singleton();
+            _renderer.DrawEntity(_entity);
         }
 
         public void Startup() {
