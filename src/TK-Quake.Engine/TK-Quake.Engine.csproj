@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <BaseIntermediateOutputPath>../obj</BaseIntermediateOutputPath>
-  </PropertyGroup>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -23,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,10 +31,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,6 +40,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core, Version=2.6.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Package>nunit</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Camera.cs" />
@@ -89,6 +87,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />
+    <Compile Include="Loader\BSPLoader.cs" />
+    <Compile Include="Loader\BSP\Directory.cs" />
+    <Compile Include="Loader\BSP\Entity.cs" />
+    <Compile Include="Loader\BSP\Leaf.cs" />
+    <Compile Include="Loader\BSP\LeafBrush.cs" />
+    <Compile Include="Loader\BSP\LeafFace.cs" />
+    <Compile Include="Loader\BSP\Node.cs" />
+    <Compile Include="Loader\BSP\Plane.cs" />
+    <Compile Include="Loader\BSP\Texture.cs" />
+    <Compile Include="Loader\BSP\Brush.cs" />
+    <Compile Include="Loader\BSP\BrushSide.cs" />
+    <Compile Include="Loader\BSP\Model.cs" />
+    <Compile Include="Loader\BSP\Vertex.cs" />
+    <Compile Include="Loader\BSP\Effect.cs" />
+    <Compile Include="Loader\BSP\Face.cs" />
+    <Compile Include="Loader\BSP\LightMap.cs" />
+    <Compile Include="Loader\BSP\LightVol.cs" />
+    <Compile Include="Loader\BSP\MeshVert.cs" />
+    <Compile Include="Loader\BSP\VisData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -99,7 +116,7 @@
       <Name>CjClutter.ObjLoader.Loader</Name>
     </ProjectReference>
     <ProjectReference Include="..\TargaImage\TargaImage.csproj">
-      <Project>{56f4bd87-2404-4263-80d5-6fa2161eb0a4}</Project>
+      <Project>{56F4BD87-2404-4263-80D5-6FA2161EB0A4}</Project>
       <Name>TargaImage</Name>
     </ProjectReference>
   </ItemGroup>
@@ -111,4 +128,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Loader\BSP\" />
+  </ItemGroup>
 </Project>
