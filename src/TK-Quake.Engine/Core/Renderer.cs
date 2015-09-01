@@ -36,15 +36,26 @@ namespace TKQuake.Engine.Core
             var mesh = _meshes.Get(entity.Id);
             System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
+            var rotate = Matrix4.CreateRotationX(entity.Rotation.X)*
+                         Matrix4.CreateRotationY(entity.Rotation.Y)*
+                         Matrix4.CreateRotationZ(entity.Rotation.Z);
+
+            var translate = Matrix4.CreateTranslation(entity.Position);
+            var m = translate*rotate;
+            GL.PushMatrix();
+            GL.MultMatrix(ref m);
+
             //todo: move away from immediate mode
             GL.Begin(PrimitiveType.Triangles);
             foreach (var index in mesh.Indices)
             {
-                GL.Vertex3(mesh.Vertices[index] + entity.Position);
-                GL.Normal3(mesh.Normals[index] + entity.Position);
+                GL.Vertex3(mesh.Vertices[index]);
+                GL.Normal3(mesh.Normals[index]);
                 GL.TexCoord2(mesh.Textures[index]);
             }
+
             GL.End();
+            GL.PopMatrix();
         }
 
         public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)

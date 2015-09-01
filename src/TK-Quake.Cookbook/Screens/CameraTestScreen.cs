@@ -22,15 +22,16 @@ namespace TKQuake.Cookbook.Screens
 {
     public class CameraTestScreen : GameScreen
     {
-        private readonly Camera _camera = new Camera();        
+        private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
         public CameraTestScreen()
-        {            
+        {
             _renderer = Renderer.Singleton();
 
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
+            Components.Add(new FloorGridComponent());
         }
 
         private void InitEntities()
@@ -45,6 +46,8 @@ namespace TKQuake.Cookbook.Screens
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
             gunEntity.Position = new Vector3(0, 1, -10);
+            gunEntity.Rotation = new Vector3(0f, (float)-(Math.PI / 2), 0);
+            //gunEntity.Rotation = new Vector3(45f, 45f, 45f);
 
             Children.Add(gunEntity);
         }
@@ -65,7 +68,7 @@ namespace TKQuake.Cookbook.Screens
         var result = objLoader.Load(fileStream);
         The result object contains the loaded model in this form:
 
-        public class LoadResult  
+        public class LoadResult
         {
             public IList<Vertex> Vertices { get; set; }
             public IList<Texture> Textures { get; set; }
@@ -76,6 +79,36 @@ namespace TKQuake.Cookbook.Screens
 
 
     */
+
+    class FloorGridComponent : IComponent
+    {
+        public void Startup() { }
+        public void Shutdown() { }
+
+        public void Update(double elapsedTime)
+        {
+            var lineLength = 100f;
+            var lineSpacing = 2.5f;
+            var y = -2.5f;
+
+            GL.Begin(PrimitiveType.Lines);
+            for (int i = 0; i < 100; i++)
+            {
+                GL.Color3(0f, 0, 255);
+
+                //parallel to x-axis
+                GL.Vertex3(-lineLength, y, i * lineSpacing - 100f);
+                GL.Vertex3(lineLength, y, i * lineSpacing - 100f);
+
+                //perpendicular to x-axis
+                GL.Vertex3(i + lineSpacing - 50f, y, -lineLength);
+                GL.Vertex3(i + lineSpacing - 50f, y, lineLength);
+            }
+            GL.End();
+
+            GL.Color3(255f, 255, 255);
+        }
+    }
 
     // Follow this idea, create as a component and then render it using the update
     class ObjectComponent : IComponent
@@ -92,7 +125,7 @@ namespace TKQuake.Cookbook.Screens
             var fileStream = File.OpenRead("face.obj");
             results = objLoader.Load(fileStream);
         }
-        
+
         public void Startup(String file)
         {
             var objLoaderFactory = new ObjLoaderFactory();
@@ -112,6 +145,10 @@ namespace TKQuake.Cookbook.Screens
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
 
+
+            //gunEntity.Rotation = new Vector3(45f, 45f, 45f);
+
+
             float[] mat_ambient = new float[4] { 0.0f, 0.0f, 0.0f, 0.0f };
             float[] mat_diffuse = new float[4] { 0.2f, 0.3f, 0.5f, 0.0f };
             float[] mat_specular = new float[4] { 1.0f, 0.89f, 0.55f, 0.0f };
@@ -124,9 +161,9 @@ namespace TKQuake.Cookbook.Screens
             var textures = results.Textures;
             var normals = results.Normals;
             var materials = results.Materials;
-            var groups = results.Groups;                                   
-            
-            GLX.Color3(customColor);           
+            var groups = results.Groups;
+
+            GLX.Color3(customColor);
 
             if (firstRun)
             {
@@ -139,8 +176,8 @@ namespace TKQuake.Cookbook.Screens
 
                 firstRun = false;
             }
-            
-            GL.Begin(PrimitiveType.Triangles); // you can also use Points, Lines, Quads                                
+
+            GL.Begin(PrimitiveType.Triangles); // you can also use Points, Lines, Quads
             foreach (var group in groups)
             {
                 foreach (var face in group.Faces)
@@ -153,14 +190,14 @@ namespace TKQuake.Cookbook.Screens
                         var texture = textures[faceVertex.TextureIndex - 1];
                         GL.Vertex3(vertex.X, vertex.Y, vertex.Z);
                         GL.Normal3(normal.X, normal.Y, normal.Z);
-                        GL.TexCoord2(texture.X, texture.Y);                        
+                        GL.TexCoord2(texture.X, texture.Y);
                     }
                 }
-            }            
-            GL.End();                                
+            }
+            GL.End();
         }
     }
-    
+
 
     class PlanesComponent : IComponent
     {
