@@ -17,7 +17,7 @@ namespace TKQuake.Engine.Loader.BSP
             public byte[]   colour;
         }
 
-        private const int VERTEX_SIZE = 12;
+        private const int VERTEX_SIZE = 44;
 
         private VertexEntry[] vertexes;
 
@@ -40,10 +40,10 @@ namespace TKQuake.Engine.Loader.BSP
             {
                 file.Read (buf, 0, VERTEX_SIZE);
 
-                vertexes[i].position = new float[3];
-                vertexes[i].texCoord = new float[2, 2];
-                vertexes[i].normal   = new float[3];
-                vertexes[i].colour   = new byte[4];
+                vertexes[i].position       = new float[3];
+                vertexes[i].texCoord       = new float[2, 2];
+                vertexes[i].normal         = new float[3];
+                vertexes[i].colour         = new byte[4];
                 vertexes[i].position[0]    = BitConverter.ToSingle(buf,  0 * sizeof(float));
                 vertexes[i].position[1]    = BitConverter.ToSingle(buf,  1 * sizeof(float));
                 vertexes[i].position[2]    = BitConverter.ToSingle(buf,  2 * sizeof(float));

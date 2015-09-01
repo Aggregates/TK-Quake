@@ -11,9 +11,9 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public struct BrushEntry
         {
-            public int   brushSide;
-            public int   n_brushSides;
-            public int   texture;
+            public int brushSide;
+            public int n_brushSides;
+            public int texture;
         }
 
         private const int BRUSH_SIZE = 12;

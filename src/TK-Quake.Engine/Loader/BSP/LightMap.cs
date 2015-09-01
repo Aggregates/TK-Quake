@@ -15,8 +15,9 @@ namespace TKQuake.Engine.Loader.BSP
         }
 
         private const int LIGHT_MAP_SIZE = 49152;
-        private const int X_RESOLUTION = 128;
-        private const int Y_RESOLUTION = 128;
+        private const int X_RESOLUTION   = 128;
+        private const int Y_RESOLUTION   = 128;
+        private const int RGB_RESOLUTION = 3;
 
         private LightMapEntry[] lightMaps;
 
@@ -45,9 +46,9 @@ namespace TKQuake.Engine.Loader.BSP
                 {
                     for (int y = 0; y < Y_RESOLUTION; y++)
                     {
-                        lightMaps[i].map[x, y, 0] = buf[(x * Y_RESOLUTION * 3) + (y * Y_RESOLUTION) + 0];
-                        lightMaps[i].map[x, y, 1] = buf[(x * Y_RESOLUTION * 3) + (y * Y_RESOLUTION) + 1];
-                        lightMaps[i].map[x, y, 2] = buf[(x * Y_RESOLUTION * 3) + (y * Y_RESOLUTION) + 2];
+                        lightMaps[i].map[x, y, 0] = buf[(x * Y_RESOLUTION * RGB_RESOLUTION) + (y * RGB_RESOLUTION) + 0];
+                        lightMaps[i].map[x, y, 1] = buf[(x * Y_RESOLUTION * RGB_RESOLUTION) + (y * RGB_RESOLUTION) + 1];
+                        lightMaps[i].map[x, y, 2] = buf[(x * Y_RESOLUTION * RGB_RESOLUTION) + (y * RGB_RESOLUTION) + 2];
                     }
                 }
             }

@@ -11,7 +11,7 @@ namespace TKQuake.Engine.Loader.BSP
     {
         abstract public void ParseDirectoryEntry(FileStream file, int offset, int length);
 
-        protected int size;
+        protected int size = 0;
 
         public int GetSize()
         {

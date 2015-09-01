@@ -126,16 +126,13 @@ namespace TKQuake.Engine.Loader
                     file.Read (buf, 0, 4);
                     header.lumps[i].length = BitConverter.ToInt32 (buf, 0);
 
-                    if (header.lumps[i].length > 0)
-                    {
-                        // Save the current position in the file.
-                        long pos = file.Position;
+                    // Save the current position in the file.
+                    long pos = file.Position;
 
-                        directoryParsers[i].ParseDirectoryEntry(file, header.lumps[i].offset, header.lumps[i].length);
+                    directoryParsers[i].ParseDirectoryEntry(file, header.lumps[i].offset, header.lumps[i].length);
 
-                        // Restore original position in the file.
-                        file.Seek (pos, SeekOrigin.Begin);
-                    }
+                    // Restore original position in the file.
+                    file.Seek (pos, SeekOrigin.Begin);
                 }
 
                 file.Close ();
@@ -378,6 +375,8 @@ namespace TKQuake.Engine.Loader
             }
 
             file.WriteLine("");
+
+            file.Close();
         }
 
         public BSP.Entity.EntityEntry GetEntities()

@@ -39,7 +39,7 @@ namespace TKQuake.Engine.Loader.BSP
                 file.Read (buf, 0, BRUSH_SIDE_SIZE);
 
                 brushSides[i].plane   = BitConverter.ToInt32(buf,  0 * sizeof(int));
-                brushSides[i].texture = BitConverter.ToInt32(buf,  2 * sizeof(int));
+                brushSides[i].texture = BitConverter.ToInt32(buf,  1 * sizeof(int));
             }
         }
 
