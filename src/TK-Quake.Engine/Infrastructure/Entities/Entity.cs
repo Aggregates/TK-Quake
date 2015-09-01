@@ -11,6 +11,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
     public class Entity
     {
         public string Id { get; set; }
+        public float Scale { get; set; } = 1;
         public IList<IComponent> Components { get; set; } = new List<IComponent>();
         public IList<IEntity> Children { get; set; } = new List<IEntity>();
         public Vector3 Position { get; set; }

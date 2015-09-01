@@ -47,38 +47,11 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Id = "gun";
             gunEntity.Position = new Vector3(0, 1, -10);
             gunEntity.Rotation = new Vector3(0f, (float)-(Math.PI / 2), 0);
-            //gunEntity.Rotation = new Vector3(45f, 45f, 45f);
+            gunEntity.Scale = 0.5f;
 
             Children.Add(gunEntity);
         }
     }
-
-    /*
-        From Documentation:
-        var objLoaderFactory = new ObjLoaderFactory();
-        var objLoader = objLoaderFactory.Create();
-        Or provide your own:
-
-        //With the signature Func<string, Stream>
-        var objLoaderFactory = new ObjLoaderFactory();
-        var objLoader = objLoaderFactory.Create(materialFileName => File.Open(materialFileName);
-        Then it is just a matter of invoking the loader with a stream containing the model.
-
-        var fileStream = new FileStream("model.obj");
-        var result = objLoader.Load(fileStream);
-        The result object contains the loaded model in this form:
-
-        public class LoadResult
-        {
-            public IList<Vertex> Vertices { get; set; }
-            public IList<Texture> Textures { get; set; }
-            public IList<Normal> Normals { get; set; }
-            public IList<Group> Groups { get; set; }
-            public IList<Material> Materials { get; set; }
-        }
-
-
-    */
 
     class FloorGridComponent : IComponent
     {
