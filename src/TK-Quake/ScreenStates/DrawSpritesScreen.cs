@@ -24,7 +24,7 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
             _face = new Face(_textureManager.Get("faceAlpha"));
             _face.X = -400;
             _face.Y = -100;
-            _face.SetScale(0.5);
+            _face.SetScale(0.5f);
         }
 
         /*

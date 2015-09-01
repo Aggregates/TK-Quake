@@ -23,12 +23,12 @@ namespace TKQuake.Engine.Core
         {
             MoveSpeed = 10;
             RotationSpeed = 1;
-            Position = Vector.Zero;
+            Position = Vector3.Zero;
 
             Components.Add(new CameraComponent(this));
         }
 
-        public override void Rotate(double dx, double dy, double dz)
+        public override void Rotate(float dx, float dy, float dz)
         {
             // Stop the angle from exceeding 45degees
 
@@ -52,7 +52,7 @@ namespace TKQuake.Engine.Core
 
         public void Update(double elapsedTime)
         {
-            var mat = GLX.MarixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector.UnitY);
+            var mat = GLX.MatrixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
             GL.MatrixMode(MatrixMode.Modelview);
 
             // http://stackoverflow.com/a/4519028

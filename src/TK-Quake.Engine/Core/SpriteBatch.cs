@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace TKQuake.Engine.Core
 {
     public class SpriteBatch
     {
         public const int MaxVertexNumber = 1000;
-        private Vector[] _positions = new Vector[MaxVertexNumber];
+        private Vector3[] _positions = new Vector3[MaxVertexNumber];
         private Color[] _colors = new Color[MaxVertexNumber];
         private Point[] _uvs = new Point[MaxVertexNumber];
         private int _currentBatchSize = 0;

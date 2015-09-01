@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
@@ -15,9 +16,9 @@ namespace TKQuake.Engine.Infrastructure.Texture
     /// </summary>
     public class Sprite2 : Entity
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public Point TopLeft
         {
@@ -47,21 +48,21 @@ namespace TKQuake.Engine.Infrastructure.Texture
             {
                 _texture = value;
                 SetPosition(
-                    new Vector(X + value.Center.X, Y + value.Center.Y, Z),
+                    new Vector3(X + value.Center.X, Y + value.Center.Y, Z),
                     value.Width,
                     value.Height);
             }
         }
-        public double ScaleX { get; set; }
-        public double ScaleY { get; set; }
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
 
-        public Vector Center
+        public Vector3 Center
         {
             get
             {
-                double halfWidth = RenderWidth / 2;
-                double halfHeight = RenderHeight / 2;
-                return new Vector(Vertices[0].Position.X + halfWidth,
+                var halfWidth = RenderWidth / 2;
+                var halfHeight = RenderHeight / 2;
+                return new Vector3(Vertices[0].Position.X + halfWidth,
                     Vertices[0].Position.Y - halfHeight,
                     Vertices[0].Position.Z);
             }
@@ -70,12 +71,12 @@ namespace TKQuake.Engine.Infrastructure.Texture
         /// <summary>
         /// Texture Height * Scale
         /// </summary>
-        public double Height
+        public float Height
         {
             get { return (int)(Texture.Height * ScaleY); }
         }
 
-        public double RenderHeight
+        public float RenderHeight
         {
             get
             {
@@ -91,12 +92,12 @@ namespace TKQuake.Engine.Infrastructure.Texture
         /// <summary>
         /// Texture Width * Scale
         /// </summary>
-        public double Width
+        public float Width
         {
             get { return (int)(Texture.Width * ScaleX); }
         }
 
-        public double RenderWidth
+        public float RenderWidth
         {
             get
             {
@@ -118,7 +119,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
                 Vertices.Add(new Vertex());
             }
 
-            SetPosition(new Vector(0, 0, 0), 1, 1);
+            SetPosition(new Vector3(0, 0, 0), 1, 1);
             SetUVs(new Point(0, 0), new Point(1, 1));
             SetColor(new Color(1, 1, 1, 1));
             SetScale(1);
@@ -126,32 +127,32 @@ namespace TKQuake.Engine.Infrastructure.Texture
             this.Texture = texture;
         }
 
-        public void SetPosition(double x, double y)
+        public void SetPosition(float x, float y)
         {
-            SetPosition(new Vector(x, y, 0));
+            SetPosition(new Vector3(x, y, 0));
         }
 
-        public void SetPosition(Vector position)
+        public void SetPosition(Vector3 position)
         {
             SetPosition(position, this.Width, this.Height);
         }
 
-        private void SetPosition(Vector position, double width, double height)
+        private void SetPosition(Vector3 position, float width, float height)
         {
-            double halfWidth = width / 2;
-            double halfHeight = height / 2;
+            var halfWidth = width / 2;
+            var halfHeight = height / 2;
 
             // Use clockwise rotation for Vertex positioning
 
             // TopLeft, TopRight, BottomLeft
-            Vertices[0].Position = new Vector(position.X - halfWidth, position.Y + halfHeight, position.Z);
-            Vertices[1].Position = new Vector(position.X + halfWidth, position.Y + halfHeight, position.Z);
-            Vertices[2].Position = new Vector(position.X - halfWidth, position.Y - halfHeight, position.Z);
+            Vertices[0].Position = new Vector3(position.X - halfWidth, position.Y + halfHeight, position.Z);
+            Vertices[1].Position = new Vector3(position.X + halfWidth, position.Y + halfHeight, position.Z);
+            Vertices[2].Position = new Vector3(position.X - halfWidth, position.Y - halfHeight, position.Z);
 
             // TopRight, BottomRight, BottomLeft
-            Vertices[3].Position = new Vector(position.X + halfWidth, position.Y + halfHeight, position.Z);
-            Vertices[4].Position = new Vector(position.X + halfWidth, position.Y - halfHeight, position.Z);
-            Vertices[5].Position = new Vector(position.X - halfWidth, position.Y - halfHeight, position.Z);
+            Vertices[3].Position = new Vector3(position.X + halfWidth, position.Y + halfHeight, position.Z);
+            Vertices[4].Position = new Vector3(position.X + halfWidth, position.Y - halfHeight, position.Z);
+            Vertices[5].Position = new Vector3(position.X - halfWidth, position.Y - halfHeight, position.Z);
         }
 
         public void SetColor(Color color)
@@ -179,7 +180,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
         /// Uniformly sets the scale value
         /// </summary>
         /// <param name="scale"></param>
-        public void SetScale(double scale)
+        public void SetScale(float scale)
         {
             this.ScaleX = scale;
             this.ScaleY = scale;
@@ -189,7 +190,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
         /// Scales the image uniformly in the x,y direction
         /// </summary>
         /// <param name="scale"></param>
-        public void ScaleUniform(double scale)
+        public void ScaleUniform(float scale)
         {
             this.ScaleX *= scale;
             this.ScaleY *= scale;

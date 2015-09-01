@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Texture
@@ -14,15 +15,15 @@ namespace TKQuake.Engine.Infrastructure.Texture
         public int Height { get; set; }
         public string Path { get; set; }
 
-        public Vector Center
+        public Vector3 Center
         {
             get
             {
-                double halfWidth = Width / 2;
-                double halfHeight = Height / 2;
-                double depth = 0;
+                float halfWidth = Width / 2;
+                float halfHeight = Height / 2;
+                float depth = 0;
 
-                return new Vector(halfWidth, halfHeight, depth);
+                return new Vector3(halfWidth, halfHeight, depth);
             }
         }
 

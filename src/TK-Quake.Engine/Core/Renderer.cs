@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Infrastructure;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.Math;
@@ -47,7 +48,7 @@ namespace TKQuake.Engine.Core
             GL.End();
         }
 
-        public void DrawImmediateModeVertex(Vector position, Color color, Point uvs)
+        public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)
         {
             GL.Color4(color.R, color.G, color.B, color.A);
             GL.TexCoord2(uvs.X, uvs.Y);

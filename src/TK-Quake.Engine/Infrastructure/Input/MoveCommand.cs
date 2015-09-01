@@ -1,3 +1,4 @@
+using OpenTK;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Math;
 
@@ -5,10 +6,10 @@ namespace TKQuake.Engine.Infrastructure.Input
 {
     public class MoveCommand : ICommand
     {
-        private Vector _to;
-        private double _moveSpeed;
+        private Vector3 _to;
+        private float _moveSpeed;
 
-        public MoveCommand(Vector to, double moveSpeed)
+        public MoveCommand(Vector3 to, float moveSpeed)
         {
             _to = to;
             _moveSpeed = moveSpeed;

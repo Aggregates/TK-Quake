@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Entities
@@ -12,11 +13,11 @@ namespace TKQuake.Engine.Infrastructure.Entities
     /// </summary>
     public interface ILivableEntity : IEntity
     {
-        double MoveSpeed { get; set; }
-        double RotationSpeed { get; set; }
+        float MoveSpeed { get; set; }
+        float RotationSpeed { get; set; }
 
-        void Move(Vector position);
-        void Rotate(Vector rotation);
+        void Move(Vector3 position);
+        void Rotate(Vector3 rotation);
 
         /// <summary>
         /// Spanws the entity in the world with initial health

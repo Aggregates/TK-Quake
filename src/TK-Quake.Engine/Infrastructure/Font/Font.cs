@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
 
@@ -97,10 +98,10 @@ namespace TKQuake.Engine.Infrastructure.Font
             return Int32.Parse(value);
         }
 
-        
-        public Vector MeasureFont(string text, double maxWidth = -1)
+
+        public Vector3 MeasureFont(string text, double maxWidth = -1)
         {
-            Vector dimensions = new Vector();
+            var dimensions = Vector3.Zero;
             foreach(char c in text)
             {
                 CharacterData data = Characters[c];

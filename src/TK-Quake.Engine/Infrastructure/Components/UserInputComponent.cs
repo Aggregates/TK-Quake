@@ -1,4 +1,5 @@
 using System;
+using OpenTK;
 using OpenTK.Input;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Entities;
@@ -41,10 +42,10 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.W:
                     {
                         // Forward
-                        double x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
+                        var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
+                        var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
-                        var to = new Math.Vector(-x, 0, -z);
+                        var to = new Vector3(-x, 0, -z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
@@ -53,10 +54,10 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.S:
                     {
                         // Back
-                        double x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        double z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
+                        var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
+                        var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
-                        var to = new Math.Vector(x, 0, z);
+                        var to = new Vector3(x, 0, z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
@@ -65,10 +66,10 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.A:
                     {
                         // Strafe left
-                        double x = (float)Cos(_entity.Rotation.Y);
-                        double z = (float)Sin(_entity.Rotation.Y);
+                        var x = (float)Cos(_entity.Rotation.Y);
+                        var z = (float)Sin(_entity.Rotation.Y);
 
-                        var to = new Math.Vector(-x, 0, -z);
+                        var to = new Vector3(-x, 0, -z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
@@ -76,24 +77,24 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.D:
                     {
                         // Strafe right
-                        double x = (float)Cos(_entity.Rotation.Y);
-                        double z = (float)Sin(_entity.Rotation.Y);
+                        var x = (float)Cos(_entity.Rotation.Y);
+                        var z = (float)Sin(_entity.Rotation.Y);
 
-                        var to = new Math.Vector(x, 0, z);
+                        var to = new Vector3(x, 0, z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
                 case Key.Left:
                     {
-                        var rotation = new Math.Vector(0, -1, 0);
+                        var rotation = new Vector3(0, -1, 0);
                         command = CommandFactory.Create(typeof(RotateCommand),
                             rotation, _entity.RotationSpeed * elapsedTime);
                         break;
                     }
                 case Key.Right:
                     {
-                        var rotation = new Math.Vector(0, 1, 0);
+                        var rotation = new Vector3(0, 1, 0);
                         command = CommandFactory.Create(typeof(RotateCommand),
                             rotation, _entity.RotationSpeed * elapsedTime);
 
@@ -101,7 +102,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                     }
                 case Key.Up:
                     {
-                        var rotation = new Math.Vector(1, 0, 0);
+                        var rotation = new Vector3(1, 0, 0);
                         command = CommandFactory.Create(typeof(RotateCommand),
                             rotation, _entity.RotationSpeed * elapsedTime);
 
@@ -109,7 +110,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                     }
                 case Key.Down:
                     {
-                        var rotation = new Math.Vector(-1, 0, 0);
+                        var rotation = new Vector3(-1, 0, 0);
                         command = CommandFactory.Create(typeof(RotateCommand),
                             rotation, _entity.RotationSpeed * elapsedTime);
 

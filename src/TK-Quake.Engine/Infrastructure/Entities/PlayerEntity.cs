@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
+using static System.Math;
 
 namespace TKQuake.Engine.Infrastructure.Entities
 {
@@ -19,41 +20,33 @@ namespace TKQuake.Engine.Infrastructure.Entities
         public Sprite2 Sprite { get; set; }
 
         // ILivableEntity properties
-        public double MoveSpeed { get; set; }
-        public double RotationSpeed { get; set; }
+        public float MoveSpeed { get; set; }
+        public float RotationSpeed { get; set; }
 
         //todo: move into entity
-        public new Vector ViewDirection
-        {
-            get
-            {
-                Vector v = new Vector(System.Math.Sin(Rotation.Y), System.Math.Sin(Rotation.X), -System.Math.Cos(Rotation.Y));
-                v.Normalise();
-                return v;
-            }
-        }
+        public new Vector3 ViewDirection =>
+            Vector3.Normalize(new Vector3((float) Sin(Rotation.Y), (float) Sin(Rotation.X), (float) -Cos(Rotation.Y)));
 
         //todo: move into entity
-        public new Vector OrthogonalDirection { get { return ViewDirection.CrossProduct(Vector.UnitY); } }
-
+        public new Vector3 OrthogonalDirection => Vector3.Cross(ViewDirection, Vector3.UnitY);
 
         /// <summary>
         /// Increments the current position by each component in the vector
         /// </summary>
         /// <param name="amount">The amount in 3D space to move by</param>
-        public virtual void Move(Vector amount)
+        public virtual void Move(Vector3 amount)
         {
-            this.Position += (amount * MoveSpeed);
+            Position = Vector3.Add(Position, amount * MoveSpeed);
         }
 
-        public virtual void Rotate(Vector rotation)
+        public virtual void Rotate(Vector3 rotation)
         {
             this.Rotation += (rotation * RotationSpeed);
         }
 
-        public virtual void Rotate(double dx, double dy, double dz)
+        public virtual void Rotate(float dx, float dy, float dz)
         {
-            this.Rotate(new Vector(dx, dy, dz));
+            this.Rotate(new Vector3(dx, dy, dz));
         }
 
         /// <summary>
@@ -62,9 +55,9 @@ namespace TKQuake.Engine.Infrastructure.Entities
         /// <param name="dx">The change in the X-Axis direction</param>
         /// <param name="dy">The change in the Y-Axis direction</param>
         /// <param name="dz">The change in the Z-Axis direction</param>
-        public virtual void Move(double dx, double dy, double dz)
+        public virtual void Move(float dx, float dy, float dz)
         {
-            Move(new Vector(dx, dy, dz));
+            Move(new Vector3(dx, dy, dz));
         }
 
         /// <summary>

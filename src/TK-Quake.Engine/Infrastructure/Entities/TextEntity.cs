@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.Math;
@@ -17,15 +18,15 @@ namespace TKQuake.Engine.Infrastructure.Entities
         private Font.Font _font;
         private string _text;
         private Color _color;
-        private double _maxWidth = -1;
+        private float _maxWidth = -1;
 
-        public Vector Dimensions { get; private set; }
-        public double Width { get { return Dimensions.X; } }
-        public double Height { get { return Dimensions.Y; } }
+        public Vector3 Dimensions { get; private set; }
+        public float Width { get { return Dimensions.X; } }
+        public float Height { get { return Dimensions.Y; } }
 
         public List<CharacterSprite> CharacterSprites { get; private set; }
 
-        public TextEntity(string text, Font.Font font, double maxWidth = -1)
+        public TextEntity(string text, Font.Font font, float maxWidth = -1)
         {
             CharacterSprites = new List<CharacterSprite>();
             _text = text;
@@ -37,17 +38,17 @@ namespace TKQuake.Engine.Infrastructure.Entities
             Components.Add(new TextComponent(this));
         }
 
-        private void CreateText(double x, double y, double maxWidth)
+        private void CreateText(float x, float y, float maxWidth)
         {
             CharacterSprites.Clear();
-            double currentX = 0;
-            double currentY = 0;
+            float currentX = 0;
+            float currentY = 0;
 
             // Split text into words and calculate the width
             string[] words = _text.Split(' ');
             foreach(string word in words)
             {
-                Vector nextWordLength = _font.MeasureFont(word);
+                var nextWordLength = _font.MeasureFont(word);
                 if (maxWidth != -1 && (currentX + nextWordLength.X) > maxWidth)
                 {
                     currentX = 0; // This is correct
@@ -65,9 +66,9 @@ namespace TKQuake.Engine.Infrastructure.Entities
                     // Sprites are positioned around their center, but the offset values are
                     // posititoned at the top-left. The following converts the offset to
                     // a central position by halving it
-                    float xOffset = ((float)sprite.Data.XOffset) / 2;
-                    float yOffset = (((float)sprite.Data.Height) * 0.5f) +
-                        ((float) sprite.Data.YOffset);
+                    var xOffset = ((float)sprite.Data.XOffset) / 2;
+                    var yOffset = (sprite.Data.Height * 0.5f) +
+                        sprite.Data.YOffset;
 
                     sprite.Sprite.SetPosition(x + currentX + xOffset, y - currentY - yOffset);
                     currentX += sprite.Data.XAdvance;
@@ -80,15 +81,15 @@ namespace TKQuake.Engine.Infrastructure.Entities
 
             // Update the dimensions. Compiler won't let you simply set the Y value so
             // you have to set the whole variable
-            Vector tempDimensions = _font.MeasureFont(this._text, this._maxWidth);
-            this.Dimensions = maxWidth == -1 ? tempDimensions : new Vector(tempDimensions.X, currentY, tempDimensions.Z);
+            var tempDimensions = _font.MeasureFont(this._text, this._maxWidth);
+            this.Dimensions = maxWidth == -1 ? tempDimensions : new Vector3(tempDimensions.X, (float)currentY, tempDimensions.Z);
 
             // Set the color
             SetColor(this._color);
 
         }
 
-        public void SetPosition(double x, double y)
+        public void SetPosition(float x, float y)
         {
             CreateText(x, y, _maxWidth);
         }

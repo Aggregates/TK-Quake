@@ -29,11 +29,11 @@ namespace TKQuake.Engine.Extensions
         /// <param name="viewDirection">The position added to the LookAt direction</param>
         /// <param name="up">The upward axis direction</param>
         /// <returns></returns>
-        public static Matrix4 MarixLookAt(Vector position, Vector viewDirection, Vector up)
+        public static Matrix4 MatrixLookAt(Vector3 position, Vector3 viewDirection, Vector3 up)
         {
-            Vector3 pos = new Vector3((float)position.X, (float)position.Y, (float)position.Z);
-            Vector3 view = new Vector3((float)viewDirection.X, (float)viewDirection.Y, (float)viewDirection.Z);
-            Vector3 upVec = new Vector3((float)up.X, (float)up.Y, (float)up.Z);
+            var pos = new Vector3(position.X, position.Y, position.Z);
+            var view = new Vector3(viewDirection.X, viewDirection.Y, viewDirection.Z);
+            var upVec = new Vector3(up.X, up.Y, up.Z);
 
             return Matrix4.LookAt(pos, view, upVec);
         }
