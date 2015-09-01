@@ -20,6 +20,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
         public Vector3 OrthogonalDirection { get; }
 
         public void Update(double elapsedTime) {
+
             //update all components
             foreach (var component in Components)
             {

@@ -43,9 +43,9 @@ namespace TKQuake.Engine.Core
             var translate = Matrix4.CreateTranslation(entity.Position);
             var scale = Vector3.One*entity.Scale;
 
-            var m = translate+rotate;
             GL.PushMatrix();
-            GL.MultMatrix(ref m);
+            GL.MultMatrix(ref translate);
+            GL.MultMatrix(ref rotate);
             GL.Scale(scale);
 
             //todo: move away from immediate mode
