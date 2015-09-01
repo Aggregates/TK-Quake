@@ -15,6 +15,8 @@ namespace TKQuake.Engine.Infrastructure.Input
             _moveSpeed = moveSpeed;
         }
 
+        public RotateCommand(Vector3 rotation, double moveSpeed) : this(rotation, (float)moveSpeed) { }
+
         public void Execute(IEntity entity)
         {
             entity.Rotation += (_rotation * _moveSpeed);

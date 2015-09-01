@@ -30,7 +30,7 @@ namespace TKQuake.Cookbook
             currentScreen = new CameraTestScreen();
 
             using (game = new GameWindow())
-            {                
+            {
                 game.Load += game_Load;
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
@@ -51,6 +51,7 @@ namespace TKQuake.Cookbook
             if (game.Keyboard[Key.Escape])
                 game.Exit();
 
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             currentScreen.Update(e.Time);
 
             CommandCentre.ExecuteAllCommands();
@@ -77,13 +78,13 @@ namespace TKQuake.Cookbook
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             GL.LineWidth(3);    // Thickens Lines
-           
+
             Console.Write("GL Window loaded");
             Console.WriteLine();
             Console.WriteLine("Vendor: " + GL.GetString(StringName.Vendor));
             Console.WriteLine("Version: " + GL.GetString(StringName.Version));
             Console.WriteLine("Renderer: " + GL.GetString(StringName.Renderer));
             Console.WriteLine("Shading Language Version: " + GL.GetString(StringName.ShadingLanguageVersion));
-        }        
+        }
     }
 }

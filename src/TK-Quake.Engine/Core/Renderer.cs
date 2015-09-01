@@ -38,14 +38,11 @@ namespace TKQuake.Engine.Core
 
             //todo: move away from immediate mode
             GL.Begin(PrimitiveType.Triangles);
-            for (var i = 0; i < mesh.Indices.Length; ++i)
+            foreach (var index in mesh.Indices)
             {
-                //todo: apply entity position/rotation/etc
-                var index = mesh.Indices[i];
-
                 GL.Vertex3(mesh.Vertices[index]);
                 GL.Normal3(mesh.Normals[index]);
-                //GL.TexCoord2(mesh.Textures[index]);
+                GL.TexCoord2(mesh.Textures[index]);
             }
             GL.End();
         }

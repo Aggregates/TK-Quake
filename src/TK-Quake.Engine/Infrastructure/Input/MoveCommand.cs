@@ -15,6 +15,8 @@ namespace TKQuake.Engine.Infrastructure.Input
             _moveSpeed = moveSpeed;
         }
 
+        public MoveCommand(Vector3 to, double moveSpeed) : this(to, (float)moveSpeed) { }
+
         public void Execute(IEntity entity)
         {
             entity.Position += (_to * _moveSpeed);
