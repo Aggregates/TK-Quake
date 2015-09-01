@@ -9,6 +9,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
 {
     public abstract class Entity
     {
+        public string Id { get; set; }
         public IList<IComponent> Components { get; set; } = new List<IComponent>();
         public IList<IEntity> Children { get; set; } = new List<IEntity>();
         public Vector Position { get; set; }

@@ -72,6 +72,8 @@
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vector.cs" />
+    <Compile Include="Infrastructure\Mesh.cs" />
+    <Compile Include="Infrastructure\MeshManager.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Sprite2.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />

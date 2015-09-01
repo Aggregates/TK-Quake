@@ -16,7 +16,7 @@ namespace TKQuake.Engine.Infrastructure.Components
     public class TextComponent : IComponent
     {
         private readonly TextEntity _entity;
-        private readonly Renderer _renderer = new Renderer();
+        private readonly Renderer _renderer = Renderer.Singleton();
 
         public TextComponent(TextEntity entity) {
             _entity = entity;

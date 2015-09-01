@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Infrastructure;
 using TKQuake.Engine.Infrastructure.Font;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
@@ -14,10 +15,37 @@ namespace TKQuake.Engine.Core
 {
     public class Renderer
     {
-
+        private readonly ResourceManager<Mesh> _meshes = new MeshManager();
         private SpriteBatch _batch = new SpriteBatch();
 
-        public Renderer() {  }
+        private Renderer() {  }
+
+        /// <summary>
+        /// Registers an entity mesh to the Renderer
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        /// <param name="mesh">The mesh of the entity</param>
+        public void RegisterMesh(string entityId, Mesh mesh)
+        {
+            _meshes.Add(entityId, mesh);
+        }
+
+        public void DrawEntity(IEntity entity)
+        {
+            var mesh = _meshes.Get(entity.Id);
+            System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
+
+            //todo: move away from immediate mode
+            GL.Begin(PrimitiveType.Triangles);
+            for (var i = 0; i < mesh.Vertices.Length; ++i)
+            {
+                //todo: apply entity position/rotation/etc
+                GL.Vertex3(mesh.Vertices[i]);
+                GL.Normal3(mesh.Normals[i]);
+                GL.TexCoord2(mesh.Textures[i]);
+            }
+            GL.End();
+        }
 
         public void DrawImmediateModeVertex(Vector position, Color color, Point uvs)
         {

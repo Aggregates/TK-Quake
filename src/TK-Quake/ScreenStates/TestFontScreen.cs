@@ -32,7 +32,7 @@ namespace TKQuake.ScreenStates
             this._textureManager = texManager;
             this._fontManager = fontManager;
 
-            this._renderer = new Renderer();
+            this._renderer = Renderer.Singleton();
             this._spriteList = new List<Sprite2>();
 
             /*

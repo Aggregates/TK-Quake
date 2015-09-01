@@ -8,6 +8,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
 {
     public interface IEntity
     {
+        string Id { get; set; }
         IList<IComponent> Components { get; set; }
         IList<IEntity> Children { get; set; }
 

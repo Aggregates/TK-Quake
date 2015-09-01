@@ -197,7 +197,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
         public virtual void Render()
         {
-            Renderer renderer = new Renderer();
+            var renderer = Renderer.Singleton();
             renderer.DrawSprite(this);
         }
     }
