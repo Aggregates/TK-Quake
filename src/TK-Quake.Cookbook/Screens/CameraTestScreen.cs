@@ -56,6 +56,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+
             Children.Add(gunEntity);
 
             var floor = RenderableEntity.Create();
@@ -162,5 +163,67 @@ namespace TKQuake.Cookbook.Screens
             // Render the BSP entity.
             _renderer.DrawEntity (BSPEntity);
         }
+    }
+
+    // Step 1: Draw a cube
+    class SkyBoxComponent : IComponent
+    {
+        public void Startup() { }
+        public void Shutdown() { }
+        public void update(double elapsedTime)
+        {
+
+            float difamb[] = { 1.0f, 0.5f, 0.3f, 1.0f };
+            double size = 50.0;
+
+            GL.Begin(PrimitiveType.Quads);
+            //front face
+            GL.Material(GL.FrontFace, GL_AMBIENT_AND_DIFFUSE, difamb);
+            //GL.Materialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, difamb);
+            GL.Normal3(0.0, 0.0, 1.0);
+            GL.Vertex3(size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+
+            //left face
+            GL.Normal3(-1.0, 0.0, 0.0);
+            GL.Vertex3(size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+
+            //back face
+            GL.Normal3(0.0, 0.0, -1.0);
+            GL.Vertex3(size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+
+            //right face
+            GL.Normal3(1.0, 0.0, 0.0);
+            GL.Vertex3(size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+
+            //top face
+            GL.Normal3(0.0, 1.0, 0.0);
+            GL.Vertex3(size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+
+            //bottom face
+            GL.Normal3(0.0, -1.0, 0.0);
+            GL.Vertex3(size / 2, -size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.Vertex3(-size / 2, -size / 2, -size / 2);
+            GL.Vertex3(size / 2, -size / 2, -size / 2);
+            GL.End();
+
+        }
+
+
     }
 }
