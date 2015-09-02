@@ -19,7 +19,7 @@ namespace TKQuake.Engine.Core
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
         private SpriteBatch _batch = new SpriteBatch();
 
-        private Renderer() {  }
+        private Renderer() { }
 
         /// <summary>
         /// Registers an entity mesh to the Renderer
@@ -36,16 +36,16 @@ namespace TKQuake.Engine.Core
             var mesh = _meshes.Get(entity.Id);
             System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
-            var rotate = Matrix4.CreateRotationX(entity.Rotation.X)*
-                         Matrix4.CreateRotationY(entity.Rotation.Y)*
+            var rotate = Matrix4.CreateRotationX(entity.Rotation.X) *
+                         Matrix4.CreateRotationY(entity.Rotation.Y) *
                          Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var translate = Matrix4.CreateTranslation(entity.Position);
-            var scale = Vector3.One*entity.Scale;
+            var translate = Matrix4.CreateTranslation(entity.Position / 8);
+            var scale = Vector3.One * entity.Scale;
 
-            var m = translate+rotate;
             GL.PushMatrix();
-            GL.MultMatrix(ref m);
+            GL.MultMatrix(ref translate);
+            GL.MultMatrix(ref rotate);
             GL.Scale(scale);
 
             //todo: move away from immediate mode
@@ -70,7 +70,7 @@ namespace TKQuake.Engine.Core
 
         public void DrawSprites(List<Sprite2> sprites)
         {
-            foreach(Sprite2 s in sprites)
+            foreach (Sprite2 s in sprites)
             {
                 DrawSprite(s);
             }
