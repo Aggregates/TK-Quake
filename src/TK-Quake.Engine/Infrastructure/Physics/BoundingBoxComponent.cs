@@ -37,6 +37,10 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public Vector3 Bottom { get; private set; }
         public bool Render { get; set; }
 
+        public float Width { get { return Top.X - Bottom.X; } }
+        public float Height { get { return Top.Y - Bottom.Y; } }
+        public float Depth { get { return Top.Z - Bottom.Z; } }
+
         private Entity _entity { get; set; }
 
         public BoundingBoxComponent(Entity entity, Vector3 top, Vector3 bottom, bool render = false)
@@ -46,6 +50,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
             this.Bottom = bottom;
 
             this.Render = render;
+
         }
 
         public void Startup() { }
@@ -55,8 +60,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public void Update(double elapsedTime)
         {
 
-            _entity.Rotation += new Vector3(0, 1, 0) * (float)elapsedTime;
-            _entity.Position += new Vector3(10, 0, 0) * (float)elapsedTime;
+            _entity.Rotation += new Vector3(1, 1, 1) * (float)elapsedTime;
+            _entity.Position += new Vector3(1, 1, 1) * (float)elapsedTime;
 
             var rotate = Matrix4.CreateRotationX(_entity.Rotation.X) *
                          Matrix4.CreateRotationY(_entity.Rotation.Y) *

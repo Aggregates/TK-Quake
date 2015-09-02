@@ -36,8 +36,8 @@ namespace TKQuake.Cookbook.Screens
 
         public CameraTestScreen(string BSPFile)
         {
-            _renderer = Renderer.Singleton ();
-            _textureManager = TextureManager.Singleton ();
+            _renderer = Renderer.Singleton();
+            _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
 
             InitEntities();
@@ -87,75 +87,73 @@ namespace TKQuake.Cookbook.Screens
 
             _renderer.RegisterMesh("gun", mesh);
 
-            // Add gun entitiy
-            var gunEntity = RenderableEntity.Create();
-            gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(10, 0, 10);
-            gunEntity.Rotation = new Vector3(0, 0, 0);
-            gunEntity.Scale = 0.5f;
-            //gunEntity.Components.Add(new GravityComponent(gunEntity));
-
-            gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true));
-
-            Children.Add(gunEntity);
-
-            foreach (var entity in Children)
+            for (int i = 0; i < 10; i++)
             {
-                foreach (var component in entity.Components)
+
+                var gunEntity = RenderableEntity.Create();
+                gunEntity.Id = "gun";
+                gunEntity.Position = new Vector3(i*10, 0, i*10);
+                gunEntity.Rotation = new Vector3(0, 0, 0);
+                gunEntity.Scale = 0.5f;
+                //gunEntity.Components.Add(new GravityComponent(gunEntity));
+
+                gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true));
+
+                Children.Add(gunEntity);
+
+                foreach (var entity in Children)
                 {
-                    component.Startup();
+                    foreach (var component in entity.Components)
+                    {
+                        component.Startup();
+                    }
                 }
             }
         }
-    }
 
-    static class FloorGridEntity
-    {
-        public static Mesh Mesh()
+        private static class FloorGridEntity
         {
-            var lineLength = 1000f;
-            var lineSpacing = 2.5f;
-            var y = -2.5f;
-
-            var vertices = new List<Vertex>();
-            var indices = new List<int>();
-            for (int i = 0; i < 100; i++)
+            public static Mesh Mesh()
             {
-                var index = vertices.Count;
+                var lineLength = 1000f;
+                var lineSpacing = 2.5f;
+                var y = -2.5f;
 
-                //parallel to x-axis
-                var v1 = new Vector3(-lineLength, y, i * lineSpacing - 100f);
-                var v2 = new Vector3(lineLength, y, i * lineSpacing - 100f);
-
-                //perpendicular to x-axis
-                var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
-                var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
-
-                vertices.AddRange(new []
+                var vertices = new List<Vertex>();
+                var indices = new List<int>();
+                for (int i = 0; i < 100; i++)
                 {
-                    new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                    new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                    new Vertex(v3, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                    new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                });
+                    var index = vertices.Count;
 
-                indices.AddRange(new []
+                    //parallel to x-axis
+                    var v1 = new Vector3(-lineLength, y, i*lineSpacing - 100f);
+                    var v2 = new Vector3(lineLength, y, i*lineSpacing - 100f);
+
+                    //perpendicular to x-axis
+                    var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
+                    var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
+
+                    vertices.AddRange(new[]
+                    {
+                        new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                        new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                        new Vertex(v3, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                        new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    });
+
+                    indices.AddRange(new[]
+                    {
+                        index, index + 1, index,
+                        index + 2, index + 3, index + 2
+                    });
+                }
+
+                return new Mesh
                 {
-                    index, index + 1, index,
-                    index + 2, index + 3, index + 2
-                });
+                    Vertices = vertices.ToArray(),
+                    Indices = indices.ToArray()
+                };
             }
-
-            return new Mesh
-            {
-                Vertices = vertices.ToArray(),
-                Indices = indices.ToArray()
-            };
         }
     }
-
-    
-
-    
-
 }
