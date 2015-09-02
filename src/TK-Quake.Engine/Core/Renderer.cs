@@ -178,6 +178,19 @@ namespace TKQuake.Engine.Core
 //            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
             var model = entity.Transform;
             GL.UniformMatrix4(_uniModel, false, ref model);
+            /*
+            var rotate = Matrix4.CreateRotationX(entity.Rotation.X)*
+                         Matrix4.CreateRotationY(entity.Rotation.Y)*
+                         Matrix4.CreateRotationZ(entity.Rotation.Z);
+
+            var translate = Matrix4.CreateTranslation(entity.Position / 8);
+            var scale = Vector3.One*entity.Scale;
+
+            GL.PushMatrix();
+            GL.MultMatrix(ref translate);
+            GL.MultMatrix(ref rotate);
+            GL.Scale(scale);
+            */
 
             //bind texture
             if (mesh.texture != null)

@@ -95,7 +95,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Scale = 0.5f;
             //gunEntity.Components.Add(new GravityComponent(gunEntity));
 
-            gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, new Vector3(0.5f, 0.5f, -2), new Vector3(-0.5f, -1.5f, 2)));
+            gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true));
 
             Children.Add(gunEntity);
 
@@ -154,97 +154,8 @@ namespace TKQuake.Cookbook.Screens
         }
     }
 
-    class Line3
-    {
-        public Vector3 A { get; set; }
-        public Vector3 B { get; set; }
-        public Line3(Vector3 a, Vector3 b)
-        {
-            this.A = a;
-            this.B = b;
-        }
-    }
+    
 
-    class BoundingBoxComponent : IComponent
-    {
-        public Vector3 _top { get; set; }
-        public Vector3 _bottom { get; set; }
-        public Entity _entity { get; set; }
-
-        public BoundingBoxComponent(Entity entity, Vector3 top, Vector3 bottom)
-        {
-            this._top = top;
-            this._bottom = bottom;
-            this._entity = entity;
-        }
-
-        public void Startup() { }
-
-        public void Shutdown() { }
-
-        public void Update(double elapsedTime)
-        {
-
-            _entity.Position += new Vector3(1, 1, 1) * (float)elapsedTime;
-            
-            /*
-             * Looks like this
-
-
-                  (6)  ------------- (7)
-                      /|          /|
-                     / |         / |
-                    /  |        /  |
-                (5) ------------   | (4)
-                    |  |       |   |
-                (1) |  /-------|---/ (2)
-                    | /        |  /
-                    |/         | /
-                (0) ------------/ (3)
-
-
-             */
-
-            var corners = new List<Vector3>();
-            corners.Add(_entity.Position/2 + _bottom);
-            corners.Add(new Vector3(_entity.Position.X / 2 + _bottom.X, _entity.Position.Y / 2 + _bottom.Y, _entity.Position.Z / 2 + _top.Z));
-            corners.Add(new Vector3(_entity.Position.X / 2 + _top.X,    _entity.Position.Y / 2 + _bottom.Y, _entity.Position.Z / 2 + _top.Z));
-            corners.Add(new Vector3(_entity.Position.X / 2 + _top.X,    _entity.Position.Y / 2 + _bottom.Y, _entity.Position.Z / 2 + _bottom.Z));
-
-            corners.Add(new Vector3(_entity.Position.X / 2 + _top.X,    _entity.Position.Y / 2 + _top.Y,    _entity.Position.Z / 2 + _bottom.Z));
-            corners.Add(new Vector3(_entity.Position.X / 2 + _bottom.X, _entity.Position.Y / 2 + _top.Y,    _entity.Position.Z / 2 + _bottom.Z));
-            corners.Add(new Vector3(_entity.Position.X / 2 + _bottom.X, _entity.Position.Y / 2 + _top.Y,    _entity.Position.Z / 2 + _top.Z));
-            corners.Add(_entity.Position / 2 + _top);
-
-            var lines = new List<Line3>();
-            lines.Add(new Line3(corners[0], corners[1]));
-            lines.Add(new Line3(corners[1], corners[2]));
-            lines.Add(new Line3(corners[2], corners[3]));
-            lines.Add(new Line3(corners[3], corners[0]));
-
-            lines.Add(new Line3(corners[4], corners[5]));
-            lines.Add(new Line3(corners[5], corners[6]));
-            lines.Add(new Line3(corners[6], corners[7]));
-            lines.Add(new Line3(corners[7], corners[4]));
-
-            lines.Add(new Line3(corners[0], corners[5]));
-            lines.Add(new Line3(corners[1], corners[6]));
-            lines.Add(new Line3(corners[2], corners[7]));
-            lines.Add(new Line3(corners[3], corners[4]));
-            
-            GL.Begin(PrimitiveType.LineStrip); // Or Lines
-            {
-                GL.Color3(0f, 255f, 0f);
-                GL.Enable(EnableCap.DepthTest);
-                foreach (var l in lines)
-                {
-                    GL.Vertex3(l.A);
-                    GL.Vertex3(l.B);
-                }
-            }
-            GL.End();
-            GL.Color3(255f, 255, 255);
-        }
-    }
+    
 
 }
