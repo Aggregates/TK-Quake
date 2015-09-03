@@ -35,6 +35,7 @@ namespace TKQuake.Cookbook.Screens
 
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
+            Components.Add(new SkyBoxComponent());
         }
 
         private void InitEntities()
@@ -117,15 +118,15 @@ namespace TKQuake.Cookbook.Screens
     {
         public void Startup() { }
         public void Shutdown() { }
-        public void update(double elapsedTime)
+        public void Update(double elapsedTime)
         {
 
-            float difamb[] = { 1.0f, 0.5f, 0.3f, 1.0f };
+            float[] difamb = { 1.0f, 0.5f, 0.3f, 1.0f };
             double size = 50.0;
 
             GL.Begin(PrimitiveType.Quads);
             //front face
-            GL.Material(GL.FrontFace, GL_AMBIENT_AND_DIFFUSE, difamb);
+            GL.Material(MaterialFace.Front, MaterialParameter.AmbientAndDiffuse, difamb);
             //GL.Materialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, difamb);
             GL.Normal3(0.0, 0.0, 1.0);
             GL.Vertex3(size / 2, size / 2, size / 2);
