@@ -41,6 +41,25 @@ namespace TKQuake.Cookbook.Screens
             SkyBoxComponent skyBox = new SkyBoxComponent();
             skyBox.Startup();
             Components.Add(skyBox);
+
+            // List loaded 'components
+            Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
+            foreach (var component in Components)
+            {
+                Console.WriteLine(component.ToString());
+            }
+            Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
+
+        }
+
+        public void ChangeSkyBox(int choice)
+        {
+            Components.Remove(Components.ElementAt(2));
+            SkyBoxComponent skyBox = new SkyBoxComponent();
+            skyBox.Startup();
+            skyBox.chooseSky(choice);
+            Components.Add(skyBox);
+
         }
 
         private void InitEntities()
@@ -118,9 +137,6 @@ namespace TKQuake.Cookbook.Screens
         }
     }
 
-
-
-    // Step 1: Draw a cube
     class SkyBoxComponent : IComponent
     {
         private int[] skybox = new int [6];
@@ -130,50 +146,53 @@ namespace TKQuake.Cookbook.Screens
 
             if (String.IsNullOrEmpty(filename))
                 throw new ArgumentException(filename);
-            //int [] num = new int[0];       //the id for the texture
-            //glGenTextures(1, num);  //we generate a unique one
+
             int id = GL.GenTexture();
-
-            //GL.GenTextures(1, num);
-            //SDL_Surface* img = SDL_LoadBMP(filename); //load the bmp image
-
             GL.BindTexture(TextureTarget.Texture2D, id);
 
-            //glBindTexture(GL_TEXTURE_2D, num);       //and use the texture, we have just generated
-
+            // Increase or decrease the size of the texture
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
+            // Repeat the pixels in the edge of the texture, it will hide that 1px wide line at the edge of the cube
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.Clamp);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.Clamp);
 
+            // Create bmp
             Bitmap bmp = new Bitmap(filename);
             BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
+            // Make texture... at least that's what I think this does...
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
 
             bmp.UnlockBits(bmp_data);
 
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //same if the image bigger
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);      //we repeat the pixels in the edge of the texture, it will hide that 1px wide line at the edge of the cube, which you have seen in the video
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);      //we do it for vertically and horizontally (previous line)
-            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, img->pixels);        //we make the actual texture
-            //SDL_FreeSurface(img);   //we delete the image, we don't need it anymore
             return id;     //and we return the id
         }
 
         //load all of the textures, to the skybox array
-        void initskybox()
+        public void chooseSky(int choice)
         {
-            skybox[0] = loadTexture("left.bmp");
-            skybox[1] = loadTexture("back.bmp");
-            skybox[2] = loadTexture("right.bmp");
-            skybox[3] = loadTexture("front.bmp");
-            skybox[4] = loadTexture("top.bmp");
-            skybox[5] = loadTexture("top.jpg"); // bottom?
+            string selection;
+
+            switch (choice)
+            {
+                case 0: selection = "anotherworld"; break;
+                case 1: selection = "space"; break;
+                default: selection = ""; break;
+            }
+
+            skybox[0] = loadTexture(Path.Combine("skybox", selection, "left.bmp"));
+            skybox[1] = loadTexture(Path.Combine("skybox", selection, "back.bmp"));
+            skybox[2] = loadTexture(Path.Combine("skybox", selection, "right.bmp"));
+            skybox[3] = loadTexture(Path.Combine("skybox", selection, "front.bmp"));
+            skybox[4] = loadTexture(Path.Combine("skybox", selection, "top.bmp"));
+            skybox[5] = loadTexture(Path.Combine("skybox", selection, "top.bmp")); // bottom?
         }
 
         public void Startup()
         {
-            initskybox();
+            chooseSky(0);                   // Change this to alter which sky you see. Only 0 or 1 at the moment.
 
         }
         public void Shutdown() { }
@@ -184,14 +203,11 @@ namespace TKQuake.Cookbook.Screens
             float[] difamb = { 1.0f, 0.5f, 0.3f, 1.0f };
             double size = 1000;
 
-            GL.Disable(EnableCap.Lighting);
-            //GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
 
             GL.BindTexture(TextureTarget.Texture2D, skybox[1]);
             GL.Begin(PrimitiveType.Quads);
             //back face
-            //GL.Material(MaterialFace.FrontAndBack, MaterialParameter.AmbientAndDiffuse, difamb);
             //GL.Normal3(0.0, 0.0, 1.0);
             GL.TexCoord2(0, 0);
             GL.Vertex3(size / 2, size / 2, size / 2);
@@ -248,7 +264,7 @@ namespace TKQuake.Cookbook.Screens
             //top face
             GL.BindTexture(TextureTarget.Texture2D, skybox[4]);
             GL.Begin(PrimitiveType.Quads);
-            //GL.Normal3(0.0, 1.0, 0.0);
+            GL.Normal3(0.0, 1.0, 0.0);
             GL.TexCoord2(1, 0);
             GL.Vertex3(size / 2, size / 2, size / 2);
             GL.TexCoord2(0, 0);
