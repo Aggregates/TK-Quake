@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Infrastructure
         public Vector3[] Vertices { get; set; }
         public Vector3[] Normals { get; set; }
         public Vector2[] Textures { get; set; }
-        public int[] Indices { get; set; }
+        public uint[] Indices { get; set; }
     }
 
     public static class MeshExtensions
@@ -36,7 +36,7 @@ namespace TKQuake.Engine.Infrastructure
                 Textures = new Vector2[objLoaderResult.Vertices.Count]
             };
 
-            var indiceList = new List<int>();
+            var indiceList = new List<uint>();
             foreach (var group in objLoaderResult.Groups)
             {
                 foreach (var face in group.Faces)
@@ -61,7 +61,7 @@ namespace TKQuake.Engine.Infrastructure
                         mesh.Normals[vertIndex] = new Vector3(normal.X, normal.Y, normal.Z);
                         mesh.Textures[vertIndex] = new Vector2(texture.X, texture.Y);
 
-                        indiceList.Add(vertIndex);
+                        indiceList.Add((uint)vertIndex);
                     }
                 }
             }
