@@ -40,11 +40,13 @@ namespace TKQuake.Engine.Core
                          Matrix4.CreateRotationY(entity.Rotation.Y) *
                          Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var translate = Matrix4.CreateTranslation(entity.Position / 8);
+            var entityTranslation = entity.Translation;
+            var position = Matrix4.CreateTranslation(entity.Position / 8);
             var scale = Vector3.One * entity.Scale;
 
             GL.PushMatrix();
-            GL.MultMatrix(ref translate);
+            GL.MultMatrix(ref entityTranslation);
+            GL.MultMatrix(ref position);
             GL.MultMatrix(ref rotate);
             GL.Scale(scale);
 
@@ -59,6 +61,9 @@ namespace TKQuake.Engine.Core
 
             GL.End();
             GL.PopMatrix();
+
+            //reset translation matrix?
+            entity.Translation = Matrix4.Identity;
         }
 
         public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)
