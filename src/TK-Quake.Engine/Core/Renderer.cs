@@ -51,8 +51,8 @@ namespace TKQuake.Engine.Core
             GL.Scale(scale);
 
             //todo: move away from immediate mode
-            //DrawImmediate(mesh);
-            DrawVbo(mesh);
+            DrawImmediate(mesh);
+            //DrawVbo(mesh);
 
             GL.PopMatrix();
 
@@ -74,23 +74,38 @@ namespace TKQuake.Engine.Core
 
         private void DrawVbo(Mesh mesh)
         {
-            GL.EnableClientState(ArrayCap.VertexArray);
-            //GL.EnableClientState(ArrayCap.NormalArray);
-            //GL.EnableClientState(ArrayCap.TextureCoordArray);
-
             int verticesId;
-            GL.GenBuffers(1, out verticesId);
-            System.Diagnostics.Debug.Assert(verticesId > 0);
-
+            GL.GenBuffers(1, out verticesId); System.Diagnostics.Debug.Assert(verticesId > 0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, verticesId);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length * Vector3.SizeInBytes), mesh.Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length*Vector3.SizeInBytes), mesh.Vertices,
+                BufferUsageHint.StaticDraw);
+
+            GL.EnableClientState(ArrayCap.VertexArray);
+
+            int normalsId;
+            GL.GenBuffers(1, out normalsId); System.Diagnostics.Debug.Assert(normalsId > 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, normalsId);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Normals.Length*Vector3.SizeInBytes), mesh.Normals,
+                BufferUsageHint.StaticDraw);
+
+            GL.EnableClientState(ArrayCap.NormalArray);
+
+            int texturesId;
+            GL.GenBuffers(1, out texturesId); System.Diagnostics.Debug.Assert(texturesId > 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, texturesId);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Textures.Length*Vector2.SizeInBytes * 8), mesh.Textures,
+                BufferUsageHint.StaticDraw);
+
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             int indiciesId;
             GL.GenBuffers(1, out indiciesId);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indiciesId);
             GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length * sizeof(uint)), mesh.Indices, BufferUsageHint.StaticDraw);
 
-            GL.VertexPointer(3, VertexPointerType.Float, BlittableValueType.StrideOf(mesh.Vertices), new IntPtr(0));
+            GL.VertexPointer(3, VertexPointerType.Float, BlittableValueType.StrideOf(mesh.Vertices), IntPtr.Zero);
+            GL.NormalPointer(NormalPointerType.Float, BlittableValueType.StrideOf(mesh.Normals), IntPtr.Zero);
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, BlittableValueType.StrideOf(mesh.Textures), IntPtr.Zero);
 
             GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }

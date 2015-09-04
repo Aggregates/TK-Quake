@@ -50,6 +50,10 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
 
+            var textureComponent = new GunTextureComponent();
+            textureComponent.Startup();
+            gunEntity.Components.Add(textureComponent);
+
             Children.Add(gunEntity);
         }
     }
@@ -81,6 +85,35 @@ namespace TKQuake.Cookbook.Screens
             GL.End();
 
             GL.Color3(255f, 255, 255);
+        }
+    }
+
+    class GunTextureComponent : IComponent
+    {
+        private TextureManager _textureManager = new TextureManager();
+
+        //Gross stuff from trying to find the bounds of the mesh
+        //private RenderableEntity gunEntity;
+
+        //public GunTextureComponent(RenderableEntity gun)
+        //{
+        //    gunEntity = gun;
+        //}
+
+        public void Startup()
+        {
+            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+        }
+        public void Shutdown() { }
+        public void Update(double elapsedTime)
+        {
+            var texture = _textureManager.Get("gun");
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+
+            GL.Begin(PrimitiveType.Quads);
+            GL.End();
         }
     }
 }

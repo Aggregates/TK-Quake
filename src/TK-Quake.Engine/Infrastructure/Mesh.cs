@@ -23,21 +23,21 @@ namespace TKQuake.Engine.Infrastructure
         /// <summary>
         /// This converts from the ObjLoader format to our Mesh format
         /// </summary>
-        /// <param name="objLoaderResult">The result from ObjLoader</param>
+        /// <param name="res">The result from ObjLoader</param>
         /// <returns></returns>
-        public static Mesh ToMesh(this LoadResult objLoaderResult)
+        public static Mesh ToMesh(this LoadResult res)
         {
             //create mesh
             //note that each array is the length of vertices
             var mesh = new Mesh
             {
-                Vertices = new Vector3[objLoaderResult.Vertices.Count],
-                Normals = new Vector3[objLoaderResult.Vertices.Count],
-                Textures = new Vector2[objLoaderResult.Vertices.Count]
+                Vertices = new Vector3[res.Vertices.Count],
+                Normals = new Vector3[res.Vertices.Count],
+                Textures = new Vector2[res.Vertices.Count]
             };
 
             var indiceList = new List<uint>();
-            foreach (var group in objLoaderResult.Groups)
+            foreach (var group in res.Groups)
             {
                 foreach (var face in group.Faces)
                 {
@@ -50,9 +50,9 @@ namespace TKQuake.Engine.Infrastructure
                         var vertIndex = faceVertex.VertexIndex - 1;
 
                         //load data
-                        var vertex = objLoaderResult.Vertices[vertIndex];
-                        var normal = objLoaderResult.Normals[faceVertex.NormalIndex - 1];
-                        var texture = objLoaderResult.Textures[faceVertex.TextureIndex - 1];
+                        var vertex = res.Vertices[vertIndex];
+                        var normal = res.Normals[faceVertex.NormalIndex - 1];
+                        var texture = res.Textures[faceVertex.TextureIndex - 1];
 
                         //save to mesh
                         //this rearranges the data so that indices[i] is contiguous across
