@@ -53,7 +53,6 @@ namespace TKQuake.Cookbook.Screens
             var textureComponent = new GunTextureComponent();
             textureComponent.Startup();
             gunEntity.Components.Add(textureComponent);
-
             Children.Add(gunEntity);
         }
     }
@@ -90,15 +89,7 @@ namespace TKQuake.Cookbook.Screens
 
     class GunTextureComponent : IComponent
     {
-        private TextureManager _textureManager = new TextureManager();
-
-        //Gross stuff from trying to find the bounds of the mesh
-        //private RenderableEntity gunEntity;
-
-        //public GunTextureComponent(RenderableEntity gun)
-        //{
-        //    gunEntity = gun;
-        //}
+        private readonly TextureManager _textureManager = new TextureManager();
 
         public void Startup()
         {
@@ -111,9 +102,6 @@ namespace TKQuake.Cookbook.Screens
 
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, texture.Id);
-
-            GL.Begin(PrimitiveType.Quads);
-            GL.End();
         }
     }
 }
