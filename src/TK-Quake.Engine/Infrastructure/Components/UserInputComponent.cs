@@ -156,6 +156,12 @@ namespace TKQuake.Engine.Infrastructure.Components
 
                         break;
                     }
+                case Key.F10:
+                    {
+                        Console.WriteLine("World Change");
+                        //command 
+                        break;
+                    }
             }
 
             if (command != null)
