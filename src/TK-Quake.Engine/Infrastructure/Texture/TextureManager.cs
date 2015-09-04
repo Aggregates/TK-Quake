@@ -60,13 +60,13 @@ namespace TKQuake.Engine.Infrastructure.Texture
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
             // Load the texture as a standard bitmap
-            Bitmap bmp = (filename.Contains("tga")) ?
+            var bmp = (filename.EndsWith("tga")) ?
                 Paloma.TargaImage.LoadTargaImage(filename) :
                 new Bitmap(filename);
-            Rectangle rect = new Rectangle(0,0,bmp.Width, bmp.Height);
+            var rect = new Rectangle(0,0,bmp.Width, bmp.Height);
 
             // Lock the data in memory while we create the texture
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
+            var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
             // Load the textue into OpenGL
@@ -76,8 +76,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
             // Unlock the data in memory
             bmp.UnlockBits(bmpData);
 
-            Texture text = new Texture(textureId, bmp.Width, bmp.Height, filename);
-            return text;
+            return new Texture(textureId, bmp.Width, bmp.Height, filename);
         }
 
         public void Dispose()
