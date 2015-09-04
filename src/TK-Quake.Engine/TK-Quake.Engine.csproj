@@ -51,6 +51,7 @@
     <Compile Include="Core\Camera.cs" />
     <Compile Include="Debug\FramesPerSecond.cs" />
     <Compile Include="Extensions\GLX.cs" />
+    <Compile Include="Infrastructure\Components\BobComponent.cs" />
     <Compile Include="Infrastructure\Components\IComponent.cs" />
     <Compile Include="Infrastructure\Components\RotateOnUpdateComponent.cs" />
     <Compile Include="Infrastructure\Entities\IEntity.cs" />
@@ -128,7 +129,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="Loader\BSP\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

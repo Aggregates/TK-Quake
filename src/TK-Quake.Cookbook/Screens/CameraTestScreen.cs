@@ -48,6 +48,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Position = new Vector3(0, 1, -10);
             gunEntity.Scale = 0.5f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
+            gunEntity.Components.Add(new BobComponent(gunEntity, 10, 1));
 
             Children.Add(gunEntity);
         }

@@ -42,7 +42,7 @@ namespace TKQuake.Engine.InterOp
            public Int32 msg;
  
            public IntPtr wParam; //Width
-           public IntPtr lParam; // Length
+           public IntPtr lParam; // Scale
            public uint time;
            public Point p;
        }
