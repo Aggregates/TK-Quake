@@ -69,6 +69,17 @@ namespace TKQuake.Engine.Core
             GL.Scale(scale);
 
             //todo: move away from immediate mode
+            //DrawImmediate(mesh);
+            DrawVbo(mesh);
+
+            GL.PopMatrix();
+
+            //reset translation matrix?
+            entity.Translation = Matrix4.Identity;
+        }
+
+        private void DrawImmediate(Mesh mesh)
+        {
             GL.Begin(PrimitiveType.Triangles);
             foreach (var index in mesh.Indices)
             {
@@ -87,12 +98,30 @@ namespace TKQuake.Engine.Core
                     GL.TexCoord2(mesh.Textures[index]);
                 }
             }
-
             GL.End();
-            GL.PopMatrix();
+        }
 
-            //reset translation matrix?
-            entity.Translation = Matrix4.Identity;
+        private void DrawVbo(Mesh mesh)
+        {
+            GL.EnableClientState(ArrayCap.VertexArray);
+            //GL.EnableClientState(ArrayCap.NormalArray);
+            //GL.EnableClientState(ArrayCap.TextureCoordArray);
+
+            int verticesId;
+            GL.GenBuffers(1, out verticesId);
+            System.Diagnostics.Debug.Assert(verticesId > 0);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, verticesId);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length * Vector3.SizeInBytes), mesh.Vertices, BufferUsageHint.StaticDraw);
+
+            int indiciesId;
+            GL.GenBuffers(1, out indiciesId);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indiciesId);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length * sizeof(uint)), mesh.Indices, BufferUsageHint.StaticDraw);
+
+            GL.VertexPointer(3, VertexPointerType.Float, BlittableValueType.StrideOf(mesh.Vertices), new IntPtr(0));
+
+            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
 
         public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)
