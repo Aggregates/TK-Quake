@@ -54,7 +54,6 @@ namespace TKQuake.Cookbook.Screens
             var textureComponent = new GunTextureComponent();
             textureComponent.Startup();
             gunEntity.Components.Add(textureComponent);
-
             Children.Add(gunEntity);
         }
     }
