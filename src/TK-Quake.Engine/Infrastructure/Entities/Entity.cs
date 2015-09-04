@@ -18,6 +18,12 @@ namespace TKQuake.Engine.Infrastructure.Entities
         public Vector3 Rotation { get; set; }
         public Vector3 ViewDirection { get; }
         public Vector3 OrthogonalDirection { get; }
+        public Matrix4 Translation { get; set; }
+
+        public Entity()
+        {
+            Translation = Matrix4.Identity;
+        }
 
         public void Update(double elapsedTime) {
 

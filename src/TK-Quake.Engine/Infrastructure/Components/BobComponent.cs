@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
+using OpenTK.Platform.Windows;
 using TKQuake.Engine.Infrastructure.Entities;
 using static System.Math;
 
@@ -31,20 +34,16 @@ namespace TKQuake.Engine.Infrastructure.Components
         public void Update(double elapsedTime)
         {
             //the new angle in radians
-            var mod = 2*System.Math.PI;
-            _value = (_value + (Speed * elapsedTime))%mod;
+            const double mod = 2*System.Math.PI;
+            _value = (_value + elapsedTime * Speed) %mod;
 
             //get trig function value
-            var trigValue = Sin(_value);
-            var scaledValue = trigValue*Scale;
-            var yValue = (float)(scaledValue);
-
-            Console.Clear();
-            Console.WriteLine(@"Angle: {0}", _value);
-            Console.WriteLine(@"Y: {0}", yValue);
+            var trigValue = Scale * Sin(_value);
+            var yValue = (float)(trigValue);
 
             var v = new Vector3(0, yValue, 0);
-            _entity.Position += v;
+            var m = Matrix4.CreateTranslation(v);
+            _entity.Translation += m;
         }
     }
 }
