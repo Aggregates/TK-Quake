@@ -51,6 +51,10 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
 
+            var textureComponent = new GunTextureComponent();
+            textureComponent.Startup();
+            gunEntity.Components.Add(textureComponent);
+
             Children.Add(gunEntity);
         }
     }

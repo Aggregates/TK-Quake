@@ -32,10 +32,10 @@ namespace TKQuake.Cookbook
             //bsp.LoadFile ();
             //bsp.DumpBSP ();
 
-            currentScreen = new CameraTestScreen("q3dm6.bsp");
-
             using (game = new GameWindow())
             {
+                currentScreen = new CameraTestScreen();
+
                 game.Load += game_Load;
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
