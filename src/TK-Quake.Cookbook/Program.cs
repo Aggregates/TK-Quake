@@ -24,8 +24,12 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
+            currentScreen = new CameraTestScreen("q3dm6.bsp");
+
             using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
                 DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
+
+            using (game = new GameWindow())
             {
                 game.Load += game_Load;
                 game.Resize += game_Resize;

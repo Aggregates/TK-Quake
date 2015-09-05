@@ -29,7 +29,7 @@ namespace TKQuake.Cookbook.Screens
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
-        public CameraTestScreen(string BSPFile)
+        public CameraTestScreen(Renderer renderer, string BSPFile)
         {
             _renderer = renderer;
             _textureManager = new TextureManager();
@@ -68,6 +68,9 @@ namespace TKQuake.Cookbook.Screens
             {
                 component.Startup();
             }
+
+            Components.Add(new FloorGridComponent());
+            Components.Add(new BSPComponent(BSPFile, _renderer, _camera));
         }
 
         private void InitEntities()
@@ -129,18 +132,21 @@ namespace TKQuake.Cookbook.Screens
                     new Vertex(v3, Vector3.Zero, Vector2.Zero),
                     new Vertex(v4, Vector3.Zero, Vector2.Zero),
                 });
+            }
+        }
+    }
 
     class BSPComponent : IComponent
     {
         private const string ENTITY_ID = "BSP";
 
-        private readonly Renderer _renderer = Renderer.Singleton();
-
         private BSPRenderer BSP;
+        private Renderer renderer;
         private Camera camera;
 
-        public BSPComponent(string BSPFile, ref Camera cam)
+        public BSPComponent(string BSPFile, Renderer render, Camera cam)
         {
+            renderer = render;
             camera = cam;
             ChangeBSP (BSPFile);
         }
@@ -155,44 +161,19 @@ namespace TKQuake.Cookbook.Screens
 
         public void Update(double elapsedTime)
         {
-            // Check to see if a mesh has already been registered for the BSP component.
-            // If so, unregister it.
-            if (_renderer.IsMeshRegister (ENTITY_ID) == true)
+            Mesh mesh = BSP.GetMesh (camera.Position);
+
+            if (renderer.IsMeshRegister (ENTITY_ID) == true)
             {
-                _renderer.UnregisterMesh (ENTITY_ID);
+                renderer.UnregisterMesh (ENTITY_ID);
             }
 
-            // Get the current ModelView and Projection matrices from OPenTK
-            double[] matrix  = new double[16];
-            GL.GetDouble (GetPName.ModelviewMatrix, matrix);
+            renderer.RegisterMesh(ENTITY_ID, mesh);
 
-            Matrix4 modelView = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
-            );
-
-            GL.GetDouble (GetPName.ProjectionMatrix, matrix);
-
-            Matrix4 projection = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
-            );
-
-            // Generate and register the mesh that is potentially visible to the camera.
-            _renderer.RegisterMesh (ENTITY_ID, BSP.GetMesh (camera.Position, Matrix4.Mult (projection, modelView)));
-
-            // Create a renderable entity.
-            var BSPEntity = RenderableEntity.Create ();
+            var BSPEntity = RenderableEntity.Create();
             BSPEntity.Id = ENTITY_ID;
-            BSPEntity.Position = camera.Position;
+            BSPEntity.Position = new Vector3(0, 0, 0);
             BSPEntity.Scale = 1.0f;
-
-            // Render the BSP entity.
-            _renderer.DrawEntity (BSPEntity);
         }
     }
 }

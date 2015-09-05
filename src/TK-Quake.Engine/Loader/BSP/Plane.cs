@@ -43,7 +43,7 @@ namespace TKQuake.Engine.Loader.BSP
                     BitConverter.ToSingle(buf, 0 * sizeof(float)),
                     BitConverter.ToSingle(buf, 1 * sizeof(float)),
                     BitConverter.ToSingle(buf, 2 * sizeof(float)),
-                    BitConverter.ToSingle(buf, 3 * sizeof(float)));
+                    -BitConverter.ToSingle(buf, 3 * sizeof(float)));
 
                 if (swizzle == true)
                 {

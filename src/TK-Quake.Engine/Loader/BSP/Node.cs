@@ -52,7 +52,6 @@ namespace TKQuake.Engine.Loader.BSP
                 nodes[i].maxs        = new Vector3(BitConverter.ToInt32(buf, 6 * sizeof(int)),
                                                    BitConverter.ToInt32(buf, 7 * sizeof(int)),
                                                    BitConverter.ToInt32(buf, 8 * sizeof(int)));
-
                 if (swizzle == true)
                 {
                     Swizzle (ref nodes [i].maxs);
