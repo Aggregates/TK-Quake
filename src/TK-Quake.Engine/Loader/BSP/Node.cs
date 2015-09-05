@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace TKQuake.Engine.Loader.BSP
 {
@@ -11,10 +12,10 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public struct NodeEntry
         {
-            public int   plane;
-            public int[] children;
-            public int[] mins;
-            public int[] maxs;
+            public int    plane;
+            public int[]  children;
+            public Vector3 mins;
+            public Vector3 maxs;
         }
 
         private const int NODE_SIZE = 36;
@@ -41,17 +42,15 @@ namespace TKQuake.Engine.Loader.BSP
                 file.Read (buf, 0, NODE_SIZE);
 
                 nodes[i].children    = new int[2];
-                nodes[i].mins        = new int[3];
-                nodes[i].maxs        = new int[3];
                 nodes[i].plane       = BitConverter.ToInt32(buf, 0 * sizeof(int));
                 nodes[i].children[0] = BitConverter.ToInt32(buf, 1 * sizeof(int));
                 nodes[i].children[1] = BitConverter.ToInt32(buf, 2 * sizeof(int));
-                nodes[i].mins[0]     = BitConverter.ToInt32(buf, 3 * sizeof(int));
-                nodes[i].mins[1]     = BitConverter.ToInt32(buf, 4 * sizeof(int));
-                nodes[i].mins[2]     = BitConverter.ToInt32(buf, 5 * sizeof(int));
-                nodes[i].maxs[0]     = BitConverter.ToInt32(buf, 6 * sizeof(int));
-                nodes[i].maxs[1]     = BitConverter.ToInt32(buf, 7 * sizeof(int));
-                nodes[i].maxs[2]     = BitConverter.ToInt32(buf, 8 * sizeof(int));
+                nodes[i].mins        = new Vector3(BitConverter.ToInt32(buf, 3 * sizeof(int)),
+                                                   BitConverter.ToInt32(buf, 4 * sizeof(int)),
+                                                   BitConverter.ToInt32(buf, 5 * sizeof(int)));
+                nodes[i].maxs        = new Vector3(BitConverter.ToInt32(buf, 6 * sizeof(int)),
+                                                   BitConverter.ToInt32(buf, 7 * sizeof(int)),
+                                                   BitConverter.ToInt32(buf, 8 * sizeof(int)));
             }
         }
 

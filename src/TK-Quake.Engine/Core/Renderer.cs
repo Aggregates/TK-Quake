@@ -31,6 +31,24 @@ namespace TKQuake.Engine.Core
             _meshes.Add(entityId, mesh);
         }
 
+        /// <summary>
+        /// Unregisters an entity mesh from the Renderer
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public void UnregisterMesh(string entityId)
+        {
+            _meshes.Remove(entityId);
+        }
+
+        /// <summary>
+        /// Checks if an entity's mesh has been registered.
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public bool IsMeshRegister(string entityId)
+        {
+            return(_meshes.Registered(entityId));
+        }
+
         public void DrawEntity(IEntity entity)
         {
             var mesh = _meshes.Get(entity.Id);
