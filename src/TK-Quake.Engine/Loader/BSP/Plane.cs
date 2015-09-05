@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace TKQuake.Engine.Loader.BSP
 {
@@ -11,7 +12,7 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public struct PlaneEntry
         {
-            public float[] normal;
+            public Vector3 normal;
             public float   dist;
         }
 
@@ -38,11 +39,10 @@ namespace TKQuake.Engine.Loader.BSP
             {
                 file.Read (buf, 0, PLANE_SIZE);
 
-                planes[i].normal = new float[3];
-                planes[i].normal[0] = BitConverter.ToSingle(buf, 0 * sizeof(float));
-                planes[i].normal[1] = BitConverter.ToSingle(buf, 1 * sizeof(float));
-                planes[i].normal[2] = BitConverter.ToSingle(buf, 2 * sizeof(float));
-                planes[i].dist      = BitConverter.ToSingle(buf, 3 * sizeof(float));
+                planes [i].normal = new Vector3(BitConverter.ToSingle(buf, 0 * sizeof(float)),
+                                                BitConverter.ToSingle(buf, 1 * sizeof(float)),
+                                                BitConverter.ToSingle(buf, 2 * sizeof(float)));
+                planes [i].dist   = BitConverter.ToSingle(buf, 3 * sizeof(float));
             }
         }
 

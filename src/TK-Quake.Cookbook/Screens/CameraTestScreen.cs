@@ -29,7 +29,7 @@ namespace TKQuake.Cookbook.Screens
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
-        public CameraTestScreen(Renderer renderer)
+        public CameraTestScreen(Renderer renderer, string BSPFile)
         {
             _renderer = renderer;
             _textureManager = new TextureManager();
@@ -69,6 +69,9 @@ namespace TKQuake.Cookbook.Screens
             {
                 component.Startup();
             }
+
+            Components.Add(new FloorGridComponent());
+            Components.Add(new BSPComponent(BSPFile, _renderer, _camera));
         }
 
         private void InitEntities()
@@ -143,6 +146,47 @@ namespace TKQuake.Cookbook.Screens
                 Vertices = vertices.ToArray(),
                 Indices = indices.ToArray()
             };
+        }
+    }
+
+    class BSPComponent : IComponent
+    {
+        private const string ENTITY_ID = "BSP";
+
+        private BSPRenderer BSP;
+        private Renderer renderer;
+        private Camera camera;
+
+        public BSPComponent(string BSPFile, Renderer render, Camera cam)
+        {
+            renderer = render;
+            camera = cam;
+            ChangeBSP (BSPFile);
+        }
+
+        public void ChangeBSP(string BSPFile)
+        {
+            BSP = new BSPRenderer (BSPFile);
+        }
+
+        public void Startup() { }
+        public void Shutdown() { }
+
+        public void Update(double elapsedTime)
+        {
+            Mesh mesh = BSP.GetMesh (camera.Position);
+
+            if (renderer.IsMeshRegister (ENTITY_ID) == true)
+            {
+                renderer.UnregisterMesh (ENTITY_ID);
+            }
+
+            renderer.RegisterMesh(ENTITY_ID, mesh);
+
+            var BSPEntity = RenderableEntity.Create();
+            BSPEntity.Id = ENTITY_ID;
+            BSPEntity.Position = new Vector3(0, 0, 0);
+            BSPEntity.Scale = 1.0f;
         }
     }
 }

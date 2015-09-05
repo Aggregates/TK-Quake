@@ -117,13 +117,14 @@
     <Compile Include="Loader\BSP\LightVol.cs" />
     <Compile Include="Loader\BSP\MeshVert.cs" />
     <Compile Include="Loader\BSP\VisData.cs" />
+    <Compile Include="Core\BSPRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CjClutter.ObjLoader.Loader\CjClutter.ObjLoader.Loader.csproj">
-      <Project>{1fd37682-98d6-442f-8e15-646247c690dc}</Project>
+      <Project>{1FD37682-98D6-442F-8E15-646247C690DC}</Project>
       <Name>CjClutter.ObjLoader.Loader</Name>
     </ProjectReference>
     <ProjectReference Include="..\TargaImage\TargaImage.csproj">
