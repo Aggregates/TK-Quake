@@ -47,6 +47,14 @@ namespace TKQuake.Engine.Infrastructure.Texture
             GL.DeleteTexture(text.Id);
         }
 
+        public void Bind(string key)
+        {
+            var texture = this.Get(key);
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+        }
+
         private Texture LoadTexture(string filename)
         {
             if (!File.Exists(filename))

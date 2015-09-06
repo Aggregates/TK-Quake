@@ -28,6 +28,8 @@ namespace TKQuake.Cookbook.Screens
         public CameraTestScreen()
         {
             _renderer = Renderer.Singleton();
+            _textureManager = new TextureManager();
+            _renderer.TextureManager = _textureManager;
 
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
@@ -49,10 +51,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Scale = 0.5f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
-
-            var textureComponent = new GunTextureComponent();
-            textureComponent.Startup();
-            gunEntity.Components.Add(textureComponent);
+            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
         }
     }
@@ -93,15 +92,8 @@ namespace TKQuake.Cookbook.Screens
 
         public void Startup()
         {
-            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
         }
         public void Shutdown() { }
-        public void Update(double elapsedTime)
-        {
-            var texture = _textureManager.Get("gun");
-
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
-        }
+        public void Update(double elapsedTime) { }
     }
 }
