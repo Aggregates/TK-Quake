@@ -183,7 +183,7 @@ namespace TKQuake.Engine.Core
                          Matrix4.CreateRotationY(entity.Rotation.Y)*
                          Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var translate = Matrix4.CreateTranslation(entity.Position / 8);
+            var translate = Matrix4.CreateTranslation(entity.Position);
             var scale = Vector3.One*entity.Scale;
 
             GL.PushMatrix();

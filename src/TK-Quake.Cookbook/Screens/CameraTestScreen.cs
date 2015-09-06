@@ -39,6 +39,9 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
+            CollisionDetector collidionDetector = CollisionDetector.Singleton();
+            collidionDetector.Active = true;
+            Children.Add(collidionDetector);
 
             InitEntities();
             InitComponents();
@@ -87,17 +90,27 @@ namespace TKQuake.Cookbook.Screens
 
             _renderer.RegisterMesh("gun", mesh);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 2; i++)
             {
 
                 var gunEntity = RenderableEntity.Create();
                 gunEntity.Id = "gun";
-                gunEntity.Position = new Vector3(-50 + i * 10, 200, 10);
+                gunEntity.Position = new Vector3(0, 0, 5);
                 gunEntity.Rotation = new Vector3(0, 0, 0);
-                gunEntity.Scale = 0.5f;
+                gunEntity.Scale = 1f;
                 gunEntity.Components.Add(new GravityComponent(gunEntity));
 
-                gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true));
+                BoundingBoxComponent box = new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true);
+                gunEntity.Components.Add(box);
+
+                box.Collided += Box_Collided;
+
+                if (i == 1)
+                {
+                    MoveComponent mv = new MoveComponent(gunEntity);
+                    gunEntity.Position = new Vector3(1, 1, 1);
+                    gunEntity.Components.Add(mv);
+                }
 
                 Children.Add(gunEntity);
 
@@ -109,6 +122,28 @@ namespace TKQuake.Cookbook.Screens
                     }
                 }
             }
+        }
+
+        private void Box_Collided(object sender, EventArgs e)
+        {
+            var rand = new Random();
+            Console.WriteLine("Box Collided! {0}", rand.Next());
+        }
+    }
+
+    internal class FloorGridComponent : IComponent
+    {
+        public void Startup()
+        {
+        }
+
+        public void Shutdown()
+        {
+        }
+
+        public void Update(double elapsedTime)
+        {
+            
         }
 
         private static class FloorGridEntity
@@ -155,5 +190,30 @@ namespace TKQuake.Cookbook.Screens
                 };
             }
         }
+
     }
+
+    public class MoveComponent : IComponent
+    {
+        private Engine.Infrastructure.Entities.Entity _entity;
+
+        public MoveComponent(Engine.Infrastructure.Entities.Entity entity)
+        {
+            this._entity = entity;
+        }
+
+        public void Shutdown()
+        {
+        }
+
+        public void Startup()
+        {
+        }
+
+        public void Update(double elapsedTime)
+        {
+            _entity.Position -= new Vector3((float)(elapsedTime), (float)(elapsedTime), (float)(elapsedTime));
+        }
+    }
+
 }
