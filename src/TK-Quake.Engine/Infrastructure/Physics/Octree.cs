@@ -10,7 +10,7 @@ using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Physics
 {
-    public class Octree<T> where T : Entity
+    public class Octree
     {
         public int MaxDepth { get; set; }
         public int MinItemsPerTree { get; set; }
@@ -31,8 +31,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public int Depth { get; private set; }
         public int ItemCount { get; private set; }
 
-        private List<T> _collection = new List<T>();
-        private Octree<T>[, ,] _children = new Octree<T>[2, 2, 2]; // A multidimensional cube of Octrees
+        private List<Entity> _collection = new List<Entity>();
+        private Octree[, ,] _children = new Octree[2, 2, 2]; // A multidimensional cube of Octrees
 
 
         //Constructs a new Octree. corner1 is (minX, minY, minZ), corner2 is (maxX, maxY, maxZ)
@@ -54,7 +54,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         }
 
-        public void Add(ref T item)
+        public void Add(ref Entity item)
         {
             ItemCount++;
 
@@ -68,7 +68,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         }
 
         //Removes an item from the Octree
-        public void Remove(ref T item)
+        public void Remove(ref Entity item)
         {
             Remove(item, item.Position);
         }
@@ -95,7 +95,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
 
             // This will hit a runtime error. Need to use Iterators
-            List<T> items = _collection.ToList();
+            List<Entity> items = _collection.ToList();
             _collection.ForEach(i => Remove(i, i.Position));
             items.ForEach(i => Add(ref i));
         }
@@ -140,7 +140,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         // Private Methods
 
         //Adds an item to or removes one from the children of this
-        private void File(T item, Vector3 position, bool add)
+        private void File(Entity item, Vector3 position, bool add)
         {
             //Figure out in which child(ren) the item belongs
 
@@ -251,7 +251,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
                             maxZ = Corner2.Z;
                         }
 
-                        _children[x, y, z] = new Octree<T>(
+                        _children[x, y, z] = new Octree(
                             new Vector3(minX, minY, minZ),
                             new Vector3(maxX, maxY, maxZ),
                             Depth + 1);
@@ -259,7 +259,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
                 }
             }
 
-            foreach (T item in _collection)
+            foreach (var item in _collection)
             {
                 File(item, item.Position, true);
             }
@@ -269,7 +269,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         }
 
         //Adds all items in this or one of its descendants to the specified set
-        private void CollectChildren(List<T> items)
+        private void CollectChildren(List<Entity> items)
         {
             if (_hasChildren)
             {
@@ -286,7 +286,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
             }
             else
             {
-                foreach (T item in _collection)
+                foreach (var item in _collection)
                 {
                     items.Add(item);
                 }
@@ -315,7 +315,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         }
 
         //Removes the specified item at the indicated position
-        private void Remove(T item, Vector3 position)
+        private void Remove(Entity item, Vector3 position)
         {
             ItemCount--;
 

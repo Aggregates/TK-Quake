@@ -27,10 +27,10 @@ namespace TKQuake.Test
             OctreeObject obj2 = new OctreeObject() { Id = 2, Position = new Vector3(0.75f, 0.75f, 0.75f) };
             OctreeObject obj3 = new OctreeObject() { Id = 3, Position = new Vector3(-0.75f, -0.75f, -0.75f) };
 
-            Octree<OctreeObject> tree = new Octree<OctreeObject>(c1, c2);
-            tree.Add(ref obj1);
-            tree.Add(ref obj2);
-            tree.Add(ref obj3);
+            Octree tree = new Octree(c1, c2);
+            //tree.Add(ref obj1);
+            //tree.Add(ref obj2);
+            //tree.Add(ref obj3);
 
         }
     }
