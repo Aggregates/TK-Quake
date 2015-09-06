@@ -92,10 +92,10 @@ namespace TKQuake.Cookbook.Screens
 
                 var gunEntity = RenderableEntity.Create();
                 gunEntity.Id = "gun";
-                gunEntity.Position = new Vector3(i*10, 0, i*10);
+                gunEntity.Position = new Vector3(-50 + i * 10, 200, 10);
                 gunEntity.Rotation = new Vector3(0, 0, 0);
                 gunEntity.Scale = 0.5f;
-                //gunEntity.Components.Add(new GravityComponent(gunEntity));
+                gunEntity.Components.Add(new GravityComponent(gunEntity));
 
                 gunEntity.Components.Add(new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true));
 

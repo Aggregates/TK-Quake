@@ -15,11 +15,15 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         private Entity _entity;
         public float Force { get; set; }
+        private float _velocity;
+        public bool Active { get; set; }
 
         public GravityComponent(Entity entity, float force = 9.8f)
         {
             this._entity = entity;
             this.Force = force;
+            this._velocity = 0;
+            this.Active = true;
         }
 
         public void Shutdown() { }
@@ -27,9 +31,29 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         public void Update(double elapsedTime)
         {
-            var direction = new Vector3(0f, Force, 0f) * (float)elapsedTime;
-            _entity.Position -= direction;
+            if (Active)
+            {
+                _velocity += (float)(Force / 10 * elapsedTime);
 
+                Console.Clear();
+                Console.WriteLine("Velocity: {0}", _velocity);
+
+                var direction = new Vector3(0f, _velocity, 0f);
+                _entity.Position -= direction;
+
+                Console.WriteLine("Position: {0}", _entity.Position);
+
+                // The following is test code until it can be moved
+                // into a collision detection routine.
+                // Stop at y=0
+                if (_entity.Position.Y <= 0)
+                {
+                    _entity.Position = new Vector3(_entity.Position.X, 0, _entity.Position.Z);
+                    _velocity = 0;
+                    Active = false;
+                }
+
+            }
         }
     }
 }
