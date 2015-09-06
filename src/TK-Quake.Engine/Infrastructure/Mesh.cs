@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using ObjLoader.Loader.Data.VertexData;
 using ObjLoader.Loader.Loaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using static LanguageExt.Prelude;
-using LanguageExt;
-using ObjLoader.Loader.Data.VertexData;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Engine.Infrastructure
@@ -70,13 +69,13 @@ namespace TKQuake.Engine.Infrastructure
                     indicies.Add(hash[v]);
                 else
                 {
-                    outPositions.Add(inPositions[i]);
-                    outNormals.Add(inNormals[i]);
-                    outTextures.Add(inTextures[i]);
+                    outPositions.Add(v.Position);
+                    outNormals.Add(v.Normal);
+                    outTextures.Add(v.TexCoord);
 
                     var index = (uint) outPositions.Count - 1;
                     indicies.Add(index);
-                    hash[v] = index;
+                    hash.Add(v, index);
                 }
             }
 
@@ -85,6 +84,24 @@ namespace TKQuake.Engine.Infrastructure
             mesh.Positions = outPositions.ToArray();
             mesh.Normals = outNormals.ToArray();
             mesh.Textures = outTextures.ToArray();
+
+            using (var output = File.OpenWrite("mesh-output.txt"))
+            {
+                output.Seek(0, SeekOrigin.Begin);
+                using (var writer = new StreamWriter(output))
+                {
+                    foreach (var index in mesh.Indices)
+                    {
+                        var v = mesh.Positions[index];
+                        var n = mesh.Normals[index];
+                        var t = mesh.Textures[index];
+
+                        writer.WriteLine("v {0}, {1}, {2}", v.X, v.Y, v.Z);
+                        writer.WriteLine("n {0}, {1}, {2}", n.X, n.Y, n.Z);
+                        writer.WriteLine("t {0}, {1}", t.X, t.Y);
+                    }
+                }
+            }
 
             return mesh;
         }
