@@ -49,7 +49,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
         private Texture LoadTexture(string filename)
         {
-            if (String.IsNullOrEmpty(filename) || Path.GetFullPath(filename) == null )
+            if (!File.Exists(filename))
                 throw new ArgumentException(filename);
 
             // Create a texture and bind it to the ID
