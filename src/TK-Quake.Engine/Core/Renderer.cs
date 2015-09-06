@@ -17,6 +17,7 @@ namespace TKQuake.Engine.Core
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
+        public TextureManager TextureManager;
         private SpriteBatch _batch = new SpriteBatch();
 
         private Renderer() { }
@@ -53,6 +54,9 @@ namespace TKQuake.Engine.Core
         {
             var mesh = _meshes.Get(entity.Id);
             System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
+
+            //bind texture
+            TextureManager.Bind(entity.Id);
 
             var rotate = Matrix4.CreateRotationX(entity.Rotation.X) *
                          Matrix4.CreateRotationY(entity.Rotation.Y) *
