@@ -172,40 +172,31 @@ namespace TKQuake.Engine.Core
             int verticesId;
             GL.GenBuffers(1, out verticesId); System.Diagnostics.Debug.Assert(verticesId > 0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, verticesId);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Positions.Length*Vector3.SizeInBytes), mesh.Positions,
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length*8*sizeof(float)), mesh.Vertices,
                 BufferUsageHint.StaticDraw);
-
-            GL.EnableClientState(ArrayCap.VertexArray);
-
-            /*
-            int normalsId;
-            GL.GenBuffers(1, out normalsId); System.Diagnostics.Debug.Assert(normalsId > 0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, normalsId);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Normals.Length*Vector3.SizeInBytes), mesh.Normals,
-                BufferUsageHint.StaticDraw);
-
-            GL.EnableClientState(ArrayCap.NormalArray);
-            */
-
-            int texturesId;
-            GL.GenBuffers(1, out texturesId); System.Diagnostics.Debug.Assert(texturesId > 0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, texturesId);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Textures.Length*Vector2.SizeInBytes), mesh.Textures,
-                BufferUsageHint.StaticDraw);
-
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             int indiciesId;
             GL.GenBuffers(1, out indiciesId);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indiciesId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length * sizeof(uint)), mesh.Indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length*sizeof (int)), mesh.Indices,
+                BufferUsageHint.StaticDraw);
 
-            GL.VertexPointer(3, VertexPointerType.Float, BlittableValueType.StrideOf(mesh.Positions), IntPtr.Zero);
-            //GL.NormalPointer(NormalPointerType.Float, BlittableValueType.StrideOf(mesh.Normals), IntPtr.Zero);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, BlittableValueType.StrideOf(mesh.Textures), IntPtr.Zero);
+            const int stride = 8*sizeof (float);
+            var posAttrib = GL.GetAttribLocation(Program, "position");
+            GL.VertexAttribPointer(posAttrib, 2, VertexAttribPointerType.Float, false, stride, 0);
+            GL.EnableVertexAttribArray(posAttrib);
+
+            var normalAttrib = GL.GetAttribLocation(Program, "normal");
+            GL.VertexAttribPointer(normalAttrib, 3, VertexAttribPointerType.Float, false, stride, 3*sizeof (float));
+            GL.EnableVertexAttribArray(normalAttrib);
+
+            var textureAttrib = GL.GetAttribLocation(Program, "texcoord");
+            GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, stride, 5*sizeof (float));
+            GL.EnableVertexAttribArray(textureAttrib);
 
             GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.Positions.Length);
+
+            GL.DeleteBuffers(2, new [] { verticesId, indiciesId });
         }
 
         public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)

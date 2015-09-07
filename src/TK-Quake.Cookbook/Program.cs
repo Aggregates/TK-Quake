@@ -3,10 +3,12 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Cookbook.Screens;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Texture;
@@ -29,7 +31,12 @@ namespace TKQuake.Cookbook
         {
             using (game = new GameWindow())
             {
-                currentScreen = new CameraTestScreen();
+                var renderer = Renderer.Singleton();
+                renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+                renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
+                renderer.LinkShaders();
+
+                currentScreen = new CameraTestScreen(renderer);
 
                 game.Load += game_Load;
                 game.Resize += game_Resize;
@@ -70,6 +77,7 @@ namespace TKQuake.Cookbook
         private void game_Load(object sender, EventArgs e)
         {
             game.VSync = VSyncMode.On;
+            GL.ClearColor(0, 0, 1, 0);
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
 
