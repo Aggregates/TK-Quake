@@ -54,18 +54,19 @@ namespace TKQuake.Engine.Core
         public void Update(double elapsedTime)
         {
             var renderer = Renderer.Singleton();
+            var program = renderer.Program;
 
             var model = new Matrix4();
-            var uniModel = GL.GetUniformLocation(renderer.Program, "model");
+            var uniModel = GL.GetUniformLocation(program, "model");
             GL.UniformMatrix4(uniModel, false, ref model);
 
             var mat = GLX.MatrixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
 
-            var uniView = GL.GetUniformLocation(renderer.Program, "view");
+            var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref mat);
 
-            var proj = Matrix4.CreatePerspectiveFieldOfView(1f, (float) 4/3, 1f, 10f);
-            var uniProg = GL.GetUniformLocation(renderer.Program, "proj");
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float) 4/3, 1f, 10f);
+            var uniProg = GL.GetUniformLocation(program, "proj");
             GL.UniformMatrix4(uniProg, false, ref proj);
         }
     }

@@ -17,9 +17,7 @@ namespace TKQuake.Engine.Infrastructure
 {
     public class Mesh
     {
-        public Vector3[] Positions { get; set; }
-        public Vector3[] Normals { get; set; }
-        public Vector2[] Textures { get; set; }
+        public Vertex[] Vertices { get; set; }
         public int[] Indices { get; set; }
     }
 
@@ -62,6 +60,7 @@ namespace TKQuake.Engine.Infrastructure
             //build index
             var hash = new Dictionary<Vertex, uint>();
             var indicies = new List<int>();
+            var vertices = new List<Vertex>();
             for (var i = 0; i < inPositions.Count; i++)
             {
                 var v = new Vertex(inPositions[i], inNormals[i], inTextures[i]);
@@ -71,11 +70,9 @@ namespace TKQuake.Engine.Infrastructure
                 else
                 {
                 */
-                    outPositions.Add(v.Position);
-                    outNormals.Add(v.Normal);
-                    outTextures.Add(v.TexCoord);
+                    vertices.Add(v);
 
-                    var index = outPositions.Count - 1;
+                    var index = vertices.Count - 1;
                     indicies.Add(index);
                     //hash.Add(v, index);
                 //}
@@ -83,27 +80,7 @@ namespace TKQuake.Engine.Infrastructure
 
             //set mesh
             mesh.Indices = indicies.ToArray();
-            mesh.Positions = outPositions.ToArray();
-            mesh.Normals = outNormals.ToArray();
-            mesh.Textures = outTextures.ToArray();
-
-            using (var output = File.OpenWrite("mesh-output.txt"))
-            {
-                output.Seek(0, SeekOrigin.Begin);
-                using (var writer = new StreamWriter(output))
-                {
-                    foreach (var index in mesh.Indices)
-                    {
-                        var v = mesh.Positions[index];
-                        var n = mesh.Normals[index];
-                        var t = mesh.Textures[index];
-
-                        writer.WriteLine("v {0}, {1}, {2}", v.X, v.Y, v.Z);
-                        writer.WriteLine("n {0}, {1}, {2}", n.X, n.Y, n.Z);
-                        writer.WriteLine("t {0}, {1}", t.X, t.Y);
-                    }
-                }
-            }
+            mesh.Vertices = vertices.ToArray();
 
             return mesh;
         }
