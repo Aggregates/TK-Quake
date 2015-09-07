@@ -83,6 +83,7 @@ namespace TKQuake.Cookbook.Screens
         private void InitEntities()
         {
             Children.Add(_camera);
+            Children.Add(new FloorEntity(new Vector3(-10,0,-10), 20, 20));
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -126,13 +127,18 @@ namespace TKQuake.Cookbook.Screens
 
         private void Box_Collided(object sender, EventArgs e)
         {
-            var rand = new Random();
-            Console.WriteLine("Box Collided! {0}", rand.Next());
+            // Do World-Scope collision detection
         }
     }
 
-    internal class FloorGridComponent : IComponent
+
+    // Follow this idea, create as a component and then render it using the update
+    class ObjectComponent : IComponent
     {
+        private IObjLoader objLoader;
+        private LoadResult results;
+        private bool firstRun = true;
+
         public void Startup()
         {
         }

@@ -91,6 +91,7 @@
     <Compile Include="Infrastructure\Physics\BoundingBoxComponent.cs" />
     <Compile Include="Infrastructure\Physics\CollisionComponent.cs" />
     <Compile Include="Infrastructure\Physics\CollisionDetector.cs" />
+    <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
     <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
     <Compile Include="Infrastructure\Physics\Octree.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />

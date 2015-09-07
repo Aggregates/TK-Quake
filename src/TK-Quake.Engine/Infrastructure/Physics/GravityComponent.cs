@@ -35,13 +35,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
             {
                 _velocity += (float)(Force / 10 * elapsedTime);
 
-                Console.Clear();
-                Console.WriteLine("Velocity: {0}", _velocity);
-
                 var direction = new Vector3(0f, _velocity, 0f);
                 _entity.Position -= direction;
-
-                Console.WriteLine("Position: {0}", _entity.Position);
 
                 // The following is test code until it can be moved
                 // into a collision detection routine.
