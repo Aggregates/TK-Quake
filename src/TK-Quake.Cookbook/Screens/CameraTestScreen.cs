@@ -43,6 +43,9 @@ namespace TKQuake.Cookbook.Screens
             collidionDetector.Active = true;
             Children.Add(collidionDetector);
 
+            _camera.Position = new Vector3(0, 10, 0);
+            _camera.Components.Add(new GravityComponent(_camera));
+
             InitEntities();
             InitComponents();
 

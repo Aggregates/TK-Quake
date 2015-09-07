@@ -26,8 +26,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
             Translation = Matrix4.Identity;
         }
 
-        public void Update(double elapsedTime) {
-
+        public virtual void Update(double elapsedTime) {
             //update all components
             foreach (var component in Components)
             {

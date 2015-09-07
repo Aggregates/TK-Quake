@@ -29,9 +29,9 @@ namespace TKQuake.Engine.Infrastructure.Physics
             // Define the Components
             FloorGridComponent grid = new FloorGridComponent(this, 1f, true);
             BoundingBoxComponent box = new BoundingBoxComponent(this,
-                new Vector3(Position.X, Position.Y, Position.Z),
-                new Vector3(XLength, Position.Y, ZLength),
-                false);
+                new Vector3(0, 0 + 0.1f, 0),
+                new Vector3(XLength, 0 - 0.1f, ZLength),
+                true);
 
             // Set up event handling
             box.Collided += Box_Collided;
@@ -46,6 +46,12 @@ namespace TKQuake.Engine.Infrastructure.Physics
             // Stop the other object from falling through
             // TODO: Set up CollisionEventArgs object to store this object and the other object (and maybe the direction moving in?)
         }
+
+        public override void Update(double elapsedTime)
+        {
+            base.Update(elapsedTime);
+        }
+
     }
 
 
@@ -73,25 +79,21 @@ namespace TKQuake.Engine.Infrastructure.Physics
             var numZLines = System.Math.Abs(_entity.ZLength / _lineSpacing);
             var numXLines = System.Math.Abs(_entity.XLength / _lineSpacing);
 
-            // Hack to display floor two units below camera level
-            // TODO: Make OpenGL Render the camera two (2) units above floor level (i.e. at head level)
-            var renderY = _entity.Position.Y - 2;
-
             GL.Begin(PrimitiveType.Lines);
             GL.Color3(0f, 0, 255);
 
             // Parallel to x-axis
             for (int i = 0; i < numZLines + 1; i++)
             {
-                GL.Vertex3(_entity.Position.X,                   renderY, _entity.Position.Z + i * _lineSpacing);
-                GL.Vertex3(_entity.Position.X + _entity.XLength, renderY, _entity.Position.Z + i * _lineSpacing);
+                GL.Vertex3(_entity.Position.X,                   _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
+                GL.Vertex3(_entity.Position.X + _entity.XLength, _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
             }
 
             // Parallel to z-axis
             for (int i = 0; i < numXLines + 1; i++)
             {
-                GL.Vertex3(_entity.Position.X + i * _lineSpacing, renderY, _entity.Position.Z);
-                GL.Vertex3(_entity.Position.X + i * _lineSpacing, renderY, _entity.Position.Z + _entity.ZLength);
+                GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z);
+                GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z + _entity.ZLength);
             }
 
             GL.Color3(255f, 255, 255);
