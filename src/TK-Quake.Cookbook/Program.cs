@@ -54,6 +54,7 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
+            GL.Flush();
             game.SwapBuffers();
         }
 
@@ -62,7 +63,10 @@ namespace TKQuake.Cookbook
             if (game.Keyboard[Key.Escape])
                 game.Exit();
 
+            GL.Viewport(0, 0, game.Width, game.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+
             currentScreen.Update(e.Time);
 
             CommandCentre.ExecuteAllCommands();

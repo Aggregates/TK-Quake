@@ -117,8 +117,8 @@ namespace TKQuake.Engine.Core
             GL.Scale(scale);
 
             //todo: move away from immediate mode
-            //DrawImmediate(mesh);
-            DrawVbo(mesh);
+            DrawImmediate(mesh);
+            //DrawVbo(mesh);
 
             GL.PopMatrix();
 
@@ -167,6 +167,10 @@ namespace TKQuake.Engine.Core
             GL.EnableVertexAttribArray(textureAttrib);
 
             GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+
+            GL.DisableVertexAttribArray(posAttrib);
+            GL.DisableVertexAttribArray(normalAttrib);
+            GL.DisableVertexAttribArray(textureAttrib);
 
             GL.DeleteBuffers(2, new [] { verticesId, indiciesId });
         }
