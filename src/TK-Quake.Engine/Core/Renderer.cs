@@ -1,9 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using OpenTK;
 using TKQuake.Engine.Infrastructure;
 using TKQuake.Engine.Infrastructure.Font;
@@ -19,8 +21,68 @@ namespace TKQuake.Engine.Core
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
         public TextureManager TextureManager;
         private SpriteBatch _batch = new SpriteBatch();
+        private int? _program;
+
+        public int Program => _program ?? 0;
+        private int? _vertexShader;
+        private int? _fragmentShader;
 
         private Renderer() { }
+
+        public void LoadShader(string shader, ShaderType type)
+        {
+            var id = GL.CreateShader(type);
+            GL.ShaderSource(id, shader);
+            GL.CompileShader(id);
+            GetShaderCompileStatus(id);
+
+            switch (type)
+            {
+                case ShaderType.VertexShader:
+                    _vertexShader = id;
+                    break;
+                case ShaderType.FragmentShader:
+                    _fragmentShader = id;
+                    break;
+                default:
+                    throw new Exception("Invalid shader type");
+            }
+        }
+
+        public void LinkShaders()
+        {
+            _program = GL.CreateProgram();
+
+            if (_vertexShader.HasValue)
+            {
+                GL.AttachShader(_program.Value, _vertexShader.Value);
+            }
+            if (_fragmentShader.HasValue)
+            {
+                GL.AttachShader(_program.Value, _fragmentShader.Value);
+                GL.BindFragDataLocation(_program.Value, 0, "outColor");
+            }
+
+            GL.LinkProgram(_program.Value);
+            GL.UseProgram(_program.Value);
+        }
+
+        private bool GetShaderCompileStatus(int shader)
+        {
+            //Get status
+            string info;
+            GL.GetShaderInfoLog(shader, out info);
+
+            int status;
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out status);
+            if (status != 1)
+            {
+                Console.WriteLine(info);
+                return false;
+            }
+            else
+                return true;
+        }
 
         /// <summary>
         /// Registers an entity mesh to the Renderer
@@ -73,8 +135,8 @@ namespace TKQuake.Engine.Core
             GL.Scale(scale);
 
             //todo: move away from immediate mode
-            DrawImmediate(mesh);
-            //DrawVbo(mesh);
+            //DrawImmediate(mesh);
+            DrawVbo(mesh);
 
             GL.PopMatrix();
 
@@ -123,6 +185,7 @@ namespace TKQuake.Engine.Core
                 BufferUsageHint.StaticDraw);
 
             GL.EnableClientState(ArrayCap.NormalArray);
+            */
 
             int texturesId;
             GL.GenBuffers(1, out texturesId); System.Diagnostics.Debug.Assert(texturesId > 0);
@@ -131,7 +194,6 @@ namespace TKQuake.Engine.Core
                 BufferUsageHint.StaticDraw);
 
             GL.EnableClientState(ArrayCap.TextureCoordArray);
-            */
 
             int indiciesId;
             GL.GenBuffers(1, out indiciesId);
@@ -140,7 +202,7 @@ namespace TKQuake.Engine.Core
 
             GL.VertexPointer(3, VertexPointerType.Float, BlittableValueType.StrideOf(mesh.Positions), IntPtr.Zero);
             //GL.NormalPointer(NormalPointerType.Float, BlittableValueType.StrideOf(mesh.Normals), IntPtr.Zero);
-            //GL.TexCoordPointer(2, TexCoordPointerType.Float, BlittableValueType.StrideOf(mesh.Textures), IntPtr.Zero);
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, BlittableValueType.StrideOf(mesh.Textures), IntPtr.Zero);
 
             GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             //GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.Positions.Length);

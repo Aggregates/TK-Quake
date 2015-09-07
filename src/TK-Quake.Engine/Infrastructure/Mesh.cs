@@ -20,7 +20,7 @@ namespace TKQuake.Engine.Infrastructure
         public Vector3[] Positions { get; set; }
         public Vector3[] Normals { get; set; }
         public Vector2[] Textures { get; set; }
-        public uint[] Indices { get; set; }
+        public int[] Indices { get; set; }
     }
 
     public static class MeshExtensions
@@ -61,22 +61,24 @@ namespace TKQuake.Engine.Infrastructure
 
             //build index
             var hash = new Dictionary<Vertex, uint>();
-            var indicies = new List<uint>();
+            var indicies = new List<int>();
             for (var i = 0; i < inPositions.Count; i++)
             {
                 var v = new Vertex(inPositions[i], inNormals[i], inTextures[i]);
+                /*
                 if (hash.ContainsKey(v))
                     indicies.Add(hash[v]);
                 else
                 {
+                */
                     outPositions.Add(v.Position);
                     outNormals.Add(v.Normal);
                     outTextures.Add(v.TexCoord);
 
-                    var index = (uint) outPositions.Count - 1;
+                    var index = outPositions.Count - 1;
                     indicies.Add(index);
-                    hash.Add(v, index);
-                }
+                    //hash.Add(v, index);
+                //}
             }
 
             //set mesh
