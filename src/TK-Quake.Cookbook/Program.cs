@@ -27,11 +27,10 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
-            TKQuake.Engine.Loader.BSPLoader bsp = new TKQuake.Engine.Loader.BSPLoader ();
+            var bsp = new Engine.Loader.BSPLoader ();
             bsp.SetBSPFile ("/home/bidski/Projects/COMP3320/q3dm6.bsp");
             bsp.LoadFile ();
             bsp.DumpBSP ();
-
 
             using (game = new GameWindow())
             {
@@ -48,7 +47,6 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            //currentScreen.Render(e);
             game.SwapBuffers();
         }
 

@@ -28,6 +28,9 @@ namespace TKQuake.Cookbook.Screens
         public CameraTestScreen()
         {
             _renderer = Renderer.Singleton();
+            _renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+            _renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
+            _renderer.LinkShaders();
             _textureManager = new TextureManager();
             _renderer.TextureManager = _textureManager;
 
@@ -43,6 +46,38 @@ namespace TKQuake.Cookbook.Screens
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
             var mesh = _objLoader.Load(fileStream).ToMesh();
+            /*
+            , 1.0f, 1.0f, 1.0f, 0.0f,
+            , 1.0f, 1.0f, 0.0f, 0.0f,
+            , 1.0f, 1.0f, 0.0f, 1.0f,
+             , 1.0f, 1.0f, 1.0f, 1.0f
+            var mesh = new Mesh
+            {
+                Positions = new[]
+                {
+                    new Vector3(0.5f,  0.5f, 1.0f),
+                    new Vector3(-0.5f,  0.5f, 1.0f),
+                    new Vector3(-0.5f, -0.5f, 1.0f),
+                    new Vector3(0.5f, -0.5f, 1.0f)
+                },
+                Textures = new []
+                {
+                    new Vector2(1, 0),
+                    new Vector2(0, 0),
+                    new Vector2(0, 1),
+                    new Vector2(1, 1)
+                },
+                Indices = new int[]
+                {
+                    0, 1, 2, 0, 0, 0,
+                    2, 3, 0, 0, 0, 0
+
+                    0, 0, 1, 0, 2, 0,
+                    2, 0, 3, 0, 0, 0
+                }
+            };
+            */
+
             _renderer.RegisterMesh("gun", mesh);
 
             var gunEntity = RenderableEntity.Create();
