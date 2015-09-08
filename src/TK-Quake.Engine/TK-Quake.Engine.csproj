@@ -83,13 +83,13 @@
     <Compile Include="Infrastructure\Font\FontManager.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Input\JumpCommand.cs" />
     <Compile Include="Infrastructure\Math\Line3.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vertex.cs" />
     <Compile Include="Infrastructure\Mesh.cs" />
     <Compile Include="Infrastructure\MeshManager.cs" />
     <Compile Include="Infrastructure\Physics\BoundingBoxEntity.cs" />
-    <Compile Include="Infrastructure\Physics\CollisionComponent.cs" />
     <Compile Include="Infrastructure\Physics\CollisionDetector.cs" />
     <Compile Include="Infrastructure\Physics\CollisionEventArgs.cs" />
     <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
