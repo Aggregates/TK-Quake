@@ -24,12 +24,12 @@ namespace TKQuake.Engine.Core
             CameraComponent cam = new CameraComponent(this);
             cam.PositionOffset = new Vector3(0, 3, 0);
 
-            BoundingBoxComponent box = new BoundingBoxComponent(this,
+            BoundingBoxEntity box = new BoundingBoxEntity(this,
                 new Vector3(0.5f, 0.5f, 0.5f) + cam.PositionOffset,
-                new Vector3(-0.5f, -0.5f, -0.5f) + cam.PositionOffset, true);
+                new Vector3(-0.5f, -0.5f, -0.5f) + cam.PositionOffset);
 
             Components.Add(cam);
-            Components.Add(box);
+            Children.Add(box);
         }
 
         public override void Rotate(float dx, float dy, float dz)

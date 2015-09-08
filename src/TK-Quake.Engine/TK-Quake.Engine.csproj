@@ -88,7 +88,7 @@
     <Compile Include="Infrastructure\Math\Vertex.cs" />
     <Compile Include="Infrastructure\Mesh.cs" />
     <Compile Include="Infrastructure\MeshManager.cs" />
-    <Compile Include="Infrastructure\Physics\BoundingBoxComponent.cs" />
+    <Compile Include="Infrastructure\Physics\BoundingBoxEntity.cs" />
     <Compile Include="Infrastructure\Physics\CollisionComponent.cs" />
     <Compile Include="Infrastructure\Physics\CollisionDetector.cs" />
     <Compile Include="Infrastructure\Physics\CollisionEventArgs.cs" />

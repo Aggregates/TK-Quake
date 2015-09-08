@@ -106,8 +106,8 @@ namespace TKQuake.Cookbook.Screens
                 gunEntity.Scale = 1f;
                 gunEntity.Components.Add(new GravityComponent(gunEntity));
 
-                BoundingBoxComponent box = new BoundingBoxComponent(gunEntity, mesh.Max, mesh.Min, true);
-                gunEntity.Components.Add(box);
+                BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min);
+                gunEntity.Children.Add(box);
 
                 box.Collided += Box_Collided;
 

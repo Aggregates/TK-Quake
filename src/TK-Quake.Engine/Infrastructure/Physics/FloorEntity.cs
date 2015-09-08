@@ -28,17 +28,16 @@ namespace TKQuake.Engine.Infrastructure.Physics
         {
             // Define the Components
             FloorGridComponent grid = new FloorGridComponent(this, 1f, true);
-            BoundingBoxComponent box = new BoundingBoxComponent(this,
+            BoundingBoxEntity box = new BoundingBoxEntity(this,
                 new Vector3(0, 0 + 0.5f, 0), // This seems to work pretty well, but it's a bit hacky
-                new Vector3(XLength, 0 - 0.5f, ZLength),
-                true);
+                new Vector3(XLength, 0 - 0.5f, ZLength));
 
             // Set up event handling
             box.Collided += Box_Collided;
 
             // Add to the Components list
             Components.Add(grid);
-            Components.Add(box);
+            Children.Add(box);
         }
 
         private void Box_Collided(object sender, CollisionEventArgs e)
@@ -80,29 +79,32 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public void Update(double elapsedTime)
         {
 
-            // Calculate the number of lines to render
-            var numZLines = System.Math.Abs(_entity.ZLength / _lineSpacing);
-            var numXLines = System.Math.Abs(_entity.XLength / _lineSpacing);
-
-            GL.Begin(PrimitiveType.Lines);
-            GL.Color3(0f, 0, 255);
-
-            // Parallel to x-axis
-            for (int i = 0; i < numZLines + 1; i++)
+            if (Render)
             {
-                GL.Vertex3(_entity.Position.X,                   _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
-                GL.Vertex3(_entity.Position.X + _entity.XLength, _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
-            }
+                // Calculate the number of lines to render
+                var numZLines = System.Math.Abs(_entity.ZLength / _lineSpacing);
+                var numXLines = System.Math.Abs(_entity.XLength / _lineSpacing);
 
-            // Parallel to z-axis
-            for (int i = 0; i < numXLines + 1; i++)
-            {
-                GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z);
-                GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z + _entity.ZLength);
-            }
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color3(0f, 0, 255);
 
-            GL.Color3(255f, 255, 255);
-            GL.End();
+                // Parallel to x-axis
+                for (int i = 0; i < numZLines + 1; i++)
+                {
+                    GL.Vertex3(_entity.Position.X, _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
+                    GL.Vertex3(_entity.Position.X + _entity.XLength, _entity.Position.Y, _entity.Position.Z + i * _lineSpacing);
+                }
+
+                // Parallel to z-axis
+                for (int i = 0; i < numXLines + 1; i++)
+                {
+                    GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z);
+                    GL.Vertex3(_entity.Position.X + i * _lineSpacing, _entity.Position.Y, _entity.Position.Z + _entity.ZLength);
+                }
+
+                GL.Color3(255f, 255, 255);
+                GL.End();
+            }
         }
     }
 }

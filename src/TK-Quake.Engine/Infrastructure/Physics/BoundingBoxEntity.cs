@@ -11,7 +11,7 @@ using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Physics
 {
-    public class BoundingBoxComponent : CollisionComponent
+    public class BoundingBoxEntity : Entity
     {
 
         /*
@@ -35,7 +35,6 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         public Vector3 Top { get; private set; }
         public Vector3 Bottom { get; private set; }
-        public bool Render { get; set; }
 
         public float Width { get { return Top.X - Bottom.X; } }
         public float Height { get { return Top.Y - Bottom.Y; } }
@@ -49,27 +48,27 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public delegate void OnCollidedHandler(object sender, CollisionEventArgs e);
         public event OnCollidedHandler Collided;
 
-        public BoundingBoxComponent(Entity entity, Vector3 top, Vector3 bottom, bool render = false)
-            : base(entity)
+        public BoundingBoxEntity(Entity entity, Vector3 top, Vector3 bottom)
         {
             this._entity = entity;
             this.Top = top;
             this.Bottom = bottom;
 
-            this.Render = render;
             this._initialTop = new Vector4(top, 0);
             this._initialBottom = new Vector4(bottom, 0);
 
             // Resgister with Collision Detector
             CollisionDetector.Singleton().RegisterCollider(this);
-
+            InitialiseComponents();
         }
 
-        public new void Startup() { }
+        private void InitialiseComponents()
+        {
+            BoundingBoxDrawComponent box = new BoundingBoxDrawComponent(this, true);
+            this.Components.Add(box);
+        }
 
-        public new void Shutdown() { }
-
-        public bool CheckCollision(BoundingBoxComponent box)
+        public bool CheckCollision(BoundingBoxEntity box)
         {
             // Check the X axis
             if (System.Math.Abs(this.Top.X - box.Top.X) < System.Math.Abs(this.Width + box.Width))
@@ -97,11 +96,6 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public override void Update(double elapsedTime)
         {
 
-            //_entity.Rotation += new Vector3(0, 1, 0) * (float)elapsedTime;
-            //_entity.Position += new Vector3(1, 1, 1) * (float)elapsedTime;
-
-            
-
             /*
              * The bounding box is based on the position of the entity centered around the origin
              * As the entity moves away, we need to cater for this movement and move our bounding box
@@ -116,7 +110,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
              * NOTE: Not currently working. Currently rotating around the origin, not the entity
              */
 
-            var translate = Matrix4.CreateTranslation(_entity.Position); // Bottom row contains trnalsation information
+            var translate = Matrix4.CreateTranslation(_entity.Position); // Bottom row contains tranlsation information
             var rotate = Matrix4.CreateRotationX(_entity.Rotation.X) *
                          Matrix4.CreateRotationY(_entity.Rotation.Y) *
                          Matrix4.CreateRotationZ(_entity.Rotation.Z);
@@ -126,59 +120,71 @@ namespace TKQuake.Engine.Infrastructure.Physics
             //Top = Vector4.Transform(new Vector4(Top, 0), mult).Xyz;
             //Bottom = Vector4.Transform(new Vector4(Bottom, 0), mult).Xyz;
 
+            base.Update(elapsedTime);
 
-            //Console.Clear();
-            //Console.WriteLine("_entity:\n {0}", _entity.Position);
-            //Console.WriteLine("rotate:\n {0}", rotate);
-            //Console.WriteLine("translate:\n {0}", translate);
-            //Console.WriteLine("Top: {0}", Top);
-            //Console.WriteLine("Bottom: {0}", Bottom);
+        }
 
-            if (Render)
+        class BoundingBoxDrawComponent : IComponent
+        {
+            private BoundingBoxEntity _box;
+            public bool Render {get; set;}
+
+            public BoundingBoxDrawComponent(BoundingBoxEntity box, bool render = false)
+            {
+                this._box = box;
+                this.Render = render;
+            }
+
+            public void Shutdown() { }
+
+            public void Startup() { }
+
+            public void Update(double elapsedTime)
             {
 
-                var corners = new List<Vector3>();
-                corners.Add(Bottom);
-                corners.Add(new Vector3(Bottom.X, Bottom.Y, Top.Z));
-                corners.Add(new Vector3(Top.X,    Bottom.Y, Top.Z));
-                corners.Add(new Vector3(Top.X,    Bottom.Y, Bottom.Z));
-
-                corners.Add(new Vector3(Top.X,    Top.Y, Bottom.Z));
-                corners.Add(new Vector3(Bottom.X, Top.Y, Bottom.Z));
-                corners.Add(new Vector3(Bottom.X, Top.Y, Top.Z));
-                corners.Add(Top);
-
-                var lines = new List<Line3>();
-                lines.Add(new Line3(corners[0], corners[1]));
-                lines.Add(new Line3(corners[1], corners[2]));
-                lines.Add(new Line3(corners[2], corners[3]));
-                lines.Add(new Line3(corners[3], corners[0]));
-
-                lines.Add(new Line3(corners[4], corners[5]));
-                lines.Add(new Line3(corners[5], corners[6]));
-                lines.Add(new Line3(corners[6], corners[7]));
-                lines.Add(new Line3(corners[7], corners[4]));
-
-                lines.Add(new Line3(corners[0], corners[5]));
-                lines.Add(new Line3(corners[1], corners[6]));
-                lines.Add(new Line3(corners[2], corners[7]));
-                lines.Add(new Line3(corners[3], corners[4]));
-
-                GL.Begin(PrimitiveType.LineStrip); // Or Lines
+                if (Render)
                 {
-                    GL.Color3(0f, 255f, 0f);
-                    GL.Enable(EnableCap.DepthTest);
-                    foreach (var l in lines)
-                    {
-                        GL.Vertex3(l.A);
-                        GL.Vertex3(l.B);
-                    }
-                }
-                GL.End();
-                GL.Color3(255f, 255, 255);
-            }
-            //GL.PopMatrix();
+                    var corners = new List<Vector3>();
+                    corners.Add(_box.Bottom);
+                    corners.Add(new Vector3(_box.Bottom.X, _box.Bottom.Y, _box.Top.Z));
+                    corners.Add(new Vector3(_box.Top.X, _box.Bottom.Y, _box.Top.Z));
+                    corners.Add(new Vector3(_box.Top.X, _box.Bottom.Y, _box.Bottom.Z));
 
+                    corners.Add(new Vector3(_box.Top.X, _box.Top.Y, _box.Bottom.Z));
+                    corners.Add(new Vector3(_box.Bottom.X, _box.Top.Y, _box.Bottom.Z));
+                    corners.Add(new Vector3(_box.Bottom.X, _box.Top.Y, _box.Top.Z));
+                    corners.Add(_box.Top);
+
+                    var lines = new List<Line3>();
+                    lines.Add(new Line3(corners[0], corners[1]));
+                    lines.Add(new Line3(corners[1], corners[2]));
+                    lines.Add(new Line3(corners[2], corners[3]));
+                    lines.Add(new Line3(corners[3], corners[0]));
+
+                    lines.Add(new Line3(corners[4], corners[5]));
+                    lines.Add(new Line3(corners[5], corners[6]));
+                    lines.Add(new Line3(corners[6], corners[7]));
+                    lines.Add(new Line3(corners[7], corners[4]));
+
+                    lines.Add(new Line3(corners[0], corners[5]));
+                    lines.Add(new Line3(corners[1], corners[6]));
+                    lines.Add(new Line3(corners[2], corners[7]));
+                    lines.Add(new Line3(corners[3], corners[4]));
+
+                    GL.Begin(PrimitiveType.LineStrip); // Or Lines
+                    {
+                        GL.Color3(0f, 255f, 0f);
+                        GL.Enable(EnableCap.DepthTest);
+                        foreach (var l in lines)
+                        {
+                            GL.Vertex3(l.A);
+                            GL.Vertex3(l.B);
+                        }
+                    }
+                    GL.End();
+                    GL.Color3(255f, 255, 255);
+                }
+            }
         }
     }
 }

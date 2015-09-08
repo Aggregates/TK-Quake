@@ -9,7 +9,7 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Physics
 {
-    public class CollisionDetector : CollisionEntity
+    public class CollisionDetector : Entity
     {
         private static CollisionDetector _instance;
         public static CollisionDetector Singleton()
@@ -20,19 +20,19 @@ namespace TKQuake.Engine.Infrastructure.Physics
         // Instance variables
         public bool Active { get; set; }
 
-        private List<CollisionComponent> _colliders;
+        private List<Entity> _colliders;
 
         public CollisionDetector()
         {
-            _colliders = new List<CollisionComponent>();
+            _colliders = new List<Entity>();
         }
 
-        public void RegisterCollider(CollisionComponent collider)
+        public void RegisterCollider(Entity collider)
         {
             _colliders.Add(collider);
         }
 
-        public void RemoveCollider(CollisionComponent collider)
+        public void RemoveCollider(Entity collider)
         {
             _colliders.Remove(collider);
         }
@@ -42,7 +42,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         {
             // Detect Bounding Box Collisions
             // Complexity if O(n^2). Try to improve this if possible
-            var boxes = _colliders.OfType<BoundingBoxComponent>();
+            var boxes = _colliders.OfType<BoundingBoxEntity>();
             foreach (var box in boxes)
             {
                 foreach(var otherBox in boxes)
