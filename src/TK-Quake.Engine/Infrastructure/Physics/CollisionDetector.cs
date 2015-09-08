@@ -14,7 +14,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         private static CollisionDetector _instance;
         public static CollisionDetector Singleton()
         {
-            return _instance ?? (_instance = new CollisionDetector());
+            return _instance ?? (_instance = new CollisionDetector { Active = true });
         }
 
         // Instance variables

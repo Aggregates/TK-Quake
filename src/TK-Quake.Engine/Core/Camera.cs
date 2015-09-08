@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Components;
+using TKQuake.Engine.Infrastructure.Physics;
 
 namespace TKQuake.Engine.Core
 {
@@ -23,7 +24,12 @@ namespace TKQuake.Engine.Core
             CameraComponent cam = new CameraComponent(this);
             cam.PositionOffset = new Vector3(0, 3, 0);
 
+            BoundingBoxComponent box = new BoundingBoxComponent(this,
+                new Vector3(0.5f, 0.5f, 0.5f) + cam.PositionOffset,
+                new Vector3(-0.5f, -0.5f, -0.5f) + cam.PositionOffset, true);
+
             Components.Add(cam);
+            Components.Add(box);
         }
 
         public override void Rotate(float dx, float dy, float dz)

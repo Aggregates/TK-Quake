@@ -29,8 +29,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
             // Define the Components
             FloorGridComponent grid = new FloorGridComponent(this, 1f, true);
             BoundingBoxComponent box = new BoundingBoxComponent(this,
-                new Vector3(0, 0 + 0.1f, 0),
-                new Vector3(XLength, 0 - 0.1f, ZLength),
+                new Vector3(0, 0 + 0.5f, 0), // This seems to work pretty well, but it's a bit hacky
+                new Vector3(XLength, 0 - 0.5f, ZLength),
                 true);
 
             // Set up event handling
@@ -41,15 +41,20 @@ namespace TKQuake.Engine.Infrastructure.Physics
             Components.Add(box);
         }
 
-        private void Box_Collided(object sender, EventArgs e)
+        private void Box_Collided(object sender, CollisionEventArgs e)
         {
             // Stop the other object from falling through
-            // TODO: Set up CollisionEventArgs object to store this object and the other object (and maybe the direction moving in?)
-        }
+            var entity = e.Sender;
+            if (this == e.Sender) entity = e.Collider;
 
-        public override void Update(double elapsedTime)
-        {
-            base.Update(elapsedTime);
+            // If two floors are overlapping, don't move the floor
+            if (!(entity is FloorEntity) && entity.Position.Y <= this.Position.Y)
+            {
+                entity.Position = new Vector3(entity.Position.X, this.Position.Y, entity.Position.Z);
+                var gravity = entity.Components.OfType<GravityComponent>().FirstOrDefault();
+                if (gravity != null)
+                    gravity.Velocity = 0;
+            }
         }
 
     }

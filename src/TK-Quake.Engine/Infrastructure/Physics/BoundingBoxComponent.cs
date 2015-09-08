@@ -46,7 +46,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         private Vector4 _initialBottom;
 
         // Event Handling
-        public delegate void OnCollidedHandler(object sender, EventArgs e);
+        public delegate void OnCollidedHandler(object sender, CollisionEventArgs e);
         public event OnCollidedHandler Collided;
 
         public BoundingBoxComponent(Entity entity, Vector3 top, Vector3 bottom, bool render = false)
@@ -72,19 +72,19 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public bool CheckCollision(BoundingBoxComponent box)
         {
             // Check the X axis
-            if (System.Math.Abs(this.Top.X - box.Top.X) < this.Width + box.Width)
+            if (System.Math.Abs(this.Top.X - box.Top.X) < System.Math.Abs(this.Width + box.Width))
             {
                 // Check the Y axis
-                if (System.Math.Abs(this.Top.Y - box.Bottom.Y) < this.Height + box.Height)
+                if (System.Math.Abs(this.Top.Y - box.Bottom.Y) < System.Math.Abs(this.Height + box.Height))
                 {
                     // Check the Z axis
-                    if (System.Math.Abs(this.Top.Z - box.Bottom.Z) < this.Depth + box.Depth)
+                    if (System.Math.Abs(this.Top.Z - box.Bottom.Z) < System.Math.Abs(this.Depth + box.Depth))
                     {
                         if (Collided != null)
                         {
-                            Collided(this, null);
+                            Collided(this, new CollisionEventArgs(this._entity, box._entity));
                             if (box.Collided != null)
-                                box.Collided(box, null);
+                                box.Collided(box, new CollisionEventArgs(box._entity, this._entity));
                         }
                         return true;
                     }

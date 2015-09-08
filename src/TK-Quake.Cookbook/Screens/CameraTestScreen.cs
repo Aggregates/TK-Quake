@@ -86,7 +86,9 @@ namespace TKQuake.Cookbook.Screens
         private void InitEntities()
         {
             Children.Add(_camera);
-            Children.Add(new FloorEntity(new Vector3(-10,0,-10), 20, 20));
+            Children.Add(new FloorEntity(new Vector3(0, 0, 0), 10, 10));
+            Children.Add(new FloorEntity(new Vector3(0, -10, 10), 10, 10));
+            Children.Add(new FloorEntity(new Vector3(10, -10, 0), 10, 10));
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -128,7 +130,7 @@ namespace TKQuake.Cookbook.Screens
             }
         }
 
-        private void Box_Collided(object sender, EventArgs e)
+        private void Box_Collided(object sender, CollisionEventArgs e)
         {
             // Do World-Scope collision detection
         }
