@@ -28,6 +28,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
+        private readonly SkyBoxComponent skyBox = new SkyBoxComponent();
 
         public CameraTestScreen(Renderer renderer)
         {
@@ -38,7 +39,6 @@ namespace TKQuake.Cookbook.Screens
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
 
-            SkyBoxComponent skyBox = new SkyBoxComponent();
             skyBox.Startup();
             Components.Add(skyBox);
 
@@ -52,6 +52,7 @@ namespace TKQuake.Cookbook.Screens
 
         }
 
+        // This isnt used / doesnt work yet
         public void ChangeSkyBox(int choice)
         {
             Components.Remove(Components.ElementAt(2));
@@ -96,7 +97,7 @@ namespace TKQuake.Cookbook.Screens
     {
         public static Mesh Mesh()
         {
-            var lineLength = 100f;
+            var lineLength = 1000f;
             var lineSpacing = 2.5f;
             var y = -2.5f;
 
@@ -139,6 +140,7 @@ namespace TKQuake.Cookbook.Screens
 
     class SkyBoxComponent : IComponent
     {
+        // Takes a size, takes a string related to the sky type
         private int[] skybox = new int [6];
 
         int loadTexture(string filename)  //load the filename named texture
@@ -182,6 +184,7 @@ namespace TKQuake.Cookbook.Screens
                 default: selection = ""; break;
             }
 
+            // Location of textures *root of build* / skybox / selection / position.bmp
             skybox[0] = loadTexture(Path.Combine("skybox", selection, "left.bmp"));
             skybox[1] = loadTexture(Path.Combine("skybox", selection, "back.bmp"));
             skybox[2] = loadTexture(Path.Combine("skybox", selection, "right.bmp"));
@@ -198,8 +201,6 @@ namespace TKQuake.Cookbook.Screens
         public void Shutdown() { }
         public void Update(double elapsedTime)
         {
-            //bool b1 = GL.IsEnabled(EnableCap.Texture2D);
-
             float[] difamb = { 1.0f, 0.5f, 0.3f, 1.0f };
             double size = 1000;
 
@@ -286,7 +287,5 @@ namespace TKQuake.Cookbook.Screens
             GL.End();
 
         }
-
-
     }
 }
