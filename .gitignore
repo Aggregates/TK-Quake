@@ -6,7 +6,9 @@
 [Oo]bj
 *.*~
 [Pp]ackages
+[Aa]ssets
 
 
 *.pdf
 TestResult.xml
+[Bb][Ss][Pp][Dd]ump.txt
