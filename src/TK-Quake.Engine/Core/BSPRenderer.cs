@@ -94,27 +94,89 @@ namespace TKQuake.Engine.Core
             {
                 Face.FaceEntry currentFace = BSP.GetFace (face);
 
-//            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
-//            {
-                switch(currentFace.type)
+                switch(BSP.GetFace (face).type)
                 {
                     case Face.FaceType.POLYGON:
                     {
-                        RenderPolygon (currentFace, ref vertices, ref normals, ref textures, ref indices);
+                        Vector3[] vertexes, norms;
+                        Vector2[] texCoords;
+                        int[]     indexes;
+
+                        RenderPolygon (currentFace, out vertexes, out norms, out texCoords, out indexes);
+
+                        foreach (Vector3 vertex in vertexes)
+                        {
+                            vertices.Add (vertex);
+                        }
+
+                        foreach (Vector3 norm in norms)
+                        {
+                            normals.Add (norm);
+                        }
+
+                        foreach (Vector2 texCoord in texCoords)
+                        {
+                            textures.Add (texCoord);
+                        }
+
+                        int offset = indices.Count;
+                        foreach (int index in indexes)
+                        {
+                            indices.Add (offset + index);
+                        }
 
                         break;
                     }
 
                     case Face.FaceType.PATCH:
                     {
-                        TessellateBezierPatch (currentFace, TESSELLATION_LEVEL, ref vertices, ref textures, ref indices);
+                        Vector3[] vertexes;
+                        int[]     indexes;
+
+                        TessellateBezierPatch (currentFace, 7, out vertexes, out indexes);
+
+                        foreach (Vector3 vertex in vertexes)
+                        {
+                            vertices.Add (vertex);
+                        }
+
+                        int offset = indices.Count;
+                        foreach (int index in indexes)
+                        {
+                            indices.Add (index);
+                        }
 
                         break;
                     }
 
                     case Face.FaceType.MESH:
                     {
-                        RenderPolygon (currentFace, ref vertices, ref normals, ref textures, ref indices);
+                        Vector3[] vertexes, norms;
+                        Vector2[] texCoords;
+                        int[]     indexes;
+
+                        RenderPolygon (currentFace, out vertexes, out norms, out texCoords, out indexes);
+
+                        foreach (Vector3 vertex in vertexes)
+                        {
+                            vertices.Add (vertex);
+                        }
+
+                        foreach (Vector3 norm in norms)
+                        {
+                            normals.Add (norm);
+                        }
+
+                        foreach (Vector2 texCoord in texCoords)
+                        {
+                            textures.Add (texCoord);
+                        }
+
+                        int offset = indices.Count;
+                        foreach (int index in indexes)
+                        {
+                            indices.Add (offset + index);
+                        }
 
                         break;
                     }
@@ -131,24 +193,12 @@ namespace TKQuake.Engine.Core
                         break;
                     }
                 }
+
+                BSPMesh.Vertices = vertices.ToArray ();
+                BSPMesh.Normals  = normals.ToArray ();
+                BSPMesh.Textures = textures.ToArray ();
+                BSPMesh.Indices  = indices.ToArray ();
             }
-
-//            int i = 0;
-//            foreach (Vector3 vertex in vertices)
-//            {
-//                Console.Write (String.Format ("{0} ", vertex));
-//
-//                if (++i == 5)
-//                {
-//                    i = 0;
-//                    Console.WriteLine ("");
-//                }
-//            }
-
-            BSPMesh.Vertices = vertices.ToArray ();
-            BSPMesh.Normals  = normals.ToArray ();
-            BSPMesh.Textures = textures.ToArray ();
-            BSPMesh.Indices  = indices.ToArray ();
 
             return(BSPMesh);
         }
