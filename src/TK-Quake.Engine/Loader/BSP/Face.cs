@@ -10,11 +10,20 @@ namespace TKQuake.Engine.Loader.BSP
 {
     public class Face : Directory
     {
+        public enum FaceType : byte
+        {
+            POLYGON,
+            PATCH,
+            MESH,
+            BILLBOARD,
+            UNKNOWN
+        }
+
         public struct FaceEntry
         {
             public int       texture;
             public int       effect;
-            public int       type;
+            public FaceType  type;
             public int       vertex;
             public int       n_vertexes;
             public int       meshVert;
@@ -57,7 +66,40 @@ namespace TKQuake.Engine.Loader.BSP
                 faces[i].size        = new int[2];
                 faces[i].texture     = BitConverter.ToInt32(buf,   0 * sizeof(int));
                 faces[i].effect      = BitConverter.ToInt32(buf,   1 * sizeof(int));
-                faces[i].type        = BitConverter.ToInt32(buf,   2 * sizeof(int));
+
+                switch (BitConverter.ToInt32(buf, 2 * sizeof(int)))
+                {
+                    case 1:
+                    {
+                        faces[i].type = FaceType.POLYGON;
+                        break;
+                    }
+
+                    case 2:
+                    {
+                        faces[i].type = FaceType.PATCH;
+                        break;
+                    }
+
+                    case 3:
+                    {
+                        faces[i].type = FaceType.MESH;
+                        break;
+                    }
+
+                    case 4:
+                    {
+                        faces[i].type = FaceType.BILLBOARD;
+                        break;
+                    }
+
+                    default:
+                    {
+                        faces[i].type = FaceType.UNKNOWN;
+                        break;
+                    }
+                }
+
                 faces[i].vertex      = BitConverter.ToInt32(buf,   3 * sizeof(int));
                 faces[i].n_vertexes  = BitConverter.ToInt32(buf,   4 * sizeof(int));
                 faces[i].meshVert    = BitConverter.ToInt32(buf,   5 * sizeof(int));
