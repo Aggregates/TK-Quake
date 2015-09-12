@@ -71,7 +71,7 @@ namespace TKQuake.Cookbook.Screens
             }
 
             Components.Add(new FloorGridComponent());
-            Components.Add(new BSPComponent(BSPFile, _renderer, _camera));
+            Components.Add(new BSPComponent(BSPFile, _camera));
         }
 
         private void InitEntities()
@@ -153,13 +153,13 @@ namespace TKQuake.Cookbook.Screens
     {
         private const string ENTITY_ID = "BSP";
 
+        private readonly Renderer _renderer = Renderer.Singleton();
+
         private BSPRenderer BSP;
-        private Renderer renderer;
         private Camera camera;
 
-        public BSPComponent(string BSPFile, Renderer render, Camera cam)
+        public BSPComponent(string BSPFile, Camera cam)
         {
-            renderer = render;
             camera = cam;
             ChangeBSP (BSPFile);
         }
@@ -176,17 +176,18 @@ namespace TKQuake.Cookbook.Screens
         {
             Mesh mesh = BSP.GetMesh (camera.Position);
 
-            if (renderer.IsMeshRegister (ENTITY_ID) == true)
+            if (_renderer.IsMeshRegister (ENTITY_ID) == true)
             {
-                renderer.UnregisterMesh (ENTITY_ID);
+                _renderer.UnregisterMesh (ENTITY_ID);
             }
 
-            renderer.RegisterMesh(ENTITY_ID, mesh);
-
-            var BSPEntity = RenderableEntity.Create();
+            var BSPEntity = RenderableEntity.Create ();
             BSPEntity.Id = ENTITY_ID;
-            BSPEntity.Position = new Vector3(0, 0, 0);
+            BSPEntity.Position = camera.Position;
             BSPEntity.Scale = 1.0f;
+
+            _renderer.RegisterMesh (ENTITY_ID, mesh);
+            _renderer.DrawEntity (BSPEntity);
         }
     }
 }
