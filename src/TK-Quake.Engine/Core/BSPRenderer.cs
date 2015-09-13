@@ -38,7 +38,7 @@ namespace TKQuake.Engine.Core
                 BSP = null;
             }
 
-            BSP = new Loader.BSPLoader (BSPFile);
+            BSP = new Loader.BSPLoader (BSPFile, true);
             BSP.LoadFile ();
             BSP.DumpBSP ();
         }
@@ -89,11 +89,14 @@ namespace TKQuake.Engine.Core
             List<int>     indices  = new List<int>();
 
             // Iterate through all the visible faces and collect all of the vertices.
-            foreach (int face in visibleFaces)
-            {
-                Face.FaceEntry currentFace = BSP.GetFace (face);
+//            foreach (int face in visibleFaces)
+//            {
+//                Face.FaceEntry currentFace = BSP.GetFace (face);
 
-                switch(BSP.GetFace (face).type)
+            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+            {
+//                switch(BSP.GetFace (face).type)
+                switch(currentFace.type)
                 {
                     case Face.FaceType.POLYGON:
                     {
@@ -118,7 +121,7 @@ namespace TKQuake.Engine.Core
 
                     case Face.FaceType.BILLBOARD:
                     {
-                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
+//                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
                         break;
                     }
 
@@ -129,6 +132,11 @@ namespace TKQuake.Engine.Core
                     }
                 }
             }
+
+//            foreach (Vector3 vertex in vertices)
+//            {
+//                Console.Write (String.Format ("{0} ", vertex));
+//            }
 
             BSPMesh.Vertices = vertices.ToArray ();
             BSPMesh.Normals  = normals.ToArray ();
@@ -464,17 +472,11 @@ namespace TKQuake.Engine.Core
 
         private void RenderPolygon(Face.FaceEntry face, ref List<Vector3> vertices, ref List<Vector3> normals, ref List<Vector2> texCoords, ref List<int> indices)
         {
-//            vertices    = new List<Vector3> ();
-//            normals     = new List<Vector3> ();
-//            texCoords   = new List<Vector2> ();
-//            lightCoords = new List<Vector2> ();
-//            indices     = new List<int> ();
-
             // Add all the vertex indices for the face to the mesh.
             for (int meshVert = 0; meshVert < face.n_meshVerts; meshVert++)
             {
                 // MeshVert offset is relative to the first vertex of the face.
-                indices.Add (BSP.GetMeshVert (vertices.Count + face.meshVert + meshVert).offset);
+                indices.Add (vertices.Count + BSP.GetMeshVert (face.meshVert + meshVert).offset);
             }
 
             // Add all the vertexes for the face to the mesh.
