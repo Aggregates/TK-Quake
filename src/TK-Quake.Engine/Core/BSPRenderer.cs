@@ -90,13 +90,12 @@ namespace TKQuake.Engine.Core
             List<int>     indices  = new List<int>();
 
             // Iterate through all the visible faces and collect all of the vertices.
-//            foreach (int face in visibleFaces)
-//            {
-//                Face.FaceEntry currentFace = BSP.GetFace (face);
-
-            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+            foreach (int face in visibleFaces)
             {
-//                switch(BSP.GetFace (face).type)
+                Face.FaceEntry currentFace = BSP.GetFace (face);
+
+//            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+//            {
                 switch(currentFace.type)
                 {
                     case Face.FaceType.POLYGON:
@@ -122,7 +121,7 @@ namespace TKQuake.Engine.Core
 
                     case Face.FaceType.BILLBOARD:
                     {
-//                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
+                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
                         break;
                     }
 
@@ -134,9 +133,16 @@ namespace TKQuake.Engine.Core
                 }
             }
 
+//            int i = 0;
 //            foreach (Vector3 vertex in vertices)
 //            {
 //                Console.Write (String.Format ("{0} ", vertex));
+//
+//                if (++i == 5)
+//                {
+//                    i = 0;
+//                    Console.WriteLine ("");
+//                }
 //            }
 
             BSPMesh.Vertices = vertices.ToArray ();
@@ -170,12 +176,10 @@ namespace TKQuake.Engine.Core
 
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
-            // Test the bounds of every the bounding box with every plane in the view frustum.
+            // Test the bounds of the bounding box formed by min and max with the current plane.
             foreach (Vector4 plane in frustum)
             {
                 bool[] dots = new bool[8];
-
-                // Test the bounds of the bounding box formed by min and max with the current plane.
                 dots [0] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [1] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [2] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], min[2], 1.0f))) >= 0.0f;
@@ -192,8 +196,6 @@ namespace TKQuake.Engine.Core
                 }
             }
 
-            // At least one test passed for every plane. So at least some part of the box
-            // is inside the view frustum.
             return(true);
         }
 
