@@ -22,7 +22,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private NodeEntry[] nodes;
 
-        public Node() { }
+        private Node() { }
+        public Node(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -51,6 +52,12 @@ namespace TKQuake.Engine.Loader.BSP
                 nodes[i].maxs        = new Vector3(BitConverter.ToInt32(buf, 6 * sizeof(int)),
                                                    BitConverter.ToInt32(buf, 7 * sizeof(int)),
                                                    BitConverter.ToInt32(buf, 8 * sizeof(int)));
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref nodes [i].maxs);
+                    Swizzle (ref nodes [i].mins);
+                }
             }
         }
 

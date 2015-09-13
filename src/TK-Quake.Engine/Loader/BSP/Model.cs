@@ -24,7 +24,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private ModelEntry[] models;
 
-        public Model() { }
+        private Model() { }
+        public Model(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -49,6 +50,13 @@ namespace TKQuake.Engine.Loader.BSP
                 models[i].maxs      = new Vector3(BitConverter.ToSingle(buf, 3 * sizeof(float)),
                                                   BitConverter.ToSingle(buf, 4 * sizeof(float)),
                                                   BitConverter.ToSingle(buf, 5 * sizeof(float)));
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref models [i].maxs);
+                    Swizzle (ref models [i].mins);
+                }
+
                 models[i].face      = BitConverter.ToInt32(buf,  6 * sizeof(int));
                 models[i].n_faces   = BitConverter.ToInt32(buf,  7 * sizeof(int));
                 models[i].brush     = BitConverter.ToInt32(buf,  8 * sizeof(int));

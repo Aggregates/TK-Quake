@@ -19,7 +19,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private BrushSideEntry[] brushSides;
 
-        public BrushSide() { }
+        private BrushSide() { }
+        public BrushSide(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

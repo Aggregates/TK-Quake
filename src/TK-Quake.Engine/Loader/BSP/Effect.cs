@@ -21,7 +21,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private EffectEntry[] effects;
 
-        public Effect() { }
+        private Effect() { }
+        public Effect(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

@@ -22,7 +22,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private VertexEntry[] vertexes;
 
-        public Vertex() { }
+        private Vertex() { }
+        public Vertex(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -54,6 +55,12 @@ namespace TKQuake.Engine.Loader.BSP
                                                       BitConverter.ToSingle(buf,  8 * sizeof(float)),
                                                       BitConverter.ToSingle(buf,  9 * sizeof(float)));
                 Array.Copy(buf, 10 * sizeof(float), vertexes[i].colour, 0, 4);
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref vertexes [i].position);
+                    Swizzle (ref vertexes [i].normal);
+                }
             }
         }
 

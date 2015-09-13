@@ -21,7 +21,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private LightMapEntry[] lightMaps;
 
-        public LightMap() { }
+        private LightMap() { }
+        public LightMap(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
