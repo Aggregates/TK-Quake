@@ -20,7 +20,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private VisDataEntry[] visDatas;
 
-        public VisData() { }
+        private VisData() { }
+        public VisData(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

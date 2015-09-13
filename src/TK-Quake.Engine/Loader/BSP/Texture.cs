@@ -21,7 +21,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private TextureEntry[] textures;
 
-        public Texture() { }
+        private Texture() { }
+        public Texture(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

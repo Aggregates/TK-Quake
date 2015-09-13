@@ -26,7 +26,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private LeafEntry[] leafs;
 
-        public Leaf() { }
+        private Leaf() { }
+        public Leaf(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -53,6 +54,13 @@ namespace TKQuake.Engine.Loader.BSP
                 leafs[i].maxs          = new Vector3(BitConverter.ToInt32(buf,  5 * sizeof(int)), 
                                                      BitConverter.ToInt32(buf,  6 * sizeof(int)), 
                                                      BitConverter.ToInt32(buf,  7 * sizeof(int)));
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref leafs [i].maxs);
+                    Swizzle (ref leafs [i].mins);
+                }
+
                 leafs[i].leafFace      = BitConverter.ToInt32(buf,  8 * sizeof(int));
                 leafs[i].n_leafFaces   = BitConverter.ToInt32(buf,  9 * sizeof(int));
                 leafs[i].leafBrush     = BitConverter.ToInt32(buf, 10 * sizeof(int));
