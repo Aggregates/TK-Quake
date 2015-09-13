@@ -117,8 +117,28 @@ namespace TKQuake.Cookbook.Screens
                 _renderer.UnregisterMesh (ENTITY_ID);
             }
 
+            // Get the current ModelView and Projection matrices from OPenTK
+            double[] matrix  = new double[16];
+            GL.GetDouble (GetPName.ModelviewMatrix, matrix);
+
+            Matrix4 modelView = new Matrix4(
+                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
+                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
+                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
+                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
+            );
+
+            GL.GetDouble (GetPName.ProjectionMatrix, matrix);
+
+            Matrix4 projection = new Matrix4(
+                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
+                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
+                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
+                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
+            );
+
             // Generate and register the mesh that is potentially visible to the camera.
-            _renderer.RegisterMesh (ENTITY_ID, BSP.GetMesh (camera.Position));
+            _renderer.RegisterMesh (ENTITY_ID, BSP.GetMesh (camera.Position, Matrix4.Mult (projection, modelView)));
 
             // Create a renderable entity.
             var BSPEntity = RenderableEntity.Create ();
