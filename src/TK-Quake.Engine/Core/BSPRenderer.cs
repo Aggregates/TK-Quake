@@ -18,9 +18,12 @@ namespace TKQuake.Engine.Core
         private string BSPFile;
         private Loader.BSPLoader BSP;
 
+        private Vector4[] frustum;
+
         public BSPRenderer ()
         {
             BSP = null;
+            frustum = new Vector4[6];
         }
 
         public BSPRenderer (string file) : this()
@@ -48,35 +51,32 @@ namespace TKQuake.Engine.Core
             return(BSPFile);
         }
 
-        public Mesh GetMesh(Vector3 cameraPosition)
+        public Mesh GetMesh(Vector3 cameraPosition, Matrix4 clip)
         {
             Mesh BSPMesh = new Mesh();
 
             // Find the cluster that the camera is currently in.
             int cameraCluster = BSP.GetLeaf (FindCameraLeaf (cameraPosition)).cluster;
 
-            bool[] alreadyVisible = new bool[BSP.GetFaces ().Length];
-            int[]  visibleFaces   = new int[1];
+            bool[]    alreadyVisible = new bool[BSP.GetFaces ().Length];
+            List<int> visibleFaces   = new List<int> ();
+
+            SetViewFrustum (clip);
 
             // Find all leafs that are visible from cameraCluster.
             foreach (Loader.BSP.Leaf.LeafEntry leaf in BSP.GetLeafs ())
             {
-                if (IsClusterVisible (cameraCluster, leaf.cluster) == true)
+                if ((IsClusterVisible (cameraCluster, leaf.cluster) == true) && (IsBoxInsideViewFrustum (leaf.mins, leaf.maxs)))
                 {
-                    for (int face = leaf.leafFace; face < leaf.n_leafFaces; face++)
+                    for (int leafFace = leaf.leafFace; leafFace < (leaf.leafFace + leaf.n_leafFaces); leafFace++)
                     {
+                        int face = BSP.GetLeafFace (leafFace).face;
+
                         // If we haven't already added this face to the list of visible faces then add it.
                         if (alreadyVisible [face] == false)
                         {
                             alreadyVisible [face] = true;
-
-                            // Resize array.
-                            if (visibleFaces.Length != 1)
-                            {
-                                Array.Resize<int> (ref visibleFaces, visibleFaces.Length + 1);
-                            }
-
-                            visibleFaces [visibleFaces.Length - 1] = face;
+                            visibleFaces.Add (face);
                         }
                     }
                 }
@@ -89,13 +89,12 @@ namespace TKQuake.Engine.Core
             List<int>     indices  = new List<int>();
 
             // Iterate through all the visible faces and collect all of the vertices.
-//            foreach (int face in visibleFaces)
-//            {
-//                Face.FaceEntry currentFace = BSP.GetFace (face);
-
-            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+            foreach (int face in visibleFaces)
             {
-//                switch(BSP.GetFace (face).type)
+                Face.FaceEntry currentFace = BSP.GetFace (face);
+
+//            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+//            {
                 switch(currentFace.type)
                 {
                     case Face.FaceType.POLYGON:
@@ -121,7 +120,7 @@ namespace TKQuake.Engine.Core
 
                     case Face.FaceType.BILLBOARD:
                     {
-//                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
+                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
                         break;
                     }
 
@@ -133,9 +132,16 @@ namespace TKQuake.Engine.Core
                 }
             }
 
+//            int i = 0;
 //            foreach (Vector3 vertex in vertices)
 //            {
 //                Console.Write (String.Format ("{0} ", vertex));
+//
+//                if (++i == 5)
+//                {
+//                    i = 0;
+//                    Console.WriteLine ("");
+//                }
 //            }
 
             BSPMesh.Vertices = vertices.ToArray ();
@@ -144,6 +150,50 @@ namespace TKQuake.Engine.Core
             BSPMesh.Indices  = indices.ToArray ();
 
             return(BSPMesh);
+        }
+
+        private void SetViewFrustum(Matrix4 clip)
+        {
+            /* Extract the numbers for the RIGHT plane */
+            frustum [0] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column0));
+
+            /* Extract the numbers for the LEFT plane */
+            frustum [1] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column0));
+
+            /* Extract the BOTTOM plane */
+            frustum [2] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column1));
+
+            /* Extract the TOP plane */
+            frustum [3] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column1));
+
+            /* Extract the FAR plane */
+            frustum [4] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column2));
+
+            /* Extract the NEAR plane */
+            frustum [5] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column2));
+        }
+
+        private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
+        {
+            foreach (Vector4 plane in frustum)
+            {
+                bool[] dots = new bool[8];
+                dots [0] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], min[2], 1.0f))) >= 0.0f;
+                dots [1] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], min[2], 1.0f))) >= 0.0f;
+                dots [2] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], min[2], 1.0f))) >= 0.0f;
+                dots [3] = (Vector4.Dot (plane, new Vector4 (max[0], max[1], min[2], 1.0f))) >= 0.0f;
+                dots [4] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], max[2], 1.0f))) >= 0.0f;
+                dots [5] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], max[2], 1.0f))) >= 0.0f;
+                dots [6] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], max[2], 1.0f))) >= 0.0f;
+                dots [7] = (Vector4.Dot (plane, new Vector4 (max[0], max[1], max[2], 1.0f))) >= 0.0f;
+
+                if (!(dots[0] && dots[1] && dots[2] && dots[3] && dots[4] && dots[5] && dots[6] && dots[7]))
+                {
+                    return(false);
+                }
+            }
+
+            return(true);
         }
 
         private int FindCameraLeaf(Vector3 cameraPosition)
