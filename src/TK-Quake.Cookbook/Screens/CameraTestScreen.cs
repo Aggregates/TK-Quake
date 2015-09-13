@@ -105,6 +105,7 @@ namespace TKQuake.Cookbook.Screens
                 gunEntity.Rotation = new Vector3(0, 0, 0);
                 gunEntity.Scale = 1f;
                 gunEntity.Components.Add(new GravityComponent(gunEntity));
+                gunEntity.Components.Add(new RotateComponent(gunEntity));
 
                 BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min);
                 gunEntity.Children.Add(box);
@@ -220,6 +221,29 @@ namespace TKQuake.Cookbook.Screens
         public void Startup()
         {
         }
+<<<<<<< HEAD
+=======
+    }
+
+    class RotateComponent : IComponent
+    {
+        private Entity _entity;
+        public RotateComponent(Entity entity)
+        {
+            this._entity = entity;
+        }
+
+        public void Shutdown() { }
+
+        public void Startup() { }
+
+        public void Update(double elapsedTime)
+        {
+            _entity.Rotation += new Vector3(0, 1, 0) * (float)elapsedTime;
+        }
+    }
+
+>>>>>>> Add testing rotate component. Delete in production
 
         public void Update(double elapsedTime)
         {
