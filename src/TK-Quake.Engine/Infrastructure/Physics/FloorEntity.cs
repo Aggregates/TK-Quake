@@ -10,16 +10,51 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Physics
 {
+    /// <summary>
+    /// A horizontal plane that an Entity can walk along
+    /// </summary>
     public class FloorEntity : Entity
     {
+        /// <summary>
+        /// Gets or sets the Length of the Floor along the X-Axis, starting from the Floor's X-Position
+        /// </summary>
         public float XLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Length of the Floor along the Z-Axis, starting from the Floor's Z-Position
+        /// </summary>
         public float ZLength { get; set; }
 
-        public FloorEntity(Vector3 anchor, float xLength, float zLength)
+        /// <summary>
+        /// Gets or Sets whether to render the floor's grid and bounding box volume to the screen
+        /// </summary>
+        public bool Render
+        {
+            get { return _render; }
+            set
+            {
+                _render = value;
+                var box = Children.OfType<BoundingBoxEntity>().FirstOrDefault();
+                var grid = Components.OfType<FloorGridComponent>().FirstOrDefault();
+                if (box != null) box.Render = value;
+                if (grid != null) grid.Render = value;
+            }
+        }
+        private bool _render;
+
+        /// <summary>
+        /// Constructor for a FloorEntity. Sets the instance data
+        /// </summary>
+        /// <param name="anchor">The point in 3D space to anchor the floor at</param>
+        /// <param name="xLength">The length of the floor along the x-axis from the anchor point</param>
+        /// <param name="zLength">The length of the floow along thw z-axis from the anchro point</param>
+        /// <param name="render">Whether to render the grid and bounding box or not</param>
+        public FloorEntity(Vector3 anchor, float xLength, float zLength, bool render = false)
         {
             this.Position = anchor;
             this.XLength = xLength;
             this.ZLength = zLength;
+            this.Render = render;
 
             InitialiseComponents();
         }
@@ -27,10 +62,10 @@ namespace TKQuake.Engine.Infrastructure.Physics
         private void InitialiseComponents()
         {
             // Define the Components
-            FloorGridComponent grid = new FloorGridComponent(this, 1f, true);
+            FloorGridComponent grid = new FloorGridComponent(this, 1f, _render);
             BoundingBoxEntity box = new BoundingBoxEntity(this,
                 new Vector3(0, 0 + 0.5f, 0), // This seems to work pretty well, but it's a bit hacky
-                new Vector3(XLength, 0 - 0.5f, ZLength));
+                new Vector3(XLength, 0 - 0.5f, ZLength), _render);
 
             // Set up event handling
             box.Collided += Box_Collided;
@@ -40,17 +75,26 @@ namespace TKQuake.Engine.Infrastructure.Physics
             Children.Add(box);
         }
 
+        /// <summary>
+        /// Handler for when an entity collides with the floor.
+        /// Sets the entity's vertical position to the floor's y-position
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Box_Collided(object sender, CollisionEventArgs e)
         {
-            // Stop the other object from falling through
+            // Get the other object
             var entity = e.Sender;
             if (this == e.Sender) entity = e.Collider;
 
             // If two floors are overlapping, don't move the floor
             if (!(entity is FloorEntity) && entity.Position.Y <= this.Position.Y)
             {
+                // Stop the other object from falling through
                 entity.Position = new Vector3(entity.Position.X, this.Position.Y, entity.Position.Z);
                 var gravity = entity.Components.OfType<GravityComponent>().FirstOrDefault();
+
+                // Reset gravity's velocity so it doesn't accumulate whilst on floor
                 if (gravity != null)
                     gravity.Velocity = 0;
             }
@@ -58,14 +102,25 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
     }
 
-
+    /// <summary>
+    /// Renders a grid for the floor using OpenGL Immediate mode calls
+    /// </summary>
     class FloorGridComponent : IComponent
     {
         private FloorEntity _entity;
         private float _lineSpacing;
 
+        /// <summary>
+        /// Gets or sets whether to render the Floor Grid Component or not
+        /// </summary>
         public bool Render { get; set; }
 
+        /// <summary>
+        /// Constructor for the Floor Grid Component. Sets the instance variables
+        /// </summary>
+        /// <param name="entity">The entity the component is attached to</param>
+        /// <param name="lineSpacing">The spacing between grid lines</param>
+        /// <param name="render">Whether to render the grid component or not</param>
         public FloorGridComponent(FloorEntity entity, float lineSpacing, bool render = false)
         {
             this._entity = entity;
@@ -76,6 +131,10 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public void Startup() { }
         public void Shutdown() { }
 
+        /// <summary>
+        /// Render's the Floor Grid Component using OpenGL Immediate Mode
+        /// </summary>
+        /// <param name="elapsedTime"></param>
         public void Update(double elapsedTime)
         {
 

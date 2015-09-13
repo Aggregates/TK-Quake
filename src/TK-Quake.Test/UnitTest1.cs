@@ -10,7 +10,6 @@ namespace TKQuake.Test
 {
     public class OctreeObject : Entity
     {
-        public int Id { get; set; }
         public override string ToString() { return "ID:" + Id; }
     }
 
@@ -23,9 +22,9 @@ namespace TKQuake.Test
             Vector3 c1 = new Vector3(1,1,1);
             Vector3 c2 = new Vector3(-1,-1,-1);
 
-            OctreeObject obj1 = new OctreeObject() { Id = 1, Position = new Vector3(0.25f, 0.25f, 0.25f) };
-            OctreeObject obj2 = new OctreeObject() { Id = 2, Position = new Vector3(0.75f, 0.75f, 0.75f) };
-            OctreeObject obj3 = new OctreeObject() { Id = 3, Position = new Vector3(-0.75f, -0.75f, -0.75f) };
+            OctreeObject obj1 = new OctreeObject() { Id = "1", Position = new Vector3(0.25f, 0.25f, 0.25f) };
+            OctreeObject obj2 = new OctreeObject() { Id = "2", Position = new Vector3(0.75f, 0.75f, 0.75f) };
+            OctreeObject obj3 = new OctreeObject() { Id = "3", Position = new Vector3(-0.75f, -0.75f, -0.75f) };
 
             Octree tree = new Octree(c1, c2);
             //tree.Add(ref obj1);

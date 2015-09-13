@@ -26,7 +26,7 @@ namespace TKQuake.Engine.Core
 
             BoundingBoxEntity box = new BoundingBoxEntity(this,
                 new Vector3(0.5f, 0.5f, 0.5f) + cam.PositionOffset,
-                new Vector3(-0.5f, -0.5f, -0.5f) + cam.PositionOffset);
+                new Vector3(-0.5f, -0.5f, -0.5f) + cam.PositionOffset, true);
 
             Components.Add(cam);
             Children.Add(box);

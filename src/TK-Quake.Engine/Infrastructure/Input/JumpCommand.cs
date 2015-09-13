@@ -8,6 +8,9 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Input
 {
+    /// <summary>
+    /// Moves the entity in the positive y-axis
+    /// </summary>
     public class JumpCommand : ICommand
     {
 

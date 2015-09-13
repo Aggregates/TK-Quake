@@ -44,6 +44,7 @@ namespace TKQuake.Cookbook.Screens
             Children.Add(collidionDetector);
 
             _camera.Position = new Vector3(0, 10, 0);
+            _camera.Rotation = new Vector3(0, MathHelper.PiOver2, 0);
             _camera.Components.Add(new GravityComponent(_camera));
 
             InitEntities();
@@ -86,9 +87,9 @@ namespace TKQuake.Cookbook.Screens
         private void InitEntities()
         {
             Children.Add(_camera);
-            Children.Add(new FloorEntity(new Vector3(0, 0, 0), 10, 10));
-            Children.Add(new FloorEntity(new Vector3(0, -10, 10), 10, 10));
-            Children.Add(new FloorEntity(new Vector3(10, -10, 0), 10, 10));
+            Children.Add(new FloorEntity(new Vector3(0, 0, 0), 10, 10, true));
+            Children.Add(new FloorEntity(new Vector3(0, -10, 10), 10, 10, true));
+            Children.Add(new FloorEntity(new Vector3(10, -10, 0), 10, 10, true));
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -96,7 +97,7 @@ namespace TKQuake.Cookbook.Screens
 
             _renderer.RegisterMesh("gun", mesh);
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 0; i++)
             {
 
                 var gunEntity = RenderableEntity.Create();
@@ -107,7 +108,7 @@ namespace TKQuake.Cookbook.Screens
                 gunEntity.Components.Add(new GravityComponent(gunEntity));
                 gunEntity.Components.Add(new RotateComponent(gunEntity));
 
-                BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min);
+                BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
                 gunEntity.Children.Add(box);
 
                 box.Collided += Box_Collided;
