@@ -328,6 +328,7 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("");
 
             file.WriteLine("********* Face Lump *********");
+            file.WriteLine(String.Format("Num Faces {0}", directoryParsers[(int)DirectoryTypes.Face].GetSize()));
 
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Face].GetSize(); i++)
             {
