@@ -90,11 +90,14 @@ namespace TKQuake.Engine.Core
             List<int>     indices  = new List<int>();
 
             // Iterate through all the visible faces and collect all of the vertices.
-            foreach (int face in visibleFaces)
-            {
-                Face.FaceEntry currentFace = BSP.GetFace (face);
+//            foreach (int face in visibleFaces)
+//            {
+//                Face.FaceEntry currentFace = BSP.GetFace (face);
 
-                switch(BSP.GetFace (face).type)
+            foreach (Face.FaceEntry currentFace in BSP.GetFaces ())
+            {
+//                switch(BSP.GetFace (face).type)
+                switch(currentFace.type)
                 {
                     case Face.FaceType.POLYGON:
                     {
@@ -119,7 +122,7 @@ namespace TKQuake.Engine.Core
 
                     case Face.FaceType.BILLBOARD:
                     {
-                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
+//                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
                         break;
                     }
 
@@ -130,6 +133,11 @@ namespace TKQuake.Engine.Core
                     }
                 }
             }
+
+//            foreach (Vector3 vertex in vertices)
+//            {
+//                Console.Write (String.Format ("{0} ", vertex));
+//            }
 
             BSPMesh.Vertices = vertices.ToArray ();
             BSPMesh.Normals  = normals.ToArray ();
