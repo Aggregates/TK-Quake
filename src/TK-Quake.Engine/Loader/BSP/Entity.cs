@@ -16,7 +16,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private EntityEntry entities;
 
-        public Entity() { }
+        private Entity() { }
+        public Entity(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

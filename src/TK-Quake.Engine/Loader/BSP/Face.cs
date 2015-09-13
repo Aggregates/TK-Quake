@@ -41,7 +41,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private FaceEntry[] faces;
 
-        public Face() { }
+        private Face() { }
+        public Face(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -121,6 +122,12 @@ namespace TKQuake.Engine.Loader.BSP
                 faces[i].normal      = new Vector3(BitConverter.ToSingle(buf, 21 * sizeof(float)),
                                                    BitConverter.ToSingle(buf, 22 * sizeof(float)),
                                                    BitConverter.ToSingle(buf, 23 * sizeof(float)));
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref faces [i].normal);
+                }
+
                 faces[i].size[0]     = BitConverter.ToInt32(buf,  24 * sizeof(int));
                 faces[i].size[1]     = BitConverter.ToInt32(buf,  25 * sizeof(int));
             }

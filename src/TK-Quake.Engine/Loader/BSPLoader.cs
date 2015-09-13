@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace TKQuake.Engine.Loader
 {
@@ -52,30 +53,30 @@ namespace TKQuake.Engine.Loader
 
         private string BSPFile = "";
 
-        public BSPLoader()
+        public BSPLoader(bool swizzle)
         {
             header.lumps = new LumpEntry[NUM_DIRECTORIES];
 
-            directoryParsers[(int)DirectoryTypes.Entity]    = new BSP.Entity();
-            directoryParsers[(int)DirectoryTypes.Texture]   = new BSP.Texture();
-            directoryParsers[(int)DirectoryTypes.Plane]     = new BSP.Plane();
-            directoryParsers[(int)DirectoryTypes.Node]      = new BSP.Node();
-            directoryParsers[(int)DirectoryTypes.Leaf]      = new BSP.Leaf();
-            directoryParsers[(int)DirectoryTypes.LeafFace]  = new BSP.LeafFace();
-            directoryParsers[(int)DirectoryTypes.LeafBrush] = new BSP.LeafBrush();
-            directoryParsers[(int)DirectoryTypes.Model]     = new BSP.Model();
-            directoryParsers[(int)DirectoryTypes.Brush]     = new BSP.Brush();
-            directoryParsers[(int)DirectoryTypes.BrushSide] = new BSP.BrushSide();
-            directoryParsers[(int)DirectoryTypes.Vertex]    = new BSP.Vertex();
-            directoryParsers[(int)DirectoryTypes.MeshVert]  = new BSP.MeshVert();
-            directoryParsers[(int)DirectoryTypes.Effect]    = new BSP.Effect();
-            directoryParsers[(int)DirectoryTypes.Face]      = new BSP.Face();
-            directoryParsers[(int)DirectoryTypes.LightMap]  = new BSP.LightMap();
-            directoryParsers[(int)DirectoryTypes.LightVol]  = new BSP.LightVol();
-            directoryParsers[(int)DirectoryTypes.VisData]   = new BSP.VisData();
+            directoryParsers[(int)DirectoryTypes.Entity]    = new BSP.Entity(swizzle);
+            directoryParsers[(int)DirectoryTypes.Texture]   = new BSP.Texture(swizzle);
+            directoryParsers[(int)DirectoryTypes.Plane]     = new BSP.Plane(swizzle);
+            directoryParsers[(int)DirectoryTypes.Node]      = new BSP.Node(swizzle);
+            directoryParsers[(int)DirectoryTypes.Leaf]      = new BSP.Leaf(swizzle);
+            directoryParsers[(int)DirectoryTypes.LeafFace]  = new BSP.LeafFace(swizzle);
+            directoryParsers[(int)DirectoryTypes.LeafBrush] = new BSP.LeafBrush(swizzle);
+            directoryParsers[(int)DirectoryTypes.Model]     = new BSP.Model(swizzle);
+            directoryParsers[(int)DirectoryTypes.Brush]     = new BSP.Brush(swizzle);
+            directoryParsers[(int)DirectoryTypes.BrushSide] = new BSP.BrushSide(swizzle);
+            directoryParsers[(int)DirectoryTypes.Vertex]    = new BSP.Vertex(swizzle);
+            directoryParsers[(int)DirectoryTypes.MeshVert]  = new BSP.MeshVert(swizzle);
+            directoryParsers[(int)DirectoryTypes.Effect]    = new BSP.Effect(swizzle);
+            directoryParsers[(int)DirectoryTypes.Face]      = new BSP.Face(swizzle);
+            directoryParsers[(int)DirectoryTypes.LightMap]  = new BSP.LightMap(swizzle);
+            directoryParsers[(int)DirectoryTypes.LightVol]  = new BSP.LightVol(swizzle);
+            directoryParsers[(int)DirectoryTypes.VisData]   = new BSP.VisData(swizzle);
         }
 
-        public BSPLoader(string file) : this()
+        public BSPLoader(string file, bool swizzle) : this(swizzle)
         {
             SetBSPFile(file);
         }

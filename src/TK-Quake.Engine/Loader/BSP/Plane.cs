@@ -20,7 +20,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private PlaneEntry[] planes;
 
-        public Plane() { }
+        private Plane() { }
+        public Plane(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
@@ -43,6 +44,11 @@ namespace TKQuake.Engine.Loader.BSP
                                                 BitConverter.ToSingle(buf, 1 * sizeof(float)),
                                                 BitConverter.ToSingle(buf, 2 * sizeof(float)));
                 planes [i].dist   = BitConverter.ToSingle(buf, 3 * sizeof(float));
+
+                if (swizzle == true)
+                {
+                    Swizzle (ref planes [i].normal);
+                }
             }
         }
 

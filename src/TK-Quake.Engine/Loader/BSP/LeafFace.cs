@@ -18,7 +18,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private LeafFaceEntry[] leafFaces;
 
-        public LeafFace() { }
+        private LeafFace() { }
+        public LeafFace(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

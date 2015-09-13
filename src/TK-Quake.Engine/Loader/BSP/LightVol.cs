@@ -20,7 +20,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private LightVolEntry[] lightVols;
 
-        public LightVol() { }
+        private LightVol() { }
+        public LightVol(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {

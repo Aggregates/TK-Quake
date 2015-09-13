@@ -18,7 +18,8 @@ namespace TKQuake.Engine.Loader.BSP
 
         private MeshVertEntry[] meshVerts;
 
-        public MeshVert() { }
+        private MeshVert() { }
+        public MeshVert(bool swizzle) { this.swizzle = swizzle; }
 
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
