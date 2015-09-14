@@ -8,6 +8,7 @@ using OpenTK;
 using TKQuake.Engine.Loader;
 using TKQuake.Engine.Loader.BSP;
 using TKQuake.Engine.Infrastructure;
+using TKQuake.Engine.Infrastructure.Texture;
 
 namespace TKQuake.Engine.Core
 {
@@ -20,10 +21,13 @@ namespace TKQuake.Engine.Core
 
         private Vector4[] frustum;
 
+        private TextureManager texManager;
+
         public BSPRenderer ()
         {
             BSP = null;
             frustum = new Vector4[6];
+            texManager = new TextureManager ();
         }
 
         public BSPRenderer (string file) : this()
@@ -271,7 +275,7 @@ namespace TKQuake.Engine.Core
                     
                 //Create an array the size of the grid, which is given by
                 //size[] on the face object.
-                Vertex.VertexEntry[,] vertGrid = new Vertex.VertexEntry[face.size [0], face.size [1]];
+                Loader.BSP.Vertex.VertexEntry[,] vertGrid = new Loader.BSP.Vertex.VertexEntry[face.size [0], face.size [1]];
 
                 //Read the verts for this face into the grid, making sure
                 //that the final shape of the grid matches the size[] of
@@ -440,6 +444,24 @@ namespace TKQuake.Engine.Core
                 mesh.Normals  = new Vector3[0];
                 mesh.Textures = texCoords.ToArray ();
                 mesh.Indices  = indices.ToArray ();
+
+                string texture = BSP.GetTexture (face.texture).name;
+
+                if (texture.Contains ("noshader") == false)
+                {
+                    if (texManager.Registered (texture) == false)
+                    {
+                        texManager.Add (texture, texture + ".jpg");
+                    }
+
+                    mesh.tex = texManager.Get (texture);
+                }
+
+                else
+                {
+                    mesh.tex = null;
+                }
+
                 meshes.Add (mesh);
             }
 
@@ -534,7 +556,7 @@ namespace TKQuake.Engine.Core
            // Add all the vertexes for the face to the mesh.
             for (int vertex = face.vertex; vertex < (face.vertex + face.n_vertexes); vertex++)
             {
-                Vertex.VertexEntry currentVertex = BSP.GetVertex (vertex);
+                Loader.BSP.Vertex.VertexEntry currentVertex = BSP.GetVertex (vertex);
                 vertices.Add (currentVertex.position);
                 normals.Add (currentVertex.normal);
                 texCoords.Add (currentVertex.texCoord [0]);
@@ -553,6 +575,24 @@ namespace TKQuake.Engine.Core
             mesh.Normals  = normals.ToArray ();
             mesh.Textures = texCoords.ToArray ();
             mesh.Indices  = indices.ToArray ();
+
+            string texture = BSP.GetTexture (face.texture).name;
+
+            if (texture.Contains ("noshader") == false)
+            {
+                if (texManager.Registered (texture) == false)
+                {
+                    texManager.Add (texture, texture + ".jpg");
+                }
+
+                mesh.tex = texManager.Get (texture);
+            }
+
+            else
+            {
+                mesh.tex = null;
+            }
+
             return(mesh);
          }
     }
