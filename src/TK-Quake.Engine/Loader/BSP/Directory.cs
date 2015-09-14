@@ -29,6 +29,15 @@ namespace TKQuake.Engine.Loader.BSP
             vector[2] = -temp;
         }
 
+        protected void Swizzle(ref Vector4 vector)
+        {
+            float temp;
+
+            temp      = vector[1];
+            vector[1] = vector[2];
+            vector[2] = -temp;
+        }
+
         protected void Swizzle(ref int[] vector)
         {   
             int temp;
