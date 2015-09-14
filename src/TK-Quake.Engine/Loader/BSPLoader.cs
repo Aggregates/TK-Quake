@@ -198,8 +198,7 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Plane].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Plane {0}", i));
-                file.WriteLine(String.Format("\tNormal : {0}", GetPlane(i).normal.ToString ()));
-                file.WriteLine(String.Format("\tDistance : {0}", GetPlane(i).dist));
+                file.WriteLine(String.Format("\tVector form : {0}", GetPlane(i).plane));
             }
 
             file.WriteLine("");
@@ -211,8 +210,8 @@ namespace TKQuake.Engine.Loader
                 file.WriteLine(String.Format("Node {0}", i));
                 file.WriteLine(String.Format("\tPlane index : {0}", GetNode(i).plane));
                 file.WriteLine(String.Format("\tChildren index : {0} {1}", GetNode(i).children[0], GetNode(i).children[1]));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetNode(i).mins.ToString ()));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetNode(i).maxs.ToString ()));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetNode(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetNode(i).maxs));
             }
 
             file.WriteLine("");
@@ -223,8 +222,8 @@ namespace TKQuake.Engine.Loader
             {
                 file.WriteLine(String.Format("Leaf {0}", i));
                 file.WriteLine(String.Format("\tCluster {0}", GetLeaf(i).cluster));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetLeaf(i).mins.ToString ()));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetLeaf(i).maxs.ToString ()));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetLeaf(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetLeaf(i).maxs));
                 file.WriteLine(String.Format("\tLeafFace {0}", GetLeaf(i).leafFace));
                 file.WriteLine(String.Format("\tNb LeafFace {0}", GetLeaf(i).n_leafFaces));
                 file.WriteLine(String.Format("\tLeafBrush {0}", GetLeaf(i).leafBrush));
@@ -258,8 +257,8 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Model].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Model {0}", i));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetModel(i).mins.ToString ()));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetModel(i).maxs.ToString ()));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetModel(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetModel(i).maxs));
                 file.WriteLine(String.Format("\tFace {0}", GetModel(i).face));
                 file.WriteLine(String.Format("\tNbFaces {0}", GetModel(i).n_faces));
                 file.WriteLine(String.Format("\tBrush {0}", GetModel(i).brush));
@@ -296,11 +295,11 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Vertex].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Vertex {0}", i));
-                file.WriteLine(String.Format("\tPosition : {0}", GetVertex(i).position.ToString ()));
-                file.WriteLine(String.Format("\tTexCoord0 : {0}", GetVertex(i).texCoord[0].ToString ()));
-                file.WriteLine(String.Format("\tTexCoord1 : {0}", GetVertex(i).texCoord[1].ToString ()));
-                file.WriteLine(String.Format("\tNormal : {0}", GetVertex(i).normal.ToString ()));
-                file.WriteLine(String.Format("\tColor : {0} {1} {2} {3}", GetVertex(i).colour[0], GetVertex(i).colour[1], GetVertex(i).colour[2], GetVertex(i).colour[3]));
+                file.WriteLine(String.Format("\tPosition : {0}", GetVertex(i).position));
+                file.WriteLine(String.Format("\tTexCoord0 : {0}", GetVertex(i).texCoord[0]));
+                file.WriteLine(String.Format("\tTexCoord1 : {0}", GetVertex(i).texCoord[1]));
+                file.WriteLine(String.Format("\tNormal : {0}", GetVertex(i).normal));
+                file.WriteLine(String.Format("\tColor : {0}", GetVertex(i).colour));
             }
 
             file.WriteLine("");
@@ -343,9 +342,9 @@ namespace TKQuake.Engine.Loader
                 file.WriteLine(String.Format("\tLightMapIndex : {0}", GetFace(i).lm_index));
                 file.WriteLine(String.Format("\tLightMapCorner : {0} {1}", GetFace(i).lm_start[0], GetFace(i).lm_start[1]));
                 file.WriteLine(String.Format("\tLightmapSize : {0} {1}", GetFace(i).lm_size[0], GetFace(i).lm_size[1]));
-                file.WriteLine(String.Format("\tLightmapOrigin : {0}", GetFace(i).lm_origin.ToString ()));
-                file.WriteLine(String.Format("\tLightmapVecs S : {0}", GetFace(i).lm_vecs[0].ToString ()));
-                file.WriteLine(String.Format("\tLightmapVecs T : {0}", GetFace(i).lm_vecs[1].ToString ()));
+                file.WriteLine(String.Format("\tLightmapOrigin : {0}", GetFace(i).lm_origin));
+                file.WriteLine(String.Format("\tLightmapVecs S : {0}", GetFace(i).lm_vecs[0]));
+                file.WriteLine(String.Format("\tLightmapVecs T : {0}", GetFace(i).lm_vecs[1]));
                 file.WriteLine(String.Format("\tNormal : {0}", GetFace(i).normal.ToString ()));
                 file.WriteLine(String.Format("\tPatchSize : {0} {1}", GetFace(i).size[0], GetFace(i).size[1]));
             }
