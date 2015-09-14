@@ -15,9 +15,10 @@ namespace TKQuake.Engine.Core
     {
         public Camera()
         {
-            MoveSpeed = 10;
+            MoveSpeed = 1;
             RotationSpeed = 1;
-            Position = Vector3.Zero;
+            Position = new Vector3(0, 0, 3);
+            Rotation = -Vector3.UnitZ;
 
             Components.Add(new CameraComponent(this));
         }
@@ -46,16 +47,11 @@ namespace TKQuake.Engine.Core
         public void Startup() { }
         public void Shutdown() { }
 
-        private double _time;
         public void Update(double elapsedTime)
         {
             var program = _renderer.Program;
 
-            _time += elapsedTime;
-
-            //left to right handed
-            var eye = new Vector3(_entity.Position.X, _entity.Position.Y, -_entity.Position.Z);
-            var view = Matrix4.LookAt(eye, _entity.ViewDirection, new Vector3(0, 1, 0));
+            var view = Matrix4.LookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
 
