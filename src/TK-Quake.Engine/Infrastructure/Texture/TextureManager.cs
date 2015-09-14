@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Abstract;
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace TKQuake.Engine.Infrastructure.Texture
 {
@@ -50,8 +51,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
         public void Bind(string key)
         {
             var texture = this.Get(key);
-
-            GL.Enable(EnableCap.Texture2D);
+            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, texture.Id);
         }
 
@@ -64,8 +64,8 @@ namespace TKQuake.Engine.Infrastructure.Texture
             int textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.LinearMipmapLinear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
 
             // Load the texture as a standard bitmap
             var bmp = (filename.EndsWith("tga")) ?
@@ -79,10 +79,13 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
             // Load the textue into OpenGL
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height,
-                0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+                0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             // Unlock the data in memory
             bmp.UnlockBits(bmpData);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
 
             return new Texture(textureId, bmp.Width, bmp.Height, filename);
         }

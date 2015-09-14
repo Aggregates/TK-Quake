@@ -141,18 +141,6 @@ namespace TKQuake.Engine.Core
 
             //bind texture
             TextureManager.Bind(entity.Id);
-
-            var rotate = Matrix4.CreateRotationX(entity.Rotation.X) *
-                         Matrix4.CreateRotationY(entity.Rotation.Y) *
-                         Matrix4.CreateRotationZ(entity.Rotation.Z);
-
-            var entityTranslation = entity.Translation;
-            var position = Matrix4.CreateTranslation(entity.Position / 8);
-            var scale = Vector3.One * entity.Scale;
-
-            var uniColor = GL.GetUniformLocation(Program, "uniColor");
-            GL.Uniform3(uniColor, 1.0f, 1.0f, 1.0f);
-
             DrawVbo(mesh);
 
             //reset translation matrix?

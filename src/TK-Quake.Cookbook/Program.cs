@@ -53,7 +53,8 @@ namespace TKQuake.Cookbook
             if (game.Keyboard[Key.Escape])
                 game.Exit();
 
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             currentScreen.Update(e.Time);
 
