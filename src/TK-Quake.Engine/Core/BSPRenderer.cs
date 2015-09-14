@@ -61,6 +61,7 @@ namespace TKQuake.Engine.Core
             bool[]    alreadyVisible = new bool[BSP.GetFaces ().Length];
             List<int> visibleFaces   = new List<int> ();
 
+            // Set the view frustum.
             SetViewFrustum (clip);
 
             // Find all leafs that are visible from cameraCluster.
@@ -175,9 +176,12 @@ namespace TKQuake.Engine.Core
 
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
+            // Test the bounds of every the bounding box with every plane in the view frustum.
             foreach (Vector4 plane in frustum)
             {
                 bool[] dots = new bool[8];
+
+                // Test the bounds of the bounding box formed by min and max with the current plane.
                 dots [0] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [1] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [2] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], min[2], 1.0f))) >= 0.0f;
@@ -187,35 +191,42 @@ namespace TKQuake.Engine.Core
                 dots [6] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], max[2], 1.0f))) >= 0.0f;
                 dots [7] = (Vector4.Dot (plane, new Vector4 (max[0], max[1], max[2], 1.0f))) >= 0.0f;
 
-                if (!(dots[0] && dots[1] && dots[2] && dots[3] && dots[4] && dots[5] && dots[6] && dots[7]))
+                // If all tests fail then the box is not inside the view frustum.
+                if (!(dots[0] || dots[1] || dots[2] || dots[3] || dots[4] || dots[5] || dots[6] || dots[7]))
                 {
                     return(false);
                 }
             }
 
+            // At least one test passed for every plane. So at least some part of the box
+            // is inside the view frustum.
             return(true);
         }
 
         private int FindCameraLeaf(Vector3 cameraPosition)
         {
             int index = 0;
+            Vector4 cam = new Vector4 (cameraPosition [0], cameraPosition [1], cameraPosition [2], 1.0f);
 
+            // Leaf nodes have negative indexes.
             while (index >= 0)
             {
                 Node.NodeEntry   node  = BSP.GetNode (index);
                 Plane.PlaneEntry plane = BSP.GetPlane (node.plane);
 
-                // Distance from point to a plane
-                double distance = Vector3.Dot (plane.normal, cameraPosition) - plane.dist;
+                // Distance from point to the plane
+                double distance = Vector4.Dot (plane.plane, cam);
+                //double distance = Vector3.Dot (plane.normal, cameraPosition) - plane.dist;
 
+                // Determine which branch of the tree to traverse down.
                 if (distance >= 0)
                 {
-                    index = node.children[0];
+                    index = node.children[1];
                 }
 
                 else
                 {
-                    index = node.children[1];
+                    index = node.children[0];
                 }
             }
 
@@ -240,6 +251,7 @@ namespace TKQuake.Engine.Core
 
         private void TessellateBezierPatch (Face.FaceEntry face, int level, ref List<Vector3> vertices, ref List<Vector2> texCoords, ref List<int> indices)
         {
+            // Preserve index of the first vertex in this patch.
             int vertexIndexOffset = vertices.Count;
 
             // The amount of increments we need to make for each dimension, so we have the (potentially) shared points between patches
@@ -523,16 +535,16 @@ namespace TKQuake.Engine.Core
         private void RenderPolygon(Face.FaceEntry face, ref List<Vector3> vertices, ref List<Vector3> normals, ref List<Vector2> texCoords, ref List<int> indices)
         {
             // Add all the vertex indices for the face to the mesh.
-            for (int meshVert = 0; meshVert < face.n_meshVerts; meshVert++)
+            for (int meshVert = face.meshVert; meshVert < (face.meshVert + face.n_meshVerts); meshVert++)
             {
                 // MeshVert offset is relative to the first vertex of the face.
-                indices.Add (vertices.Count + BSP.GetMeshVert (face.meshVert + meshVert).offset);
+                indices.Add (vertices.Count + BSP.GetMeshVert (meshVert).offset);
             }
 
             // Add all the vertexes for the face to the mesh.
-            for (int vertex = 0; vertex < face.n_vertexes; vertex++)
+            for (int vertex = face.vertex; vertex < (face.vertex + face.n_vertexes); vertex++)
             {
-                Vertex.VertexEntry currentVertex = BSP.GetVertex (face.vertex + vertex);
+                Vertex.VertexEntry currentVertex = BSP.GetVertex (vertex);
                 vertices.Add (currentVertex.position);
                 normals.Add (currentVertex.normal);
                 texCoords.Add (currentVertex.texCoord [0]);
