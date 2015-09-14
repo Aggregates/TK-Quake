@@ -26,7 +26,7 @@ namespace TKQuake.Engine.Loader.BSP
 
             temp      = vector[1];
             vector[1] = vector[2];
-            vector[2] = -temp;
+            vector[2] = temp;
         }
 
         protected void Swizzle(ref Vector4 vector)
@@ -35,7 +35,7 @@ namespace TKQuake.Engine.Loader.BSP
 
             temp      = vector[1];
             vector[1] = vector[2];
-            vector[2] = -temp;
+            vector[2] = temp;
         }
 
         protected void Swizzle(ref int[] vector)
@@ -44,7 +44,7 @@ namespace TKQuake.Engine.Loader.BSP
 
             temp      = vector[1];
             vector[1] = vector[2];
-            vector[2] = -temp;
+            vector[2] = temp;
         }
 
         protected void Swizzle(ref float[] vector)
@@ -53,7 +53,7 @@ namespace TKQuake.Engine.Loader.BSP
 
             temp      = vector[1];
             vector[1] = vector[2];
-            vector[2] = -temp;
+            vector[2] = temp;
         }
     }
 }
