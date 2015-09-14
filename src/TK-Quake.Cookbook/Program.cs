@@ -1,17 +1,12 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK.Graphics;
 using TKQuake.Cookbook.Screens;
 using TKQuake.Engine.Core;
-using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.GameScreen;
-using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Input;
 
 namespace TKQuake.Cookbook
@@ -23,21 +18,15 @@ namespace TKQuake.Cookbook
 
         public static void Main(string[] args)
         {
-            Program prog = new Program();
+            var prog = new Program();
             prog.Run();
         }
 
         private void Run()
         {
-            using (game = new GameWindow())
+            using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default, 
+                DisplayDevice.Default, 4, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
             {
-                var renderer = Renderer.Singleton();
-                renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
-                renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
-                renderer.LinkShaders();
-
-                currentScreen = new CameraTestScreen(renderer);
-
                 game.Load += game_Load;
                 game.Resize += game_Resize;
                 game.UpdateFrame += game_UpdateFrame;
@@ -49,7 +38,6 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            GL.Flush();
             game.SwapBuffers();
         }
 
@@ -58,9 +46,7 @@ namespace TKQuake.Cookbook
             if (game.Keyboard[Key.Escape])
                 game.Exit();
 
-            GL.Viewport(0, 0, game.Width, game.Height);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.DepthTest);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
 
             currentScreen.Update(e.Time);
 
@@ -69,26 +55,24 @@ namespace TKQuake.Cookbook
 
         private void game_Resize(object sender, EventArgs e)
         {
-            GL.Viewport(0, 0, game.Width, game.Height);
-            GL.ClearColor(0, 0, 0, 1); // Change Screen colour
             double aspect_ratio = game.Width / (double)game.Height;
 
             OpenTK.Matrix4 perspective = OpenTK.Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)aspect_ratio, 1, 64);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref perspective);
+            //GL.MatrixMode(MatrixMode.Projection);
+            //GL.LoadMatrix(ref perspective);
         }
 
         private void game_Load(object sender, EventArgs e)
         {
-            game.VSync = VSyncMode.On;
-            GL.ClearColor(0, 0, 1, 0);
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
+            var renderer = Renderer.Singleton();
+            renderer.Init();
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+            renderer.LinkShaders();
 
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            currentScreen = new CameraTestScreen(renderer);
 
-            GL.LineWidth(3);    // Thickens Lines
+            GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 
             Console.Write("GL Window loaded");
             Console.WriteLine();

@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
 using System.IO;
@@ -18,6 +18,7 @@ using TKQuake.Engine.Infrastructure.Entities;
 using ObjLoader.Loader.Loaders;
 using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
+using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -56,38 +57,46 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
+
+            var floor = RenderableEntity.Create();
+            floor.Id = "floor";
+            floor.Position = Vector3.Zero;
+            //Children.Add(floor);
+
+            _renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
+            _textureManager.Add("floor", "nerfrevolverMapped.bmp");
         }
     }
 
-    class FloorGridComponent : IComponent
+    static class FloorGridEntity
     {
-        public void Startup() { }
-        public void Shutdown() { }
-
-        public void Update(double elapsedTime)
+        public static Mesh Mesh()
         {
             var lineLength = 100f;
             var lineSpacing = 2.5f;
             var y = -2.5f;
 
-            GL.Begin(PrimitiveType.Lines);
+            var vertices = new List<Vertex>();
+            var indices = new List<int>();
             for (int i = 0; i < 100; i++)
             {
-                GL.Color3(0f, 0, 255);
+                var index = vertices.Count;
 
                 //parallel to x-axis
-                GL.Vertex3(-lineLength, y, i * lineSpacing - 100f);
-                GL.Vertex3(lineLength, y, i * lineSpacing - 100f);
+                var v1 = new Vector3(-lineLength, y, i * lineSpacing - 100f);
+                var v2 = new Vector3(lineLength, y, i * lineSpacing - 100f);
 
                 //perpendicular to x-axis
-                GL.Vertex3(i + lineSpacing - 50f, y, -lineLength);
-                GL.Vertex3(i + lineSpacing - 50f, y, lineLength);
-            }
-            GL.End();
+                var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
+                var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
 
-            GL.Color3(255f, 255, 255);
-        }
-    }
+                vertices.AddRange(new []
+                {
+                    new Vertex(v1, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v2, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v3, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v4, Vector3.Zero, Vector2.Zero),
+                });
 
     class BSPComponent : IComponent
     {

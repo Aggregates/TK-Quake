@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +16,13 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Core
 {
+    public class Something
+    {
+        public int VerticesId { get; set; }
+        public int IndicesId { get; set; }
+        public Mesh Mesh { get; set; }
+    }
+
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
@@ -28,6 +35,16 @@ namespace TKQuake.Engine.Core
         private int? _fragmentShader;
 
         private Renderer() { }
+
+        public void Init()
+        {
+            int vao;
+            GL.GenVertexArrays(1, out vao);
+            GL.BindVertexArray(vao);
+
+            var stride = sizeof (float)*11;
+
+        }
 
         public void LoadShader(string shader, ShaderType type)
         {
@@ -91,6 +108,39 @@ namespace TKQuake.Engine.Core
         /// <param name="mesh">The mesh of the entity</param>
         public void RegisterMesh(string entityId, Mesh mesh)
         {
+            //push to video card
+            int vao, vbo, ebo;
+            GL.GenVertexArrays(1, out vao);
+            GL.GenBuffers(1, out vbo);
+            GL.GenBuffers(1, out ebo);
+
+            var vStride = BlittableValueType.StrideOf(mesh.Vertices);
+            GL.BindVertexArray(vao);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length * vStride), mesh.Vertices, BufferUsageHint.StaticDraw);
+
+            var eStride = BlittableValueType.StrideOf(mesh.Indices);
+            GL.BindVertexArray(ebo);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length * eStride), mesh.Indices, BufferUsageHint.StaticDraw);
+
+            var posAttrib = GL.GetAttribLocation(Program, "position");
+            GL.VertexAttribPointer(posAttrib, 3, VertexAttribPointerType.Float, false, vStride, 0);
+            GL.EnableVertexAttribArray(posAttrib);
+
+            var normalAttrib = GL.GetAttribLocation(Program, "normal");
+            GL.VertexAttribPointer(normalAttrib, 3, VertexAttribPointerType.Float, false, vStride, 3*sizeof (float));
+            GL.EnableVertexAttribArray(normalAttrib);
+
+            var textureAttrib = GL.GetAttribLocation(Program, "texcoord");
+            GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, vStride, 6*sizeof (float));
+            GL.EnableVertexAttribArray(textureAttrib);
+
+            GL.BindVertexArray(0);
+
+            mesh.VaoId = vao;
+            mesh.VboId = vbo;
+            mesh.EboId = ebo;
             _meshes.Add(entityId, mesh);
         }
 
@@ -128,17 +178,10 @@ namespace TKQuake.Engine.Core
             var position = Matrix4.CreateTranslation(entity.Position / 8);
             var scale = Vector3.One * entity.Scale;
 
-            GL.PushMatrix();
-            GL.MultMatrix(ref entityTranslation);
-            GL.MultMatrix(ref position);
-            GL.MultMatrix(ref rotate);
-            GL.Scale(scale);
+            var uniColor = GL.GetUniformLocation(Program, "uniColor");
+            GL.Uniform3(uniColor, 1.0f, 1.0f, 1.0f);
 
-            //todo: move away from immediate mode
-            DrawImmediate(mesh);
-            //DrawVbo(mesh);
-
-            GL.PopMatrix();
+            DrawVbo(mesh);
 
             //reset translation matrix?
             entity.Translation = Matrix4.Identity;
@@ -169,45 +212,9 @@ namespace TKQuake.Engine.Core
 
         private void DrawVbo(Mesh mesh)
         {
-            int verticesId;
-            GL.GenBuffers(1, out verticesId); System.Diagnostics.Debug.Assert(verticesId > 0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, verticesId);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length*8*sizeof(float)), mesh.Vertices,
-                BufferUsageHint.StaticDraw);
-
-            int indiciesId;
-            GL.GenBuffers(1, out indiciesId);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indiciesId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length*sizeof (int)), mesh.Indices,
-                BufferUsageHint.StaticDraw);
-
-            const int stride = 8*sizeof (float);
-            var posAttrib = GL.GetAttribLocation(Program, "position");
-            GL.VertexAttribPointer(posAttrib, 2, VertexAttribPointerType.Float, false, stride, 0);
-            GL.EnableVertexAttribArray(posAttrib);
-
-            var normalAttrib = GL.GetAttribLocation(Program, "normal");
-            GL.VertexAttribPointer(normalAttrib, 3, VertexAttribPointerType.Float, false, stride, 3*sizeof (float));
-            GL.EnableVertexAttribArray(normalAttrib);
-
-            var textureAttrib = GL.GetAttribLocation(Program, "texcoord");
-            GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, stride, 5*sizeof (float));
-            GL.EnableVertexAttribArray(textureAttrib);
-
-            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-
-            GL.DisableVertexAttribArray(posAttrib);
-            GL.DisableVertexAttribArray(normalAttrib);
-            GL.DisableVertexAttribArray(textureAttrib);
-
-            GL.DeleteBuffers(2, new [] { verticesId, indiciesId });
-        }
-
-        public void DrawImmediateModeVertex(Vector3 position, Color color, Point uvs)
-        {
-            GL.Color4(color.R, color.G, color.B, color.A);
-            GL.TexCoord2(uvs.X, uvs.Y);
-            GL.Vertex3(position.X, position.Y, position.Z);
+            GL.BindVertexArray(mesh.VaoId);
+            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.BindVertexArray(0);
         }
 
         public void DrawSprites(List<Sprite2> sprites)

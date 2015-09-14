@@ -19,6 +19,10 @@ namespace TKQuake.Engine.Infrastructure
     {
         public Vertex[] Vertices { get; set; }
         public int[] Indices { get; set; }
+
+        public int VaoId { get; set; }
+        public int VboId { get; set; }
+        public int EboId { get; set; }
     }
 
     public static class MeshExtensions
@@ -58,24 +62,22 @@ namespace TKQuake.Engine.Infrastructure
             var outTextures = new List<Vector2>();
 
             //build index
-            var hash = new Dictionary<Vertex, uint>();
+            var hash = new Dictionary<Vertex, int>();
             var indicies = new List<int>();
             var vertices = new List<Vertex>();
             for (var i = 0; i < inPositions.Count; i++)
             {
                 var v = new Vertex(inPositions[i], inNormals[i], inTextures[i]);
-                /*
                 if (hash.ContainsKey(v))
                     indicies.Add(hash[v]);
                 else
                 {
-                */
                     vertices.Add(v);
 
                     var index = vertices.Count - 1;
                     indicies.Add(index);
-                    //hash.Add(v, index);
-                //}
+                    hash.Add(v, index);
+                }
             }
 
             //set mesh
