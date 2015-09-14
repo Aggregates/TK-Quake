@@ -12,8 +12,7 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public struct PlaneEntry
         {
-            public Vector3 normal;
-            public float   dist;
+            public Vector4 plane;
         }
 
         private const int PLANE_SIZE = 16;
@@ -40,14 +39,15 @@ namespace TKQuake.Engine.Loader.BSP
             {
                 file.Read (buf, 0, PLANE_SIZE);
 
-                planes [i].normal = new Vector3(BitConverter.ToSingle(buf, 0 * sizeof(float)),
-                                                BitConverter.ToSingle(buf, 1 * sizeof(float)),
-                                                BitConverter.ToSingle(buf, 2 * sizeof(float)));
-                planes [i].dist   = BitConverter.ToSingle(buf, 3 * sizeof(float));
+                planes [i].plane = new Vector4(
+                    BitConverter.ToSingle(buf, 0 * sizeof(float)),
+                    BitConverter.ToSingle(buf, 1 * sizeof(float)),
+                    BitConverter.ToSingle(buf, 2 * sizeof(float)),
+                    BitConverter.ToSingle(buf, 3 * sizeof(float)));
 
                 if (swizzle == true)
                 {
-                    Swizzle (ref planes [i].normal);
+                    Swizzle (ref planes [i].plane);
                 }
             }
         }

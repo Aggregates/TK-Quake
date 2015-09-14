@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Loader.BSP
             public Vector3   position;
             public Vector2[] texCoord;
             public Vector3   normal;
-            public byte[]    colour;
+            public Vector4   colour;
         }
 
         private const int VERTEX_SIZE = 44;
@@ -43,7 +43,6 @@ namespace TKQuake.Engine.Loader.BSP
                 file.Read (buf, 0, VERTEX_SIZE);
 
                 vertexes[i].texCoord    = new Vector2[2];
-                vertexes[i].colour      = new byte[4];
                 vertexes[i].position    = new Vector3(BitConverter.ToSingle(buf,  0 * sizeof(float)),
                                                       BitConverter.ToSingle(buf,  1 * sizeof(float)),
                                                       BitConverter.ToSingle(buf,  2 * sizeof(float)));
@@ -54,7 +53,7 @@ namespace TKQuake.Engine.Loader.BSP
                 vertexes[i].normal      = new Vector3(BitConverter.ToSingle(buf,  7 * sizeof(float)),
                                                       BitConverter.ToSingle(buf,  8 * sizeof(float)),
                                                       BitConverter.ToSingle(buf,  9 * sizeof(float)));
-                Array.Copy(buf, 10 * sizeof(float), vertexes[i].colour, 0, 4);
+                vertexes [i].colour     = new Vector4(buf [10] / 255.0f, buf [11] / 255.0f, buf [12] / 255.0f, buf [13] / 255.0f);
 
                 if (swizzle == true)
                 {
