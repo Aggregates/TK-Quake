@@ -36,16 +36,6 @@ namespace TKQuake.Engine.Core
 
         private Renderer() { }
 
-        public void Init()
-        {
-            int vao;
-            GL.GenVertexArrays(1, out vao);
-            GL.BindVertexArray(vao);
-
-            var stride = sizeof (float)*11;
-
-        }
-
         public void LoadShader(string shader, ShaderType type)
         {
             var id = GL.CreateShader(type);
