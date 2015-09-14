@@ -50,42 +50,20 @@ namespace TKQuake.Engine.Core
         {
             var program = _renderer.Program;
 
-            /*
-            var uniModel = GL.GetUniformLocation(program, "model");
-            var model = Matrix4.Identity;
-            GL.UniformMatrix4(uniModel, false, ref model);
-
-            var view = GLX.MatrixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
-            var uniView = GL.GetUniformLocation(program, "view");
-            GL.UniformMatrix4(uniView, false, ref view);
-
-            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 800f/600f, 1f, 10f);
-            var uniProj = GL.GetUniformLocation(program, "proj");
-            GL.UniformMatrix4(uniProj, false, ref proj);
-            */
-
             _time += elapsedTime;
-            var model = Matrix4.CreateRotationZ((float)_time * MathHelper.PiOver2);
+            var model = Matrix4.CreateRotationZ((float)_time * MathHelper.PiOver4);
             var uniModel = GL.GetUniformLocation(program, "model");
             GL.UniformMatrix4(uniModel, false, ref model);
 
-            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 800f / 600f, 1f, 10f);
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 800f / 600f, 1f, 100f);
             var uniProj = GL.GetUniformLocation(program, "proj");
             GL.UniformMatrix4(uniProj, false, ref proj);
 
-            var view = Matrix4.LookAt(new Vector3(1.2f, 1.2f, 1.2f) * 3, new Vector3(0, 0, 0), new Vector3(0, 0, 1));
+            //left to right handed
+            var eye = new Vector3(_entity.Position.X, _entity.Position.Z, _entity.Position.Y);
+            var view = Matrix4.LookAt(eye, _entity.ViewDirection, new Vector3(0, 0, 1));
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
-
-            /*
-            var mat = GLX.MatrixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
-            GL.MatrixMode(MatrixMode.Modelview);
-
-            // http://stackoverflow.com/a/4519028
-            GL.LoadMatrix(ref mat);
-            */
-
-
         }
     }
 }
