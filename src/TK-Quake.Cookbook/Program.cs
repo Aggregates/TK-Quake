@@ -56,11 +56,12 @@ namespace TKQuake.Cookbook
 
         private void game_Resize(object sender, EventArgs e)
         {
-            double aspect_ratio = game.Width / (double)game.Height;
+            var renderer = Renderer.Singleton();
 
-            OpenTK.Matrix4 perspective = OpenTK.Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)aspect_ratio, 1, 64);
-            //GL.MatrixMode(MatrixMode.Projection);
-            //GL.LoadMatrix(ref perspective);
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)game.Width / game.Height, 0.1f, 100f);
+            var uniProj = GL.GetUniformLocation(renderer.Program, "proj");
+            GL.UniformMatrix4(uniProj, false, ref proj);
+            GL.Viewport(0, 0, game.Width, game.Height);
         }
 
         private void game_Load(object sender, EventArgs e)
