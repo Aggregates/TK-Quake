@@ -63,8 +63,8 @@ namespace TKQuake.Cookbook.Screens
             floor.Position = Vector3.Zero;
             //Children.Add(floor);
 
-            _renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
-            _textureManager.Add("floor", "nerfrevolverMapped.bmp");
+            //_renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
+            //_textureManager.Add("floor", "nerfrevolverMapped.bmp");
         }
     }
 

@@ -51,19 +51,22 @@ namespace TKQuake.Engine.Core
             var program = _renderer.Program;
 
             _time += elapsedTime;
-            var model = Matrix4.CreateRotationZ((float)_time * MathHelper.PiOver4);
+
+            var radians = MathHelper.DegreesToRadians(50f*(float) _time);
+            var model = Matrix4.CreateTranslation(0.5f, 1f, 0f)*Matrix4.CreateRotationX(radians);
             var uniModel = GL.GetUniformLocation(program, "model");
             GL.UniformMatrix4(uniModel, false, ref model);
 
-            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 800f / 600f, 1f, 100f);
-            var uniProj = GL.GetUniformLocation(program, "proj");
-            GL.UniformMatrix4(uniProj, false, ref proj);
-
             //left to right handed
-            var eye = new Vector3(_entity.Position.X, _entity.Position.Z, _entity.Position.Y);
-            var view = Matrix4.LookAt(eye, _entity.ViewDirection, new Vector3(0, 0, 1));
+            var eye = new Vector3(_entity.Position.X, _entity.Position.Y, _entity.Position.Z);
+            //var view = Matrix4.LookAt(eye, Vector3.Zero, new Vector3(0, 0, 1));
+            var view = Matrix4.CreateTranslation(0, 0, -20);
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
+
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), 800f / 600f, 0.1f, 100f);
+            var uniProj = GL.GetUniformLocation(program, "proj");
+            GL.UniformMatrix4(uniProj, false, ref proj);
         }
     }
 }
