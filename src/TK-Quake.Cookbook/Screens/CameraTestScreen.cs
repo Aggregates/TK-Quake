@@ -51,8 +51,8 @@ namespace TKQuake.Cookbook.Screens
 
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 1, -10);
-            gunEntity.Scale = 0.5f;
+            gunEntity.Position = new Vector3(0, 0, 0);
+            gunEntity.Scale = 0.05f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
