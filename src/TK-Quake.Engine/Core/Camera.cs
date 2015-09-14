@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Drawing.Drawing2D;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Components;
