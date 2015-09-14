@@ -65,7 +65,6 @@ namespace TKQuake.Cookbook
         private void game_Load(object sender, EventArgs e)
         {
             var renderer = Renderer.Singleton();
-            renderer.Init();
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
             renderer.LinkShaders();
