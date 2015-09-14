@@ -64,6 +64,9 @@ namespace TKQuake.Engine.Infrastructure
             for (var i = 0; i < inPositions.Count; i++)
             {
                 var v = new Vertex(inPositions[i], inNormals[i], inTextures[i]);
+                v.Position = new Vector3(v.Position.X, v.Position.Z, v.Position.Y);
+                v.Normal = new Vector3(v.Normal.X, v.Normal.Z, v.Normal.Y);
+
                 if (hash.ContainsKey(v))
                     indicies.Add(hash[v]);
                 else
