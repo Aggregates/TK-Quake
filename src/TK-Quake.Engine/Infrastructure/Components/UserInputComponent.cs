@@ -1,4 +1,5 @@
 using System;
+using System.Resources;
 using OpenTK;
 using OpenTK.Input;
 using TKQuake.Engine.Infrastructure.Abstract;
@@ -10,10 +11,18 @@ namespace TKQuake.Engine.Infrastructure.Components
 {
     public class UserInputComponent : IComponent
     {
+        public float MouseSensitivity { get; set; } = 0.05f;
+        private MouseState _lastMouseState;
+
+        private float _yaw = -90,
+            _pitch;
+        private bool firstMouse = true;
+
         private readonly ILivableEntity _entity;
         public UserInputComponent(ILivableEntity entity)
         {
             _entity = entity;
+            _lastMouseState = new MouseState();
         }
 
         public void Startup() { }
@@ -32,6 +41,51 @@ namespace TKQuake.Engine.Infrastructure.Components
             if (state[Key.Right]) HandleInput(Key.Right, elapsedTime);
             if (state[Key.Up]) HandleInput(Key.Up, elapsedTime);
             if (state[Key.Down]) HandleInput(Key.Down, elapsedTime);
+
+            HandleMouseInput();
+        }
+
+        private void HandleMouseInput()
+        {
+            var mouseState = Mouse.GetState();
+
+            var xPos = (float)mouseState.X;
+            var yPos = (float)mouseState.Y;
+
+            float lastX, lastY;
+            if (firstMouse)
+            {
+                lastX = xPos;
+                lastY = yPos;
+                firstMouse = false;
+            }
+            else
+            {
+                lastX = _lastMouseState.X;
+                lastY = _lastMouseState.Y;
+            }
+
+            var yOffset = xPos - lastX;
+            var xOffset = lastY - yPos;
+            _lastMouseState = mouseState;
+
+            xOffset *= MouseSensitivity;
+            yOffset *= MouseSensitivity;
+
+            _yaw += xOffset;
+            _pitch += yOffset;
+
+            _pitch = _pitch > 89f ? 89f : _pitch < -89f ? -89f : _pitch;
+
+            var pitch = MathHelper.DegreesToRadians(_pitch);
+            var yaw = MathHelper.DegreesToRadians(_yaw);
+            var sinPitch = (float) Sin(pitch);
+            var cosPitch = (float) Cos(pitch);
+            var sinYaw = (float) Sin(yaw);
+            var cosYaw = (float) Cos(yaw);
+
+            var front = new Vector3(cosPitch*cosYaw, sinPitch, cosPitch*sinYaw);
+            _entity.Rotation = Vector3.Normalize(front);
         }
 
         public void HandleInput(Key k, double elapsedTime)
@@ -42,45 +96,31 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.W:
                     {
                         // Forward
-                        var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
-
-                        var to = new Vector3(-x, 0, -z);
                         command = CommandFactory.Create(typeof(MoveCommand),
-                            to, _entity.MoveSpeed * elapsedTime);
+                            _entity.ViewDirection, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
 
                 case Key.S:
                     {
                         // Back
-                        var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
-                        var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
-
-                        var to = new Vector3(x, 0, z);
                         command = CommandFactory.Create(typeof(MoveCommand),
-                            to, _entity.MoveSpeed * elapsedTime);
+                            -_entity.ViewDirection, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
 
                 case Key.A:
                     {
                         // Strafe left
-                        var x = (float)Cos(_entity.Rotation.Y);
-                        var z = (float)Sin(_entity.Rotation.Y);
-
-                        var to = new Vector3(-x, 0, -z);
+                        var to = Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY));
                         command = CommandFactory.Create(typeof(MoveCommand),
-                            to, _entity.MoveSpeed * elapsedTime);
+                            -to, _entity.MoveSpeed * elapsedTime);
                         break;
                     }
                 case Key.D:
                     {
                         // Strafe right
-                        var x = (float)Cos(_entity.Rotation.Y);
-                        var z = (float)Sin(_entity.Rotation.Y);
-
-                        var to = new Vector3(x, 0, z);
+                        var to = Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY));
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;

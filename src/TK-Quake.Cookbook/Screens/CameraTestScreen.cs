@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
 using System.IO;
@@ -16,7 +16,9 @@ using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
 using ObjLoader.Loader.Loaders;
+using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
+using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -25,13 +27,14 @@ namespace TKQuake.Cookbook.Screens
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
-        public CameraTestScreen()
+        public CameraTestScreen(Renderer renderer)
         {
-            _renderer = Renderer.Singleton();
+            _renderer = renderer;
+            _textureManager = new TextureManager();
+            _renderer.TextureManager = _textureManager;
 
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
-            Components.Add(new FloorGridComponent());
         }
 
         private void InitEntities()
@@ -41,46 +44,70 @@ namespace TKQuake.Cookbook.Screens
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
             var mesh = _objLoader.Load(fileStream).ToMesh();
+
             _renderer.RegisterMesh("gun", mesh);
 
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 1, -10);
-            gunEntity.Scale = 0.5f;
+            gunEntity.Position = new Vector3(0, 0, 0);
+            gunEntity.Scale = 0.05f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
-
+            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
+
+            var floor = RenderableEntity.Create();
+            floor.Id = "floor";
+            floor.Position = Vector3.Zero;
+            //Children.Add(floor);
+
+            //_renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
+            //_textureManager.Add("floor", "nerfrevolverMapped.bmp");
         }
     }
 
-    class FloorGridComponent : IComponent
+    static class FloorGridEntity
     {
-        public void Startup() { }
-        public void Shutdown() { }
-
-        public void Update(double elapsedTime)
+        public static Mesh Mesh()
         {
             var lineLength = 100f;
             var lineSpacing = 2.5f;
             var y = -2.5f;
 
-            GL.Begin(PrimitiveType.Lines);
+            var vertices = new List<Vertex>();
+            var indices = new List<int>();
             for (int i = 0; i < 100; i++)
             {
-                GL.Color3(0f, 0, 255);
+                var index = vertices.Count;
 
                 //parallel to x-axis
-                GL.Vertex3(-lineLength, y, i * lineSpacing - 100f);
-                GL.Vertex3(lineLength, y, i * lineSpacing - 100f);
+                var v1 = new Vector3(-lineLength, y, i * lineSpacing - 100f);
+                var v2 = new Vector3(lineLength, y, i * lineSpacing - 100f);
 
                 //perpendicular to x-axis
-                GL.Vertex3(i + lineSpacing - 50f, y, -lineLength);
-                GL.Vertex3(i + lineSpacing - 50f, y, lineLength);
-            }
-            GL.End();
+                var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
+                var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
 
-            GL.Color3(255f, 255, 255);
+                vertices.AddRange(new []
+                {
+                    new Vertex(v1, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v2, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v3, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v4, Vector3.Zero, Vector2.Zero),
+                });
+
+                indices.AddRange(new []
+                {
+                    index, index + 1, index,
+                    index + 2, index + 3, index + 2
+                });
+            }
+
+            return new Mesh
+            {
+                Vertices = vertices.ToArray(),
+                Indices = indices.ToArray()
+            };
         }
     }
 }

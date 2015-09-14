@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Abstract;
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace TKQuake.Engine.Infrastructure.Texture
 {
@@ -47,37 +48,46 @@ namespace TKQuake.Engine.Infrastructure.Texture
             GL.DeleteTexture(text.Id);
         }
 
+        public void Bind(string key)
+        {
+            var texture = this.Get(key);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+        }
+
         private Texture LoadTexture(string filename)
         {
-            if (String.IsNullOrEmpty(filename) || Path.GetFullPath(filename) == null )
+            if (!File.Exists(filename))
                 throw new ArgumentException(filename);
 
             // Create a texture and bind it to the ID
             int textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.LinearMipmapLinear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.LinearMipmapLinear);
 
             // Load the texture as a standard bitmap
-            Bitmap bmp = (filename.Contains("tga")) ?
+            var bmp = (filename.EndsWith("tga")) ?
                 Paloma.TargaImage.LoadTargaImage(filename) :
                 new Bitmap(filename);
-            Rectangle rect = new Rectangle(0,0,bmp.Width, bmp.Height);
+            var rect = new Rectangle(0,0,bmp.Width, bmp.Height);
 
             // Lock the data in memory while we create the texture
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
+            var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
             // Load the textue into OpenGL
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height,
-                0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+                0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             // Unlock the data in memory
             bmp.UnlockBits(bmpData);
 
-            Texture text = new Texture(textureId, bmp.Width, bmp.Height, filename);
-            return text;
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            return new Texture(textureId, bmp.Width, bmp.Height, filename);
         }
 
         public void Dispose()

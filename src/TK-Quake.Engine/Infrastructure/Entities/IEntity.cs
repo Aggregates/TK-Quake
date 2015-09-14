@@ -26,13 +26,13 @@ namespace TKQuake.Engine.Infrastructure.Entities
         Vector3 Rotation { get; set; }
 
         /// <summary>
-        /// Unit Vector from the Position to any point in space, one unit away,
+        /// Unit Position from the Position to any point in space, one unit away,
         /// that defines where the Camera is looking
         /// </summary>
         Vector3 ViewDirection { get; }
 
         /// <summary>
-        /// The unit Vector orthogonal to the view direction
+        /// The unit Position orthogonal to the view direction
         /// </summary>
         Vector3 OrthogonalDirection { get; }
 
