@@ -180,6 +180,8 @@ namespace TKQuake.Engine.Core
             foreach (Vector4 plane in frustum)
             {
                 bool[] dots = new bool[8];
+
+                // Test the bounds of the bounding box formed by min and max with the current plane.
                 dots [0] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [1] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], min[2], 1.0f))) >= 0.0f;
                 dots [2] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], min[2], 1.0f))) >= 0.0f;
@@ -196,6 +198,8 @@ namespace TKQuake.Engine.Core
                 }
             }
 
+            // At least one test passed for every plane. So at least some part of the box
+            // is inside the view frustum.
             return(true);
         }
 
@@ -247,6 +251,7 @@ namespace TKQuake.Engine.Core
 
         private void TessellateBezierPatch (Face.FaceEntry face, int level, ref List<Vector3> vertices, ref List<Vector2> texCoords, ref List<int> indices)
         {
+            // Preserve index of the first vertex in this patch.
             int vertexIndexOffset = vertices.Count;
 
             // The amount of increments we need to make for each dimension, so we have the (potentially) shared points between patches
