@@ -65,7 +65,7 @@ namespace TKQuake.Engine.Infrastructure.Texture
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.LinearMipmapLinear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.LinearMipmapLinear);
 
             // Load the texture as a standard bitmap
             var bmp = (filename.EndsWith("tga")) ?

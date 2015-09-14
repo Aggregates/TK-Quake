@@ -45,7 +45,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                         var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
                         var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
-                        var to = new Vector3(-x, 0, -z);
+                        var to = new Vector3(-x, 0, z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
@@ -57,7 +57,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                         var x = (float)Cos(_entity.Rotation.Y + System.Math.PI / 2);
                         var z = (float)Sin(_entity.Rotation.Y + System.Math.PI / 2);
 
-                        var to = new Vector3(x, 0, z);
+                        var to = new Vector3(x, 0, -z);
                         command = CommandFactory.Create(typeof(MoveCommand),
                             to, _entity.MoveSpeed * elapsedTime);
                         break;
