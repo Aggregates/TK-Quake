@@ -31,8 +31,8 @@ namespace TKQuake.Cookbook
             bsp.DumpBSP ();
             */
 
-            using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default, 
-                DisplayDevice.Default, 4, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
+            using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
+                DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
             {
                 game.Load += game_Load;
                 game.Resize += game_Resize;
