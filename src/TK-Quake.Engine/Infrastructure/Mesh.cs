@@ -19,10 +19,10 @@ namespace TKQuake.Engine.Infrastructure
     {
         public Vertex[] Vertices { get; set; }
         public int[] Indices { get; set; }
-
         public int VaoId { get; set; }
         public int VboId { get; set; }
         public int EboId { get; set; }
+        public Texture.Texture tex;
     }
 
     public static class MeshExtensions
