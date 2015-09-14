@@ -57,10 +57,6 @@ namespace TKQuake.Engine.Infrastructure
                 }
             }
 
-            var outPositions = new List<Vector3>();
-            var outNormals = new List<Vector3>();
-            var outTextures = new List<Vector2>();
-
             //build index
             var hash = new Dictionary<Vertex, int>();
             var indicies = new List<int>();
