@@ -39,6 +39,9 @@ namespace TKQuake.Engine.Core
         private readonly IEntity _entity;
         private readonly Renderer _renderer = Renderer.Singleton();
 
+        public int Width { get; set; } = 800;
+        public int Height { get; set; } = 600;
+
         public CameraComponent(IEntity entity)
         {
             _entity = entity;
@@ -54,10 +57,6 @@ namespace TKQuake.Engine.Core
             var view = Matrix4.LookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
-
-            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), 800f / 600f, 0.1f, 100f);
-            var uniProj = GL.GetUniformLocation(program, "proj");
-            GL.UniformMatrix4(uniProj, false, ref proj);
         }
     }
 }
