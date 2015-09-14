@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -138,6 +139,14 @@ namespace TKQuake.Engine.Core
         {
             var mesh = _meshes.Get(entity.Id);
             System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
+
+            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
+                           Matrix4.CreateRotationY(entity.Rotation.Y)*
+                           Matrix4.CreateRotationZ(entity.Rotation.Z);
+
+            var model = rotation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
+            var uniModel = GL.GetUniformLocation(Program, "model");
+            GL.UniformMatrix4(uniModel, false, ref model);
 
             //bind texture
             TextureManager.Bind(entity.Id);
