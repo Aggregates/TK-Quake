@@ -28,7 +28,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
-        private SkyBoxComponent skyBox = new SkyBoxComponent();
+        private SkyBoxComponent skyBox;
 
         public CameraTestScreen(Renderer renderer)
         {
@@ -39,6 +39,7 @@ namespace TKQuake.Cookbook.Screens
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
 
+            skyBox = new SkyBoxComponent(this);
             skyBox.Startup();
             Components.Add(skyBox);
 

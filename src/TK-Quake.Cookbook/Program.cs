@@ -50,8 +50,11 @@ namespace TKQuake.Cookbook
 
         private void game_UpdateFrame(object sender, FrameEventArgs e)
         {
-            if (game.Keyboard[Key.Escape])
+            var kbState = Keyboard.GetState();
+            if (kbState[Key.Escape])
                 game.Exit();
+            if (kbState.IsKeyDown(Key.AltLeft) && kbState.IsKeyDown(Key.Enter))
+                game.WindowState = game.WindowState == WindowState.Normal ? WindowState.Fullscreen : WindowState.Normal;
 
             GL.Enable(EnableCap.DepthTest);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -65,7 +68,7 @@ namespace TKQuake.Cookbook
         {
             var renderer = Renderer.Singleton();
 
-            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)game.Width / game.Height, 0.1f, 100f);
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)game.Width / game.Height, 0.1f, 1000f);
             var uniProj = GL.GetUniformLocation(renderer.Program, "proj");
             GL.UniformMatrix4(uniProj, false, ref proj);
             GL.Viewport(0, 0, game.Width, game.Height);
