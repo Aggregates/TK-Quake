@@ -12,7 +12,7 @@ namespace TKQuake.Engine.Infrastructure.Components
 {
     public class UserInputComponent : IComponent
     {
-        public float MouseSensitivity { get; set; } = 0.005f;
+        public float MouseSensitivity { get; set; } = 5f;
         private MouseState _lastMouseState;
 
         private float _yaw = -90,
@@ -43,10 +43,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             if (state[Key.Up]) HandleInput(Key.Up, elapsedTime);
             if (state[Key.Down]) HandleInput(Key.Down, elapsedTime);
 
-            HandleMouseInput();
+            HandleMouseInput(elapsedTime);
         }
 
-        private void HandleMouseInput()
+        private void HandleMouseInput(double elapsedTime)
         {
             var mouseState = Mouse.GetCursorState();
 
@@ -79,17 +79,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             _yaw += xOffset;
             _pitch += yOffset;
 
-            _pitch = _pitch > 89f ? 89f : _pitch < -89f ? -89f : _pitch;
-
             var pitch = MathHelper.DegreesToRadians(_pitch);
             var yaw = MathHelper.DegreesToRadians(_yaw);
-            var sinPitch = (float) Sin(pitch);
-            var cosPitch = (float) Cos(pitch);
-            var sinYaw = (float) Sin(yaw);
-            var cosYaw = (float) Cos(yaw);
 
-            var front = new Vector3(cosPitch*cosYaw, sinPitch, cosPitch*sinYaw);
-            var command = CommandFactory.Create(typeof (RotateCommand), Vector3.Normalize(front), 1);
+            var command = CommandFactory.Create(typeof (MouseLookCommand), new Vector3(yaw, pitch, 0), MouseSensitivity * elapsedTime);
             CommandCentre.PushCommand(command, _entity);
         }
 

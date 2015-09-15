@@ -79,6 +79,7 @@
     <Compile Include="Infrastructure\Entities\TextEntity.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Input\MouseLookCommand.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vertex.cs" />
     <Compile Include="Infrastructure\Mesh.cs" />
