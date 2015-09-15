@@ -122,22 +122,18 @@ namespace TKQuake.Engine.Core
             GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, vStride, 6*sizeof (float));
             GL.EnableVertexAttribArray(textureAttrib);
 
-            if (mesh.Indices != null)
-            {
-                int ebo;
-                GL.GenBuffers(1, out ebo);
+            int ebo;
+            GL.GenBuffers(1, out ebo);
 
-                var eStride = BlittableValueType.StrideOf(mesh.Indices);
-                GL.BindVertexArray(ebo);
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length*eStride), mesh.Indices,
-                    BufferUsageHint.StaticDraw);
-
-                mesh.EboId = ebo;
-            }
+            var eStride = BlittableValueType.StrideOf(mesh.Indices);
+            GL.BindVertexArray(ebo);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length*eStride), mesh.Indices,
+                BufferUsageHint.StaticDraw);
 
             GL.BindVertexArray(0);
 
+            mesh.EboId = ebo;
             mesh.VaoId = vao;
             mesh.VboId = vbo;
             _meshes.Add(entityId, mesh);
@@ -208,14 +204,7 @@ namespace TKQuake.Engine.Core
         private void DrawVbo(Mesh mesh)
         {
             GL.BindVertexArray(mesh.VaoId);
-            if (mesh.EboId > 0)
-            {
-                GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
-            }
-            else
-            {
-                GL.DrawArrays(PrimitiveType.Quads, 0, mesh.Vertices.Length);
-            }
+            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
             GL.BindVertexArray(0);
         }
 
