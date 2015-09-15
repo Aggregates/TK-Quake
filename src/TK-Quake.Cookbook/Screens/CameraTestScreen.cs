@@ -19,6 +19,8 @@ using ObjLoader.Loader.Loaders;
 using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -26,6 +28,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
+        private SkyBoxComponent skyBox;
 
         public CameraTestScreen(Renderer renderer)
         {
@@ -35,7 +38,31 @@ namespace TKQuake.Cookbook.Screens
 
             InitEntities();
             Components.Add(new UserInputComponent(_camera));
+
+            skyBox = new SkyBoxComponent(this);
+            skyBox.Startup();
+            Components.Add(skyBox);
+
+            // List loaded 'components'
+            Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
+            foreach (var component in Components)
+            {
+                Console.WriteLine(component.ToString());
+            }
+            Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
+
         }
+
+        // This isnt used / doesnt work yet
+        //public void ChangeSkyBox(int choice)
+        //{
+        //    Components.Remove(Components.ElementAt(2));
+        //    SkyBoxComponent skyBox = new SkyBoxComponent();
+        //    skyBox.Startup();
+        //    skyBox.chooseSky(choice);
+        //    Components.Add(skyBox);
+
+        //}
 
         private void InitEntities()
         {
@@ -47,6 +74,7 @@ namespace TKQuake.Cookbook.Screens
 
             _renderer.RegisterMesh("gun", mesh);
 
+            // Add gun entitiy
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
             gunEntity.Position = new Vector3(0, 0, 0);
@@ -54,6 +82,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+
             Children.Add(gunEntity);
 
             var floor = RenderableEntity.Create();
@@ -63,6 +92,13 @@ namespace TKQuake.Cookbook.Screens
 
             //_renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
             //_textureManager.Add("floor", "nerfrevolverMapped.bmp");
+            // Add SkyBox Entity - This didn't work
+            //var skyBoxEntity = new Entity();
+            //var skyBoxComponent = new SkyBoxComponent();
+            //skyBoxComponent.Startup();
+            //skyBoxEntity.Components.Add(skyBoxComponent);
+
+            //Children.Add(skyBoxComponent);
         }
     }
 
@@ -70,7 +106,7 @@ namespace TKQuake.Cookbook.Screens
     {
         public static Mesh Mesh()
         {
-            var lineLength = 100f;
+            var lineLength = 1000f;
             var lineSpacing = 2.5f;
             var y = -2.5f;
 

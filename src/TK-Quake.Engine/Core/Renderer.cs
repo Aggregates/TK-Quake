@@ -100,20 +100,15 @@ namespace TKQuake.Engine.Core
         public void RegisterMesh(string entityId, Mesh mesh)
         {
             //push to video card
-            int vao, vbo, ebo;
+            int vao, vbo;
             GL.GenVertexArrays(1, out vao);
             GL.GenBuffers(1, out vbo);
-            GL.GenBuffers(1, out ebo);
 
             var vStride = BlittableValueType.StrideOf(mesh.Vertices);
             GL.BindVertexArray(vao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length * vStride), mesh.Vertices, BufferUsageHint.StaticDraw);
-
-            var eStride = BlittableValueType.StrideOf(mesh.Indices);
-            GL.BindVertexArray(ebo);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length * eStride), mesh.Indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.Vertices.Length*vStride), mesh.Vertices,
+                BufferUsageHint.StaticDraw);
 
             var posAttrib = GL.GetAttribLocation(Program, "position");
             GL.VertexAttribPointer(posAttrib, 3, VertexAttribPointerType.Float, false, vStride, 0);
@@ -127,11 +122,20 @@ namespace TKQuake.Engine.Core
             GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, vStride, 6*sizeof (float));
             GL.EnableVertexAttribArray(textureAttrib);
 
+            int ebo;
+            GL.GenBuffers(1, out ebo);
+
+            var eStride = BlittableValueType.StrideOf(mesh.Indices);
+            GL.BindVertexArray(ebo);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.Indices.Length*eStride), mesh.Indices,
+                BufferUsageHint.StaticDraw);
+
             GL.BindVertexArray(0);
 
+            mesh.EboId = ebo;
             mesh.VaoId = vao;
             mesh.VboId = vbo;
-            mesh.EboId = ebo;
             _meshes.Add(entityId, mesh);
         }
 

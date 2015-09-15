@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Resources;
 using OpenTK;
 using OpenTK.Input;
@@ -11,7 +12,7 @@ namespace TKQuake.Engine.Infrastructure.Components
 {
     public class UserInputComponent : IComponent
     {
-        public float MouseSensitivity { get; set; } = 0.05f;
+        public float MouseSensitivity { get; set; } = 0.005f;
         private MouseState _lastMouseState;
 
         private float _yaw = -90,
@@ -47,10 +48,13 @@ namespace TKQuake.Engine.Infrastructure.Components
 
         private void HandleMouseInput()
         {
-            var mouseState = Mouse.GetState();
+            var mouseState = Mouse.GetCursorState();
 
             var xPos = (float)mouseState.X;
             var yPos = (float)mouseState.Y;
+
+            if (_lastMouseState.X == mouseState.X && _lastMouseState.Y == mouseState.Y)
+                return;
 
             float lastX, lastY;
             if (firstMouse)
@@ -85,75 +89,67 @@ namespace TKQuake.Engine.Infrastructure.Components
             var cosYaw = (float) Cos(yaw);
 
             var front = new Vector3(cosPitch*cosYaw, sinPitch, cosPitch*sinYaw);
-            _entity.Rotation = Vector3.Normalize(front);
+            var command = CommandFactory.Create(typeof (RotateCommand), Vector3.Normalize(front), 1);
+            CommandCentre.PushCommand(command, _entity);
         }
 
         public void HandleInput(Key k, double elapsedTime)
         {
             ICommand command = null;
+            Func<Vector3, Vector3> moveVector = (v) => v*(Vector3.UnitX+Vector3.UnitZ);
+            var moveSpeed = _entity.MoveSpeed*elapsedTime;
+
+            Action<Vector3> move =
+                (v) => command = CommandFactory.Create(typeof (MoveCommand), moveVector(v), moveSpeed);
+            Action<Vector3> rotate =
+                (v) => command = CommandFactory.Create(typeof (RotateCommand), v, _entity.RotationSpeed*elapsedTime);
+
             switch(k)
             {
                 case Key.W:
                     {
                         // Forward
-                        command = CommandFactory.Create(typeof(MoveCommand),
-                            _entity.ViewDirection, _entity.MoveSpeed * elapsedTime);
+                        move(_entity.ViewDirection);
                         break;
                     }
 
                 case Key.S:
                     {
                         // Back
-                        command = CommandFactory.Create(typeof(MoveCommand),
-                            -_entity.ViewDirection, _entity.MoveSpeed * elapsedTime);
+                        move(-_entity.ViewDirection);
                         break;
                     }
 
                 case Key.A:
                     {
                         // Strafe left
-                        var to = Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY));
-                        command = CommandFactory.Create(typeof(MoveCommand),
-                            -to, _entity.MoveSpeed * elapsedTime);
+                        move(-Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY)));
                         break;
                     }
                 case Key.D:
                     {
                         // Strafe right
-                        var to = Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY));
-                        command = CommandFactory.Create(typeof(MoveCommand),
-                            to, _entity.MoveSpeed * elapsedTime);
+                        move(Vector3.Normalize(Vector3.Cross(_entity.ViewDirection, Vector3.UnitY)));
                         break;
                     }
                 case Key.Left:
                     {
-                        var rotation = new Vector3(0, -1, 0);
-                        command = CommandFactory.Create(typeof(RotateCommand),
-                            rotation, _entity.RotationSpeed * elapsedTime);
+                        rotate(new Vector3(0, -1, 0));
                         break;
                     }
                 case Key.Right:
                     {
-                        var rotation = new Vector3(0, 1, 0);
-                        command = CommandFactory.Create(typeof(RotateCommand),
-                            rotation, _entity.RotationSpeed * elapsedTime);
-
+                        rotate(new Vector3(0, 1, 0));
                         break;
                     }
                 case Key.Up:
                     {
-                        var rotation = new Vector3(1, 0, 0);
-                        command = CommandFactory.Create(typeof(RotateCommand),
-                            rotation, _entity.RotationSpeed * elapsedTime);
-
+                        rotate(new Vector3(1, 0, 0));
                         break;
                     }
                 case Key.Down:
                     {
-                        var rotation = new Vector3(-1, 0, 0);
-                        command = CommandFactory.Create(typeof(RotateCommand),
-                            rotation, _entity.RotationSpeed * elapsedTime);
-
+                        rotate(new Vector3(-1, 0, 0));
                         break;
                     }
             }
