@@ -127,23 +127,22 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// <returns></returns>
         public bool CheckCollision(BoundingBoxEntity box)
         {
-            // TODO: Fix this
-            
+            var xDiff = this.Top.X - box.Top.X;
+            var yDiff = this.Top.Y - box.Top.Y;
+            var zDiff = this.Top.Z - box.Top.Z;
+
             // Check the X axis
-            if (System.Math.Abs(this.Top.X - box.Top.X) < System.Math.Abs(this.Width + box.Width))
+            if (xDiff > 0 && System.Math.Abs(xDiff) < this.Width)
             {
                 // Check the Y axis
-                if (System.Math.Abs(this.Bottom.Y - box.Top.Y) < System.Math.Abs(this.Height + box.Height))
+                if (System.Math.Abs(this.Top.Y - box.Top.Y) < System.Math.Abs(this.Height + box.Height))
                 {
                     // Check the Z axis
-                    if (System.Math.Abs(this.Top.Z - box.Bottom.Z) < System.Math.Abs(this.Depth + box.Depth))
+                    if (zDiff < 0 && System.Math.Abs(zDiff) < this.Depth)
                     {
                         // The boxes collide. Send a message to both
-                        if (Collided != null)
-                            Collided(this, new CollisionEventArgs(this._entity, box._entity));
-
-                        if (box.Collided != null)
-                            box.Collided(box, new CollisionEventArgs(box._entity, this._entity));
+                        Collided?.Invoke(this, new CollisionEventArgs(this._entity, box._entity));
+                        box.Collided?.Invoke(box, new CollisionEventArgs(box._entity, this._entity));
 
                         return true;
                     }

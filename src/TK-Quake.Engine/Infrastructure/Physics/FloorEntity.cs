@@ -64,8 +64,9 @@ namespace TKQuake.Engine.Infrastructure.Physics
             // Define the Components
             FloorGridComponent grid = new FloorGridComponent(this, 1f, _render);
             BoundingBoxEntity box = new BoundingBoxEntity(this,
-                new Vector3(0, 0 + 0.5f, 0), // This seems to work pretty well, but it's a bit hacky
-                new Vector3(XLength, 0 - 0.5f, ZLength), _render);
+                new Vector3(XLength, 0.1f, 0),
+                new Vector3(0, -0.1f, ZLength), _render) // This seems to work pretty well, but it's a bit hacky
+                ;
 
             // Set up event handling
             box.Collided += Box_Collided;
