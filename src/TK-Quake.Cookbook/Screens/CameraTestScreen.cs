@@ -28,7 +28,6 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
-        private SkyboxComponent _skybox;
 
         public CameraTestScreen(Renderer renderer)
         {
@@ -55,7 +54,7 @@ namespace TKQuake.Cookbook.Screens
 
             //skybox
             var skyboxPath = Path.Combine("skybox", "space");
-            _skybox = new SkyboxComponent(this, "skybox")
+            var skybox = new SkyboxComponent(this, "skybox")
             {
                 Back = Path.Combine(skyboxPath, "back.bmp"),
                 Front = Path.Combine(skyboxPath, "front.bmp"),
@@ -64,7 +63,7 @@ namespace TKQuake.Cookbook.Screens
                 Left = Path.Combine(skyboxPath, "left.bmp"),
                 Right = Path.Combine(skyboxPath, "right.bmp")
             };
-            Components.Add(_skybox);
+            Components.Add(skybox);
 
             foreach (var component in Components)
             {
