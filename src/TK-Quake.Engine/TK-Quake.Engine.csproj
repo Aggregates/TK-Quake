@@ -62,7 +62,7 @@
     <Compile Include="Infrastructure\Components\BobComponent.cs" />
     <Compile Include="Infrastructure\Components\IComponent.cs" />
     <Compile Include="Infrastructure\Components\RotateOnUpdateComponent.cs" />
-    <Compile Include="Infrastructure\Components\SkyBoxComponent.cs" />
+    <Compile Include="Infrastructure\Components\SkyboxComponent.cs" />
     <Compile Include="Infrastructure\Entities\IEntity.cs" />
     <Compile Include="Infrastructure\Entities\Entity.cs" />
     <Compile Include="Infrastructure\Entities\RenderableEntity.cs" />

@@ -28,7 +28,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
-        private SkyBoxComponent skyBox;
+        private SkyboxComponent _skybox;
 
         public CameraTestScreen(string BSPFile)
         {
@@ -37,13 +37,7 @@ namespace TKQuake.Cookbook.Screens
             _renderer.TextureManager = _textureManager;
 
             InitEntities();
-            Components.Add(new UserInputComponent(_camera));
-            Components.Add(new FloorGridComponent());
-            Components.Add(new BSPComponent(BSPFile, ref _camera));
-
-            skyBox = new SkyBoxComponent(this);
-            skyBox.Startup();
-            Components.Add(skyBox);
+            InitComponents();
 
             // List loaded 'components'
             Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
@@ -52,6 +46,29 @@ namespace TKQuake.Cookbook.Screens
                 Console.WriteLine(component.ToString());
             }
             Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
+        }
+
+        private void InitComponents()
+        {
+            Components.Add(new UserInputComponent(_camera));
+
+            //skybox
+            var skyboxPath = Path.Combine("skybox", "space");
+            _skybox = new SkyboxComponent(this, "skybox")
+            {
+                Back = Path.Combine(skyboxPath, "back.bmp"),
+                Front = Path.Combine(skyboxPath, "front.bmp"),
+                Top = Path.Combine(skyboxPath, "top.bmp"),
+                Bottom = Path.Combine(skyboxPath, "top.bmp"),
+                Left = Path.Combine(skyboxPath, "left.bmp"),
+                Right = Path.Combine(skyboxPath, "right.bmp")
+            };
+            Components.Add(_skybox);
+
+            foreach (var component in Components)
+            {
+                component.Startup();
+            }
         }
 
         private void InitEntities()
@@ -72,23 +89,15 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
-
             Children.Add(gunEntity);
 
-            var floor = RenderableEntity.Create();
-            floor.Id = "floor";
-            floor.Position = Vector3.Zero;
-            //Children.Add(floor);
-
-            //_renderer.RegisterMesh("floor", FloorGridEntity.Mesh());
-            //_textureManager.Add("floor", "nerfrevolverMapped.bmp");
-            // Add SkyBox Entity - This didn't work
-            //var skyBoxEntity = new Entity();
-            //var skyBoxComponent = new SkyBoxComponent();
-            //skyBoxComponent.Startup();
-            //skyBoxEntity.Components.Add(skyBoxComponent);
-
-            //Children.Add(skyBoxComponent);
+            foreach (var entity in Children)
+            {
+                foreach (var component in entity.Components)
+                {
+                    component.Startup();
+                }
+            }
         }
     }
 
