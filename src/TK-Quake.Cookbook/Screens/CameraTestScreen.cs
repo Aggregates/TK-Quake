@@ -28,7 +28,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
-        private SkyBoxComponent skyBox = new SkyBoxComponent();
+        private SkyBoxComponent skyBox;
 
         public CameraTestScreen(string BSPFile)
         {
@@ -41,6 +41,7 @@ namespace TKQuake.Cookbook.Screens
             Components.Add(new FloorGridComponent());
             Components.Add(new BSPComponent(BSPFile, ref _camera));
 
+            skyBox = new SkyBoxComponent(this);
             skyBox.Startup();
             Components.Add(skyBox);
 
