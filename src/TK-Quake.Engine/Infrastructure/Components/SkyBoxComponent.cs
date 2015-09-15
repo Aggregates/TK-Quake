@@ -38,7 +38,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(-size, size, size), Vector3.Zero, new Vector2(1, 0)),
                     new Vertex(new Vector3(-size, -size, size), Vector3.Zero, new Vector2(1, 1)),
                     new Vertex(new Vector3(size, -size, size), Vector3.Zero, new Vector2(0, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var back = RenderableEntity.Create();
@@ -56,7 +57,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(-size, size, -size), Vector3.Zero, new Vector2(1, 0)),
                     new Vertex(new Vector3(-size, -size, -size), Vector3.Zero, new Vector2(1, 1)),
                     new Vertex(new Vector3(-size, -size, size), Vector3.Zero, new Vector2(0, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var left = RenderableEntity.Create();
@@ -74,7 +76,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(-size, size, -size), Vector3.Zero, new Vector2(0, 0)),
                     new Vertex(new Vector3(-size, -size, -size), Vector3.Zero, new Vector2(0, 1)),
                     new Vertex(new Vector3(size, -size, -size), Vector3.Zero, new Vector2(1, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var front = RenderableEntity.Create();
@@ -92,7 +95,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(size, size, size), Vector3.Zero, new Vector2(1, 0)),
                     new Vertex(new Vector3(size, -size, size), Vector3.Zero, new Vector2(1, 1)),
                     new Vertex(new Vector3(size, -size, -size), Vector3.Zero, new Vector2(0, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var right = RenderableEntity.Create();
@@ -110,7 +114,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(-size, size, size), Vector3.Zero, new Vector2(0, 0)),
                     new Vertex(new Vector3(-size, size, -size), Vector3.Zero, new Vector2(0, 1)),
                     new Vertex(new Vector3(size, size, -size), Vector3.Zero, new Vector2(1, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var top = RenderableEntity.Create();
@@ -128,7 +133,8 @@ namespace TKQuake.Engine.Infrastructure.Components
                     new Vertex(new Vector3(-size, -size, size), Vector3.Zero, new Vector2(0, 0)),
                     new Vertex(new Vector3(-size, -size, -size), Vector3.Zero, new Vector2(0, 1)),
                     new Vertex(new Vector3(size, -size, -size), Vector3.Zero, new Vector2(1, 1)),
-                }
+                },
+                Indices = new [] {0, 1, 2, 2, 3, 0}
             };
 
             var bottom = RenderableEntity.Create();
