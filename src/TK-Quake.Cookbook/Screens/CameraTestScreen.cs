@@ -39,9 +39,9 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
-            CollisionDetector collidionDetector = CollisionDetector.Singleton();
-            collidionDetector.Active = true;
-            Children.Add(collidionDetector);
+
+            CollisionDetector collisionDetector = CollisionDetector.Singleton();
+            Children.Add(collisionDetector);
 
             _camera.Position = new Vector3(0, 10, 0);
             _camera.Rotation = new Vector3(0, MathHelper.PiOver2, 0);
@@ -97,37 +97,29 @@ namespace TKQuake.Cookbook.Screens
 
             _renderer.RegisterMesh("gun", mesh);
 
-            for (int i = 0; i < 0; i++)
+            var gunEntity = RenderableEntity.Create();
+            gunEntity.Id = "gun";
+            gunEntity.Position = new Vector3(0, 0, 0);
+            gunEntity.Scale = 1f;
+            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float) Math.PI/2, 0)));
+            gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
+            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+
+            //gunEntity.Components.Add(new GravityComponent(gunEntity));
+            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, 1, 0)));
+
+            BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
+            gunEntity.Children.Add(box);
+
+            box.Collided += Box_Collided;
+
+            Children.Add(gunEntity);
+
+            foreach (var entity in Children)
             {
-
-                var gunEntity = RenderableEntity.Create();
-                gunEntity.Id = "gun";
-                gunEntity.Position = new Vector3(0, 0, 5);
-                gunEntity.Rotation = new Vector3(0, 0, 0);
-                gunEntity.Scale = 1f;
-                gunEntity.Components.Add(new GravityComponent(gunEntity));
-                gunEntity.Components.Add(new RotateComponent(gunEntity));
-
-                BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
-                gunEntity.Children.Add(box);
-
-                box.Collided += Box_Collided;
-
-                if (i == 1)
+                foreach (var component in entity.Components)
                 {
-                    MoveComponent mv = new MoveComponent(gunEntity);
-                    gunEntity.Position = new Vector3(1, 1, 1);
-                    gunEntity.Components.Add(mv);
-                }
-
-                Children.Add(gunEntity);
-
-                foreach (var entity in Children)
-                {
-                    foreach (var component in entity.Components)
-                    {
-                        component.Startup();
-                    }
+                    component.Startup();
                 }
             }
         }
@@ -137,119 +129,4 @@ namespace TKQuake.Cookbook.Screens
             // Do World-Scope collision detection
         }
     }
-
-
-    // Follow this idea, create as a component and then render it using the update
-    class ObjectComponent : IComponent
-    {
-        private IObjLoader objLoader;
-        private LoadResult results;
-        private bool firstRun = true;
-
-        public void Startup()
-        {
-        }
-
-        public void Shutdown()
-        {
-        }
-
-        public void Update(double elapsedTime)
-        {
-            
-        }
-
-        private static class FloorGridEntity
-        {
-            public static Mesh Mesh()
-            {
-                var lineLength = 1000f;
-                var lineSpacing = 2.5f;
-                var y = -2.5f;
-
-                var vertices = new List<Vertex>();
-                var indices = new List<int>();
-                for (int i = 0; i < 100; i++)
-                {
-                    var index = vertices.Count;
-
-                    //parallel to x-axis
-                    var v1 = new Vector3(-lineLength, y, i*lineSpacing - 100f);
-                    var v2 = new Vector3(lineLength, y, i*lineSpacing - 100f);
-
-                    //perpendicular to x-axis
-                    var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
-                    var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
-
-                    vertices.AddRange(new[]
-                    {
-                        new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                        new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                        new Vertex(v3, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                        new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
-                    });
-
-                    indices.AddRange(new[]
-                    {
-                        index, index + 1, index,
-                        index + 2, index + 3, index + 2
-                    });
-                }
-
-                return new Mesh
-                {
-                    Vertices = vertices.ToArray(),
-                    Indices = indices.ToArray()
-                };
-            }
-        }
-
-    }
-
-    public class MoveComponent : IComponent
-    {
-        private Engine.Infrastructure.Entities.Entity _entity;
-
-        public MoveComponent(Engine.Infrastructure.Entities.Entity entity)
-        {
-            this._entity = entity;
-        }
-
-        public void Shutdown()
-        {
-        }
-
-        public void Startup()
-        {
-        }
-<<<<<<< HEAD
-=======
-    }
-
-    class RotateComponent : IComponent
-    {
-        private Entity _entity;
-        public RotateComponent(Entity entity)
-        {
-            this._entity = entity;
-        }
-
-        public void Shutdown() { }
-
-        public void Startup() { }
-
-        public void Update(double elapsedTime)
-        {
-            _entity.Rotation += new Vector3(0, 1, 0) * (float)elapsedTime;
-        }
-    }
-
->>>>>>> Add testing rotate component. Delete in production
-
-        public void Update(double elapsedTime)
-        {
-            _entity.Position -= new Vector3((float)(elapsedTime), (float)(elapsedTime), (float)(elapsedTime));
-        }
-    }
-
 }

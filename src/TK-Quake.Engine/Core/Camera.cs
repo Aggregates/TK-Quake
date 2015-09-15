@@ -67,10 +67,7 @@ namespace TKQuake.Engine.Core
             var program = _renderer.Program;
             var pos = _entity.Position + PositionOffset;
 
-            var mat = GLX.MatrixLookAt(pos, pos + _entity.ViewDirection, Vector3.UnitY);
-            GL.MatrixMode(MatrixMode.Modelview);
-
-            var view = Matrix4.LookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
+            var view = Matrix4.LookAt(pos, pos + _entity.ViewDirection, Vector3.UnitY);
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
         }

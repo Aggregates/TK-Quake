@@ -98,7 +98,7 @@ namespace TKQuake.Engine.Infrastructure.Components
         {
             ICommand command = null;
             Func<Vector3, Vector3> moveVector = (v) => v*(Vector3.UnitX+Vector3.UnitZ);
-            var moveSpeed = _entity.MoveSpeed*elapsedTime;
+            var moveSpeed = _entity.MoveSpeed;
 
             Action<Vector3> move =
                 (v) => command = CommandFactory.Create(typeof (MoveCommand), moveVector(v), moveSpeed);

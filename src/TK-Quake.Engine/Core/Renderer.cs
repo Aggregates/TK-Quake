@@ -190,7 +190,12 @@ namespace TKQuake.Engine.Core
             GL.MultMatrix(ref translate);
             GL.MultMatrix(ref rotate);
             GL.Scale(scale);
+
+            var model = rotation * entity.Translation * Matrix4.CreateTranslation(entity.Position) * Matrix4.CreateScale(entity.Scale);
+            var uniModel = GL.GetUniformLocation(Program, "model");
+            GL.UniformMatrix4(uniModel, false, ref model);
             */
+
 
             //bind texture
             if (mesh.texture != null)
