@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Core
 {
     public class BSPRenderer
     {
-        private const int TESSELLATION_LEVEL = 7;
+        private const int TESSELLATION_LEVEL = 3;
 
         private string BSPFile;
         private Loader.BSPLoader BSP = null;
@@ -43,7 +43,7 @@ namespace TKQuake.Engine.Core
                 BSP = null;
             }
 
-            BSP = new Loader.BSPLoader (BSPFile, false);
+            BSP = new Loader.BSPLoader (BSPFile, true);
             BSP.LoadFile ();
             BSP.DumpBSP ();
         }
