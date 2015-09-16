@@ -20,40 +20,44 @@ namespace TKQuake.Engine.Loader.BSP
             return(size);
         }
 
+        protected Vector3 Swizzle(Vector3 vector)
+        {
+            return(new Vector3(vector[0], vector[2], -vector[1]));
+        }
+
+        protected Vector4 Swizzle(Vector4 vector)
+        {
+            return(new Vector4(vector[0], vector[2], -vector[1], vector[3]));
+        }
+
+        protected float[] Swizzle(float[] vector)
+        {
+            return(new float[3] {vector[0], vector[2], -vector[1]});
+        }
+
+        protected int[] Swizzle(int[] vector)
+        {
+            return(new int[3] {vector[0], vector[2], -vector[1]});
+        }
+
         protected void Swizzle(ref Vector3 vector)
         {   
-            float temp;
-
-            temp      = vector[1];
-            vector[1] = vector[2];
-            vector[2] = temp;
+            vector = Swizzle(vector);
         }
 
         protected void Swizzle(ref Vector4 vector)
         {
-            float temp;
-
-            temp      = vector[1];
-            vector[1] = vector[2];
-            vector[2] = temp;
+            vector = Swizzle(vector);
         }
 
         protected void Swizzle(ref int[] vector)
         {   
-            int temp;
-
-            temp      = vector[1];
-            vector[1] = vector[2];
-            vector[2] = temp;
+            vector = Swizzle(vector);
         }
 
         protected void Swizzle(ref float[] vector)
         {   
-            float temp;
-
-            temp      = vector[1];
-            vector[1] = vector[2];
-            vector[2] = temp;
+            vector = Swizzle(vector);
         }
     }
 }
