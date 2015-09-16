@@ -13,7 +13,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
     /// <summary>
     /// A horizontal plane that an Entity can walk along
     /// </summary>
-    public class FloorEntity : Entity
+    public class FloorEntity : RenderableEntity
     {
         /// <summary>
         /// Gets or sets the Length of the Floor along the X-Axis, starting from the Floor's X-Position
@@ -48,13 +48,16 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// <param name="anchor">The point in 3D space to anchor the floor at</param>
         /// <param name="xLength">The length of the floor along the x-axis from the anchor point</param>
         /// <param name="zLength">The length of the floow along thw z-axis from the anchro point</param>
+        /// <param name="id"></param>
         /// <param name="render">Whether to render the grid and bounding box or not</param>
-        public FloorEntity(Vector3 anchor, float xLength, float zLength, bool render = false)
+        public FloorEntity(Vector3 anchor, float xLength, float zLength, string id, bool render = false)
         {
             this.Position = anchor;
             this.XLength = xLength;
             this.ZLength = zLength;
             this.Render = render;
+
+            this.Id = id;
 
             InitialiseComponents();
         }
@@ -73,6 +76,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
             // Add to the Components list
             Components.Add(grid);
+            Components.Add(new RenderComponent(this));
+
             Children.Add(box);
         }
 

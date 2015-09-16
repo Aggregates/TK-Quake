@@ -205,7 +205,7 @@ namespace TKQuake.Engine.Core
 
             else if (TextureManager.Registered (entity.Id) == true)
             {
-                TextureManager.Bind(entity.Id);
+                TextureManager.Bind(entity.TextureId ?? entity.Id);
             }
 
             else

@@ -87,9 +87,22 @@ namespace TKQuake.Cookbook.Screens
         private void InitEntities()
         {
             Children.Add(_camera);
-            Children.Add(new FloorEntity(new Vector3(0, 0, 0), 10, 10, true));
-            Children.Add(new FloorEntity(new Vector3(0, -10, 10), 10, 10, true));
-            Children.Add(new FloorEntity(new Vector3(10, -10, 0), 10, 10, true));
+
+            var floor1 = new FloorEntity(new Vector3(0, 0, 0), 100, 100, "floor1", true);
+            var floor2 = new FloorEntity(new Vector3(0, -10, 100), 100, 100, "floor2", true);
+            var floor3 = new FloorEntity(new Vector3(100, -10, 0), 100, 100, "floor3", true);
+
+            floor1.TextureId = "floor";
+            floor2.TextureId = "floor";
+            floor3.TextureId = "floor";
+
+            _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            _renderer.RegisterMesh("floor3", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+
+            Children.Add(floor1);
+            Children.Add(floor2);
+            Children.Add(floor3);
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -103,7 +116,9 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Scale = 1f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float) Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
+
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
+            _textureManager.Add("floor", "floor.jpg");
 
             //gunEntity.Components.Add(new GravityComponent(gunEntity));
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, 1, 0)));

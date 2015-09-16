@@ -10,6 +10,8 @@ namespace TKQuake.Engine.Infrastructure.Entities
     public interface IEntity
     {
         string Id { get; set; }
+        string TextureId { get; set; }
+
         float Scale { get; set; }
         IList<IComponent> Components { get; set; }
         IList<IEntity> Children { get; set; }

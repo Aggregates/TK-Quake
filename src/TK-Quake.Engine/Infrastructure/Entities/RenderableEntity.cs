@@ -8,7 +8,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
 {
     public class RenderableEntity : Entity, IEntity
     {
-        private RenderableEntity() {
+        public RenderableEntity() {
             Components.Add(new RenderComponent(this));
         }
 

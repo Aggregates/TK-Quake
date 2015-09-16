@@ -190,6 +190,37 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         }
 
+        public Mesh ToMesh()
+        {
+            var mesh = new Mesh();
+            mesh.Vertices = new Vertex[]
+            {
+                new Vertex(Bottom, -Vector3.UnitY, new Vector2(0,0), Vector2.Zero),
+                new Vertex(new Vector3(Bottom.X, Bottom.Y, Top.Z), -Vector3.UnitY, new Vector2(0,1), Vector2.Zero),
+                new Vertex(new Vector3(Top.X, Bottom.Y, Top.Z), -Vector3.UnitY, new Vector2(1,1), Vector2.Zero),
+                new Vertex(new Vector3(Top.X, Bottom.Y, Bottom.Z), -Vector3.UnitY, new Vector2(1,0), Vector2.Zero),
+
+                new Vertex(new Vector3(Top.X, Top.Y, Bottom.Z), Vector3.UnitY, new Vector2(0,0), Vector2.Zero),
+                new Vertex(new Vector3(Bottom.X, Top.Y, Bottom.Z), Vector3.UnitY, new Vector2(0,1), Vector2.Zero),
+                new Vertex(new Vector3(Bottom.X, Top.Y, Top.Z), Vector3.UnitY, new Vector2(1,1), Vector2.Zero),
+                new Vertex(Top, Vector3.UnitY, new Vector2(1,0), Vector2.Zero),
+            };
+
+            mesh.Indices = new int[]
+            {
+                // Bottom
+                0,1,2,
+                3,0,2,
+
+                // Top
+                7,4,5,
+                6,7,5
+
+            };
+
+            return mesh;
+        }
+
         /// <summary>
         /// Draws the Bounding-Box component using OpenGL
         /// </summary>

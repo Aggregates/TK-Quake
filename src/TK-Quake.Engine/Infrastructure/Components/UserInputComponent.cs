@@ -156,7 +156,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.Space:
                     {
                         command = CommandFactory.Create(typeof(JumpCommand),
-                            new Vector3(0,1,0), 10.0 * elapsedTime);
+                            new Vector3(0,1,0), 100.0 * elapsedTime);
                         break;
                     }
             }
