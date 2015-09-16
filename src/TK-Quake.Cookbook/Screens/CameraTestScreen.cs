@@ -15,12 +15,14 @@ using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
+using TKQuake.Engine.Infrastructure.Audio;
 using ObjLoader.Loader.Loaders;
 using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -46,7 +48,13 @@ namespace TKQuake.Cookbook.Screens
             }
             Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
 
+            //Apparently OpenAL should manage its own threading, however if this wasn't created as a thread the GameScreen would not run.
+            //Might be to do with where I have declared it.
+            Thread th = new Thread(new ThreadStart(AudioManager.Play));
+            th.Start();
+
         }
+        
 
         private void InitComponents()
         {
