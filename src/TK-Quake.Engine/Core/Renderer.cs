@@ -170,7 +170,7 @@ namespace TKQuake.Engine.Core
                 GL.BindTexture(TextureTarget.Texture2D, mesh.tex.Id);
             }
 
-            else
+            else if (TextureManager.Registered (entity.Id) == true)
             {
                 TextureManager.Bind(entity.Id);
             }

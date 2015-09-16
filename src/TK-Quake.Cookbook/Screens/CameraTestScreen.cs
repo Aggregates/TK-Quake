@@ -29,12 +29,14 @@ namespace TKQuake.Cookbook.Screens
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
         private string _BSP = null;
+        private float _gameScreenRatio;
 
-        public CameraTestScreen(string BSPFile)
+        public CameraTestScreen(string BSPFile, float screenRatio)
         {
             _renderer = Renderer.Singleton ();
             _textureManager = TextureManager.Singleton ();
             _BSP = BSPFile;
+            _gameScreenRatio = screenRatio;
 
             InitEntities();
             InitComponents();
@@ -54,24 +56,24 @@ namespace TKQuake.Cookbook.Screens
             Components.Add(new UserInputComponent(_camera));
 
             //skybox
-            var skyboxPath = Path.Combine("skybox", "space");
-            var skybox = new SkyboxComponent(this, "skybox")
-            {
-                Back = Path.Combine(skyboxPath, "back.bmp"),
-                Front = Path.Combine(skyboxPath, "front.bmp"),
-                Top = Path.Combine(skyboxPath, "top.bmp"),
-                Bottom = Path.Combine(skyboxPath, "top.bmp"),
-                Left = Path.Combine(skyboxPath, "left.bmp"),
-                Right = Path.Combine(skyboxPath, "right.bmp")
-            };
-            Components.Add(skybox);
+//            var skyboxPath = Path.Combine("skybox", "space");
+//            var skybox = new SkyboxComponent(this, "skybox")
+//            {
+//                Back = Path.Combine(skyboxPath, "back.bmp"),
+//                Front = Path.Combine(skyboxPath, "front.bmp"),
+//                Top = Path.Combine(skyboxPath, "top.bmp"),
+//                Bottom = Path.Combine(skyboxPath, "top.bmp"),
+//                Left = Path.Combine(skyboxPath, "left.bmp"),
+//                Right = Path.Combine(skyboxPath, "right.bmp")
+//            };
+//            Components.Add(skybox);
 
             foreach (var component in Components)
             {
                 component.Startup();
             }
 
-            Components.Add(new BSPComponent(_BSP, _camera));
+            Components.Add(new BSPComponent(_BSP, _camera, _gameScreenRatio));
         }
 
         private void InitEntities()
@@ -157,16 +159,20 @@ namespace TKQuake.Cookbook.Screens
 
         private BSPRenderer BSP;
         private Camera camera;
+        private float gameScreenRation;
+        private int totalMeshes;
 
         private BSPComponent()
         {
             camera = null;
             BSP = null;
+            totalMeshes = 0;
         }
 
-        public BSPComponent(string BSPFile, Camera cam) : this()
+        public BSPComponent(string BSPFile, Camera cam, float screenRatio) : this()
         {
             camera = cam;
+            gameScreenRation = screenRatio;
             ChangeBSP (BSPFile);
         }
 
@@ -181,71 +187,43 @@ namespace TKQuake.Cookbook.Screens
         public void Update(double elapsedTime)
         {   
             // Make sure there are no meshes left over from the last rendering.
-            int meshCount = 0;
-            string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
-
-            while (_renderer.IsMeshRegister (id) == true)
+            for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
             {
-                _renderer.UnregisterMesh (id);
+                string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
 
-                meshCount++;
-                id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
+                if (_renderer.IsMeshRegister (id) == true)
+                {
+                    _renderer.UnregisterMesh (id);
+                }
             }
 
-            // Get the current ModelView and Projection matrices from OPenTK
-            Matrix4 model = new Matrix4 ();
-            Matrix4 view  = new Matrix4 ();
-            Matrix4 proj  = new Matrix4 ();
-            float[] matrix = new float[16];
-
-            var uniModel = GL.GetUniformLocation(_renderer.Program, "model");
-            var uniView  = GL.GetUniformLocation(_renderer.Program, "view");
-            var uniProj  = GL.GetUniformLocation(_renderer.Program, "proj");
-
-            GL.GetUniform (_renderer.Program, uniModel, matrix);
-            model = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
-            );
-
-            GL.GetUniform (_renderer.Program, uniView, matrix);
-            model = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
-            );
-
-            GL.GetUniform (_renderer.Program, uniProj, matrix);
-            model = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
-            );
+            // Get the current ModelView and Projection matrices.
+            Matrix4 rotation = Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * Matrix4.CreateRotationZ(0);
+            Matrix4 model = rotation * Matrix4.Identity * Matrix4.CreateTranslation(camera.Position) * Matrix4.CreateScale(1.0f);
+            Matrix4 view = Matrix4.LookAt(camera.Position, camera.Position + camera.ViewDirection, Vector3.UnitY);
+            Matrix4 modelView = Matrix4.Mult (view, model);
+            Matrix4 proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), gameScreenRation, 0.1f, 1000f);
 
             // Generate, register, and render the meshes that are potentially visible to the camera.
-            List<Mesh> meshes = BSP.GetMesh (camera.Position, Matrix4.Mult (proj, Matrix4.Mult(view, model)));
+            List<Mesh> meshes = BSP.GetMesh (camera.Position, Matrix4.Mult (proj, modelView));
 
-            meshCount = 0;
+            totalMeshes = meshes.Count;
 
-            foreach (Mesh mesh in meshes)
+            for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
             {
-                id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
-                _renderer.RegisterMesh (id, mesh);
+                string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
+                _renderer.RegisterMesh (id, meshes[meshCount]);
 
                 // Create a renderable entity.
                 var BSPEntity = RenderableEntity.Create ();
                 BSPEntity.Id = id;
                 BSPEntity.Position = camera.Position;
                 BSPEntity.Scale = 1.0f;
+                BSPEntity.Translation = Matrix4.Identity;
+                BSPEntity.Rotation = Vector3.Zero;
 
                 // Render the BSP entity.
                 _renderer.DrawEntity (BSPEntity);
-
-                meshCount++;
             }
         }
     }
