@@ -1,15 +1,12 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using OpenTK.Graphics;
 using TKQuake.Cookbook.Screens;
-using TKQuake.Engine.Extensions;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.GameScreen;
-using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Input;
 
 namespace TKQuake.Cookbook
@@ -21,18 +18,21 @@ namespace TKQuake.Cookbook
 
         public static void Main(string[] args)
         {
-            Program prog = new Program();
+            var prog = new Program();
             prog.Run();
         }
 
         private void Run()
         {
-            //TKQuake.Engine.Loader.BSPLoader bsp = new TKQuake.Engine.Loader.BSPLoader ();
-            //bsp.SetBSPFile ("q3dm6.bsp");
-            //bsp.LoadFile ();
-            //bsp.DumpBSP ();
+            /*
+            var bsp = new Engine.Loader.BSPLoader ();
+            bsp.SetBSPFile ("/home/bidski/Projects/COMP3320/q3dm6.bsp");
+            bsp.LoadFile ();
+            bsp.DumpBSP ();
+            */
 
-            currentScreen = new CameraTestScreen("q3dm6.bsp");
+            using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
+                DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
 
             using (game = new GameWindow())
             {
@@ -47,16 +47,20 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            //currentScreen.Render(e);
             game.SwapBuffers();
         }
 
         private void game_UpdateFrame(object sender, FrameEventArgs e)
         {
-            if (game.Keyboard[Key.Escape])
+            var kbState = Keyboard.GetState();
+            if (kbState[Key.Escape])
                 game.Exit();
+            if (kbState.IsKeyDown(Key.AltLeft) && kbState.IsKeyDown(Key.Enter))
+                game.WindowState = game.WindowState == WindowState.Normal ? WindowState.Fullscreen : WindowState.Normal;
 
+            GL.Enable(EnableCap.DepthTest);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
             currentScreen.Update(e.Time);
 
             CommandCentre.ExecuteAllCommands();
@@ -64,25 +68,24 @@ namespace TKQuake.Cookbook
 
         private void game_Resize(object sender, EventArgs e)
         {
-            GL.Viewport(0, 0, game.Width, game.Height);
-            GL.ClearColor(0, 0, 0, 1); // Change Screen colour
-            double aspect_ratio = game.Width / (double)game.Height;
+            var renderer = Renderer.Singleton();
 
-            OpenTK.Matrix4 perspective = OpenTK.Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)aspect_ratio, 1, 64);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref perspective);
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)game.Width / game.Height, 0.1f, 1000f);
+            var uniProj = GL.GetUniformLocation(renderer.Program, "proj");
+            GL.UniformMatrix4(uniProj, false, ref proj);
+            GL.Viewport(0, 0, game.Width, game.Height);
         }
 
         private void game_Load(object sender, EventArgs e)
         {
-            game.VSync = VSyncMode.On;
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
+            var renderer = Renderer.Singleton();
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+            renderer.LinkShaders();
 
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            currentScreen = new CameraTestScreen("q3dm6.bsp");
 
-            GL.LineWidth(3);    // Thickens Lines
+            GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 
             Console.Write("GL Window loaded");
             Console.WriteLine();

@@ -24,27 +24,27 @@ namespace TKQuake.Engine.Core
 
         private Texture _texture;
 
-        public void AddSprite(Sprite2 sprite)
-        {
-
-            // If the RenderBatch is full, render what is already there and
-            // then start again
-            if (sprite.Vertices.Count + _currentBatchSize > MaxVertexNumber || sprite.Texture.Id != _texture.Id)
-            {
-                Draw();
-            }
-
-            //  Add current Sprite to the batch
-            for(int i = 0; i < sprite.Vertices.Count; i++)
-            {
-                _positions[_currentBatchSize + i] = sprite.Vertices[i].Position;
-                _colors[_currentBatchSize + i] = sprite.Vertices[i].Color;
-                _uvs[_currentBatchSize + i] = sprite.Vertices[i].UVs;
-            }
-
-            _texture = sprite.Texture;
-            _currentBatchSize += sprite.Vertices.Count;
-        }
+//        public void AddSprite(Sprite2 sprite)
+//        {
+//
+//            // If the RenderBatch is full, render what is already there and
+//            // then start again
+//            if (sprite.Vertices.Count + _currentBatchSize > MaxVertexNumber || sprite.Texture.Id != _texture.Id)
+//            {
+//                Draw();
+//            }
+//
+//            //  Add current Sprite to the batch
+//            for(int i = 0; i < sprite.Vertices.Count; i++)
+//            {
+//                _positions[_currentBatchSize + i] = sprite.Vertices[i].Position;
+//                _colors[_currentBatchSize + i] = sprite.Vertices[i].Color;
+//                _uvs[_currentBatchSize + i] = sprite.Vertices[i].UVs;
+//            }
+//
+//            _texture = sprite.Texture;
+//            _currentBatchSize += sprite.Vertices.Count;
+//        }
 
         public void Draw()
         {

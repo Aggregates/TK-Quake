@@ -32,30 +32,30 @@ namespace TKQuake.Engine.Infrastructure.Font
             this.Characters = characters;
         }
 
-        public CharacterSprite CreateSprite(char c)
-        {
-            CharacterData data = Characters[c];
-            Sprite2 sprite = new Sprite2(this._texture);
-
-            // Setup UV Data
-            // We need to divide by the texture Width since OpenGL has UVs in range
-            // 0 to 1
-            Point topLeft = new Point(
-                (float)data.X / (float)_texture.Width,
-                (float)data.Y / (float)_texture.Height);
-
-            Point bottomRight = new Point(
-                topLeft.X + ((float)data.Width / (float)_texture.Width),
-                topLeft.Y + ((float)data.Height / (float)_texture.Height)
-                );
-
-            sprite.SetUVs(topLeft, bottomRight);
-            sprite.RenderWidth = data.Width;
-            sprite.RenderHeight = data.Height;
-            sprite.SetColor(new Color(1, 1, 1, 1));
-
-            return new CharacterSprite(sprite, data);
-        }
+//        public CharacterSprite CreateSprite(char c)
+//        {
+//            CharacterData data = Characters[c];
+//            Sprite2 sprite = new Sprite2(this._texture);
+//
+//            // Setup UV Data
+//            // We need to divide by the texture Width since OpenGL has UVs in range
+//            // 0 to 1
+//            Point topLeft = new Point(
+//                (float)data.X / (float)_texture.Width,
+//                (float)data.Y / (float)_texture.Height);
+//
+//            Point bottomRight = new Point(
+//                topLeft.X + ((float)data.Width / (float)_texture.Width),
+//                topLeft.Y + ((float)data.Height / (float)_texture.Height)
+//                );
+//
+//            sprite.SetUVs(topLeft, bottomRight);
+//            sprite.RenderWidth = data.Width;
+//            sprite.RenderHeight = data.Height;
+//            sprite.SetColor(new Color(1, 1, 1, 1));
+//
+//            return new CharacterSprite(sprite, data);
+//        }
 
         private Dictionary<char, CharacterData> Parse(string fileName)
         {

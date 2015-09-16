@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
 using System.IO;
@@ -16,7 +16,11 @@ using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
 using ObjLoader.Loader.Loaders;
+using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
+using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -24,15 +28,50 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
+        private string _BSP = null;
 
         public CameraTestScreen(string BSPFile)
         {
-            _renderer = Renderer.Singleton();
+            _renderer = Renderer.Singleton ();
+            _textureManager = TextureManager.Singleton ();
+            _BSP = BSPFile;
 
             InitEntities();
+            InitComponents();
+
+            // List loaded 'components'
+            Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
+            foreach (var component in Components)
+            {
+                Console.WriteLine(component.ToString());
+            }
+            Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
+
+        }
+
+        private void InitComponents()
+        {
             Components.Add(new UserInputComponent(_camera));
-            Components.Add(new FloorGridComponent());
-            Components.Add(new BSPComponent(BSPFile, ref _camera));
+
+            //skybox
+            var skyboxPath = Path.Combine("skybox", "space");
+            var skybox = new SkyboxComponent(this, "skybox")
+            {
+                Back = Path.Combine(skyboxPath, "back.bmp"),
+                Front = Path.Combine(skyboxPath, "front.bmp"),
+                Top = Path.Combine(skyboxPath, "top.bmp"),
+                Bottom = Path.Combine(skyboxPath, "top.bmp"),
+                Left = Path.Combine(skyboxPath, "left.bmp"),
+                Right = Path.Combine(skyboxPath, "right.bmp")
+            };
+            Components.Add(skybox);
+
+            foreach (var component in Components)
+            {
+                component.Startup();
+            }
+
+            Components.Add(new BSPComponent(_BSP, _camera));
         }
 
         private void InitEntities()
@@ -42,46 +81,71 @@ namespace TKQuake.Cookbook.Screens
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
             var mesh = _objLoader.Load(fileStream).ToMesh();
+
             _renderer.RegisterMesh("gun", mesh);
 
+            // Add gun entitiy
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 1, -10);
-            gunEntity.Scale = 0.5f;
+            gunEntity.Position = new Vector3(0, 0, 0);
+            gunEntity.Scale = 0.05f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
-
+            _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
+
+            foreach (var entity in Children)
+            {
+                foreach (var component in entity.Components)
+                {
+                    component.Startup();
+                }
+            }
         }
     }
 
-    class FloorGridComponent : IComponent
+    static class FloorGridEntity
     {
-        public void Startup() { }
-        public void Shutdown() { }
-
-        public void Update(double elapsedTime)
+        public static Mesh Mesh()
         {
-            var lineLength = 100f;
+            var lineLength = 1000f;
             var lineSpacing = 2.5f;
             var y = -2.5f;
 
-            GL.Begin(PrimitiveType.Lines);
+            var vertices = new List<Vertex>();
+            var indices = new List<int>();
             for (int i = 0; i < 100; i++)
             {
-                GL.Color3(0f, 0, 255);
+                var index = vertices.Count;
 
                 //parallel to x-axis
-                GL.Vertex3(-lineLength, y, i * lineSpacing - 100f);
-                GL.Vertex3(lineLength, y, i * lineSpacing - 100f);
+                var v1 = new Vector3(-lineLength, y, i * lineSpacing - 100f);
+                var v2 = new Vector3(lineLength, y, i * lineSpacing - 100f);
 
                 //perpendicular to x-axis
-                GL.Vertex3(i + lineSpacing - 50f, y, -lineLength);
-                GL.Vertex3(i + lineSpacing - 50f, y, lineLength);
-            }
-            GL.End();
+                var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
+                var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
 
-            GL.Color3(255f, 255, 255);
+                vertices.AddRange(new []
+                {
+                    new Vertex(v1, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v2, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v3, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v4, Vector3.Zero, Vector2.Zero),
+                });
+
+                indices.AddRange(new []
+                {
+                    index, index + 1, index,
+                    index + 2, index + 3, index + 2
+                });
+            }
+
+            return new Mesh
+            {
+                Vertices = vertices.ToArray(),
+                Indices = indices.ToArray()
+            };
         }
     }
 
@@ -94,7 +158,13 @@ namespace TKQuake.Cookbook.Screens
         private BSPRenderer BSP;
         private Camera camera;
 
-        public BSPComponent(string BSPFile, ref Camera cam)
+        private BSPComponent()
+        {
+            camera = null;
+            BSP = null;
+        }
+
+        public BSPComponent(string BSPFile, Camera cam) : this()
         {
             camera = cam;
             ChangeBSP (BSPFile);
@@ -109,45 +179,74 @@ namespace TKQuake.Cookbook.Screens
         public void Shutdown() { }
 
         public void Update(double elapsedTime)
-        {
-            // Check to see if a mesh has already been registered for the BSP component.
-            // If so, unregister it.
-            if (_renderer.IsMeshRegister (ENTITY_ID) == true)
+        {   
+            // Make sure there are no meshes left over from the last rendering.
+            int meshCount = 0;
+            string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
+
+            while (_renderer.IsMeshRegister (id) == true)
             {
-                _renderer.UnregisterMesh (ENTITY_ID);
+                _renderer.UnregisterMesh (id);
+
+                meshCount++;
+                id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
             }
 
             // Get the current ModelView and Projection matrices from OPenTK
-            double[] matrix  = new double[16];
-            GL.GetDouble (GetPName.ModelviewMatrix, matrix);
+            Matrix4 model = new Matrix4 ();
+            Matrix4 view  = new Matrix4 ();
+            Matrix4 proj  = new Matrix4 ();
+            float[] matrix = new float[16];
 
-            Matrix4 modelView = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
+            var uniModel = GL.GetUniformLocation(_renderer.Program, "model");
+            var uniView  = GL.GetUniformLocation(_renderer.Program, "view");
+            var uniProj  = GL.GetUniformLocation(_renderer.Program, "proj");
+
+            GL.GetUniform (_renderer.Program, uniModel, matrix);
+            model = new Matrix4(
+                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
+                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
+                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
+                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
             );
 
-            GL.GetDouble (GetPName.ProjectionMatrix, matrix);
-
-            Matrix4 projection = new Matrix4(
-                (float)matrix[ 0], (float)matrix[ 1], (float)matrix[ 2], (float)matrix[ 3],
-                (float)matrix[ 4], (float)matrix[ 5], (float)matrix[ 6], (float)matrix[ 7],
-                (float)matrix[ 8], (float)matrix[ 9], (float)matrix[10], (float)matrix[11],
-                (float)matrix[12], (float)matrix[13], (float)matrix[14], (float)matrix[15]
+            GL.GetUniform (_renderer.Program, uniView, matrix);
+            model = new Matrix4(
+                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
+                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
+                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
+                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
             );
 
-            // Generate and register the mesh that is potentially visible to the camera.
-            _renderer.RegisterMesh (ENTITY_ID, BSP.GetMesh (camera.Position, Matrix4.Mult (projection, modelView)));
+            GL.GetUniform (_renderer.Program, uniProj, matrix);
+            model = new Matrix4(
+                (float)matrix[ 0], (float)matrix[ 1], (float) matrix[ 2], (float)matrix[ 3],
+                (float)matrix[ 4], (float)matrix[ 5], (float) matrix[ 6], (float)matrix[ 7],
+                (float)matrix[ 8], (float)matrix[ 9], (float) matrix[10], (float)matrix[11],
+                (float)matrix[12], (float)matrix[13], (float) matrix[14], (float)matrix[15]
+            );
 
-            // Create a renderable entity.
-            var BSPEntity = RenderableEntity.Create ();
-            BSPEntity.Id = ENTITY_ID;
-            BSPEntity.Position = camera.Position;
-            BSPEntity.Scale = 1.0f;
+            // Generate, register, and render the meshes that are potentially visible to the camera.
+            List<Mesh> meshes = BSP.GetMesh (camera.Position, Matrix4.Mult (proj, Matrix4.Mult(view, model)));
 
-            // Render the BSP entity.
-            _renderer.DrawEntity (BSPEntity);
+            meshCount = 0;
+
+            foreach (Mesh mesh in meshes)
+            {
+                id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
+                _renderer.RegisterMesh (id, mesh);
+
+                // Create a renderable entity.
+                var BSPEntity = RenderableEntity.Create ();
+                BSPEntity.Id = id;
+                BSPEntity.Position = camera.Position;
+                BSPEntity.Scale = 1.0f;
+
+                // Render the BSP entity.
+                _renderer.DrawEntity (BSPEntity);
+
+                meshCount++;
+            }
         }
     }
 }

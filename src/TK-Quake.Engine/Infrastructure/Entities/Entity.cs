@@ -8,7 +8,7 @@ using OpenTK;
 
 namespace TKQuake.Engine.Infrastructure.Entities
 {
-    public class Entity
+    public class Entity : IEntity
     {
         public string Id { get; set; }
         public float Scale { get; set; } = 1;

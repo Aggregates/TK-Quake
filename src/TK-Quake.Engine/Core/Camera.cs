@@ -1,14 +1,8 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using System;
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TKQuake.Engine.Extensions;
-using TKQuake.Engine.Infrastructure.Abstract;
-using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Components;
 
@@ -21,9 +15,10 @@ namespace TKQuake.Engine.Core
     {
         public Camera()
         {
-            MoveSpeed = 10;
+            MoveSpeed = 1;
             RotationSpeed = 1;
-            Position = Vector3.Zero;
+            Position = new Vector3(0, 0, 3);
+            Rotation = -Vector3.UnitZ;
 
             Components.Add(new CameraComponent(this));
         }
@@ -42,6 +37,11 @@ namespace TKQuake.Engine.Core
     class CameraComponent : IComponent
     {
         private readonly IEntity _entity;
+        private readonly Renderer _renderer = Renderer.Singleton();
+
+        public int Width { get; set; } = 800;
+        public int Height { get; set; } = 600;
+
         public CameraComponent(IEntity entity)
         {
             _entity = entity;
@@ -52,11 +52,11 @@ namespace TKQuake.Engine.Core
 
         public void Update(double elapsedTime)
         {
-            var mat = GLX.MatrixLookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
-            GL.MatrixMode(MatrixMode.Modelview);
+            var program = _renderer.Program;
 
-            // http://stackoverflow.com/a/4519028
-            GL.LoadMatrix(ref mat);
+            var view = Matrix4.LookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
+            var uniView = GL.GetUniformLocation(program, "view");
+            GL.UniformMatrix4(uniView, false, ref view);
         }
     }
 }
