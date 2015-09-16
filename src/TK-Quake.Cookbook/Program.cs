@@ -28,8 +28,6 @@ namespace TKQuake.Cookbook
 
             using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
                 DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
-
-            using (game = new GameWindow())
             {
                 game.Load += game_Load;
                 game.Resize += game_Resize;
@@ -78,7 +76,7 @@ namespace TKQuake.Cookbook
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
             renderer.LinkShaders();
 
-            currentScreen = new CameraTestScreen(renderer);
+            currentScreen = new CameraTestScreen("q3dm6.bsp", (float)game.Width / game.Height);
 
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 

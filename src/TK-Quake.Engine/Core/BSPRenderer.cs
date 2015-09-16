@@ -134,28 +134,47 @@ namespace TKQuake.Engine.Core
 
         private void SetViewFrustum(Matrix4 clip)
         {
-            /* Extract the numbers for the RIGHT plane */
-            frustum [0] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column0));
+            if (clip == Matrix4.Zero)
+            {
+                frustum [0] = Vector4.Zero;
+                frustum [1] = Vector4.Zero;
+                frustum [2] = Vector4.Zero;
+                frustum [3] = Vector4.Zero;
+                frustum [4] = Vector4.Zero;
+                frustum [5] = Vector4.Zero;
+            }
 
-            /* Extract the numbers for the LEFT plane */
-            frustum [1] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column0));
+            else
+            {
+                /* Extract the numbers for the RIGHT plane */
+                frustum [0] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column0));
 
-            /* Extract the BOTTOM plane */
-            frustum [2] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column1));
+                /* Extract the numbers for the LEFT plane */
+                frustum [1] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column0));
 
-            /* Extract the TOP plane */
-            frustum [3] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column1));
+                /* Extract the BOTTOM plane */
+                frustum [2] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column1));
 
-            /* Extract the FAR plane */
-            frustum [4] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column2));
+                /* Extract the TOP plane */
+                frustum [3] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column1));
 
-            /* Extract the NEAR plane */
-            frustum [5] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column2));
+                /* Extract the FAR plane */
+                frustum [4] = Vector4.Normalize (Vector4.Subtract (clip.Column3, clip.Column2));
+
+                /* Extract the NEAR plane */
+                frustum [5] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column2));
+                            }
         }
 
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
-            // Test the bounds of the bounding box formed by min and max with the current plane.
+            if ((frustum[0] == Vector4.Zero) || (frustum[1] == Vector4.Zero) || (frustum[2] == Vector4.Zero) || 
+                (frustum[3] == Vector4.Zero) || (frustum[4] == Vector4.Zero) || (frustum[5] == Vector4.Zero))
+            {
+                return(true);
+            }
+
+            // Test the bounds of every the bounding box with every plane in the view frustum.
             foreach (Vector4 plane in frustum)
             {
                 bool[] dots = new bool[8];

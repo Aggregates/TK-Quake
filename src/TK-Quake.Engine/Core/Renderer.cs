@@ -171,7 +171,17 @@ namespace TKQuake.Engine.Core
             GL.UniformMatrix4(uniModel, false, ref model);
 
             //bind texture
-            TextureManager.Bind(entity.Id);
+            if (mesh.tex != null)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, mesh.tex.Id);
+            }
+
+            else if (TextureManager.Registered (entity.Id) == true)
+            {
+                TextureManager.Bind(entity.Id);
+            }
+
             DrawVbo(mesh);
 
             //reset translation matrix?
