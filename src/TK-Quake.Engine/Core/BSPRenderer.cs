@@ -444,24 +444,7 @@ namespace TKQuake.Engine.Core
                 mesh.Normals  = new Vector3[0];
                 mesh.Textures = texCoords.ToArray ();
                 mesh.Indices  = indices.ToArray ();
-
-                string texture = BSP.GetTexture (face.texture).name;
-
-                if (texture.Contains ("noshader") == false)
-                {
-                    if (texManager.Registered (texture) == false)
-                    {
-                        texManager.Add (texture, texture + ".jpg");
-                    }
-
-                    mesh.tex = texManager.Get (texture);
-                }
-
-                else
-                {
-                    mesh.tex = null;
-                }
-
+                mesh.tex      = GetTexture (face);
                 meshes.Add (mesh);
             }
 
@@ -575,26 +558,32 @@ namespace TKQuake.Engine.Core
             mesh.Normals  = normals.ToArray ();
             mesh.Textures = texCoords.ToArray ();
             mesh.Indices  = indices.ToArray ();
-
-            string texture = BSP.GetTexture (face.texture).name;
-
-            if (texture.Contains ("noshader") == false)
-            {
-                if (texManager.Registered (texture) == false)
-                {
-                    texManager.Add (texture, texture + ".jpg");
-                }
-
-                mesh.tex = texManager.Get (texture);
-            }
-
-            else
-            {
-                mesh.tex = null;
-            }
-
+            mesh.tex      = GetTexture (face);
             return(mesh);
          }
+
+        private Infrastructure.Texture.Texture GetTexture(Face.FaceEntry face)
+        {
+            Infrastructure.Texture.Texture texture = null;
+
+            string textureName = BSP.GetTexture (face.texture).name;
+            string textureFile = textureName + ".jpg";
+
+            if (textureName.Contains ("noshader") == false)
+            {
+                if (File.Exists (textureName + ".jpg") == true)
+                {
+                    if (texManager.Registered (textureName) == false)
+                    {
+                        texManager.Add (textureName, textureFile);
+                    }
+
+                    texture = texManager.Get (textureName);
+                }
+            } 
+
+            return (texture);
+        }
     }
 }
 
