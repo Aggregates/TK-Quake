@@ -58,7 +58,7 @@ namespace TKQuake.Cookbook.Screens
             //Might be to do with where I have declared it.
             //Thread th = new Thread(new ThreadStart(AudioManager.Play));
             //th.Start();
-            var filename = Path.Combine("Audio", "music.wav");
+            var filename = Path.Combine("Audio", "QuakeTheme.wav");
             new Thread(delegate ()
             {
                 using (AudioContext context = new AudioContext())
@@ -66,6 +66,7 @@ namespace TKQuake.Cookbook.Screens
                     _audioManager.Add("bgm", filename);
                     _audioManager.Play("bgm");
                 }
+                //_audioManager.printHeader(filename);
             }).Start();
 
         }
