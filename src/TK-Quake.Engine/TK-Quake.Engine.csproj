@@ -59,6 +59,7 @@
     <Compile Include="Core\Camera.cs" />
     <Compile Include="Debug\FramesPerSecond.cs" />
     <Compile Include="Extensions\GLX.cs" />
+    <Compile Include="Infrastructure\Audio\Audio.cs" />
     <Compile Include="Infrastructure\Audio\AudioManager.cs" />
     <Compile Include="Infrastructure\Components\BobComponent.cs" />
     <Compile Include="Infrastructure\Components\IComponent.cs" />
