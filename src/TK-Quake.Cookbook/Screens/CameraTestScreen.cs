@@ -26,6 +26,7 @@ using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
+using OpenTK.Audio;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -40,6 +41,7 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton ();
             _textureManager = TextureManager.Singleton ();
             _BSP = BSPFile;
+            var _audioManager = new AudioManager();
 
             InitEntities();
             InitComponents();
@@ -53,8 +55,19 @@ namespace TKQuake.Cookbook.Screens
             Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
             //Apparently OpenAL should manage its own threading, however if this wasn't created as a thread the GameScreen would not run.
             //Might be to do with where I have declared it.
-            Thread th = new Thread(new ThreadStart(AudioManager.Play));
-            th.Start();
+            //Thread th = new Thread(new ThreadStart(AudioManager.Play));
+            //th.Start();
+            var filename = Path.Combine("Audio", "music.wav");
+            new Thread(delegate ()
+            {
+                using (AudioContext context = new AudioContext())
+                {
+                    _audioManager.Add("bgm", filename);
+                    _audioManager.Play("bgm");
+                }
+            }).Start();
+
+
 
         }
         
