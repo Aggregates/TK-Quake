@@ -107,19 +107,20 @@ namespace TKQuake.Cookbook.Screens
 
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 0, 0);
-            gunEntity.Scale = 0.1f;
+            gunEntity.Position = new Vector3(5, 1, 5);
+            gunEntity.Scale = 1f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI / 2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
 
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             _textureManager.Add("floor", "floor.jpg");
 
-            //gunEntity.Components.Add(new GravityComponent(gunEntity));
+            gunEntity.Components.Add(new GravityComponent(gunEntity));
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, 1, 0)));
 
             BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
             gunEntity.Children.Add(box);
+            //gunEntity.Components.Add(new PickupComponent(gunEntity));
 
             box.Collided += Box_Collided;
 
@@ -131,7 +132,14 @@ namespace TKQuake.Cookbook.Screens
                 {
                     component.Startup();
                 }
+
+                entity.Destroy += Entity_Destroy;
             }
+        }
+
+        private void Entity_Destroy(object sender, EventArgs e)
+        {
+            Children.Remove((IEntity)sender);
         }
 
         private void Box_Collided(object sender, CollisionEventArgs e)

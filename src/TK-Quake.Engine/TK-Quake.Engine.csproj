@@ -95,6 +95,7 @@
     <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
     <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
     <Compile Include="Infrastructure\Physics\Octree.cs" />
+    <Compile Include="Infrastructure\Physics\PickupComponent.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />

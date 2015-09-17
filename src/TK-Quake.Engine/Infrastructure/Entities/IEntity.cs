@@ -42,5 +42,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
         Matrix4 Transform { get; set; }
 
         void Update(double elapsedTime);
+
+        event EventHandler Destroy;
     }
 }

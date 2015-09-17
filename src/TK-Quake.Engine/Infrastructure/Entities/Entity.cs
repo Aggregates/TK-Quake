@@ -41,5 +41,17 @@ namespace TKQuake.Engine.Infrastructure.Entities
                 entity.Update(elapsedTime);
             }
         }
+
+        public event EventHandler Destroy;
+
+        public void DestroyEntity()
+        {
+            OnDestroy(null);
+        }
+
+        protected virtual void OnDestroy(EventArgs e)
+        {
+            Destroy?.Invoke(this, e);
+        }
     }
 }
