@@ -17,6 +17,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
 {
     public class AudioManager : ResourceManager<Audio>, IDisposable
     {
+<<<<<<< HEAD
        
 
         public AudioManager() : base()
