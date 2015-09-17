@@ -17,7 +17,6 @@ namespace TKQuake.Engine.Infrastructure.Audio
 {
     public class AudioManager : ResourceManager<Audio>, IDisposable
     {
-<<<<<<< HEAD
        
 
         public AudioManager() : base()
@@ -267,6 +266,20 @@ namespace TKQuake.Engine.Infrastructure.Audio
                 AL.BufferData(audioID, GetSoundFormat(num_channels, bits_per_sample), data, data.Length, sample_rate);
                 audio = new Audio(audioID, data, num_channels, bits_per_sample, sample_rate, filename);
                 return audio;
+            }
+        }
+
+        public void printHeader(String filename)
+        {
+            Stream stream = File.Open(filename, FileMode.Open);
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream");
+            }
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                String s = new string(reader.ReadChars(80));
+                Console.WriteLine(s);
             }
         }
 
