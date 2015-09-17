@@ -49,7 +49,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// <param name="elapsedTime"></param>
         public void Update(double elapsedTime)
         {
-            Velocity += (float)(Force * elapsedTime / 2);
+            Velocity += (float)(Force / 10 * elapsedTime / 2);
 
             var direction = new Vector3(0f, Velocity, 0f);
             _entity.Position -= direction;

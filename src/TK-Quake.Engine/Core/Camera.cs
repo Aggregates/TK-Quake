@@ -22,7 +22,7 @@ namespace TKQuake.Engine.Core
             Rotation = -Vector3.UnitZ;
 
             CameraComponent cam = new CameraComponent(this);
-            cam.PositionOffset = new Vector3(0, 15, 0);
+            cam.PositionOffset = new Vector3(0, 3, 0);
 
             BoundingBoxEntity box = new BoundingBoxEntity(this,
                 new Vector3(0.5f, 0.5f, 0.5f) + cam.PositionOffset,
