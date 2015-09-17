@@ -113,10 +113,27 @@ namespace TKQuake.Engine.Infrastructure.Audio
                 int byte_rate = reader.ReadInt32();
                 int block_align = reader.ReadInt16();
                 int bits_per_sample = reader.ReadInt16();
+
+                //What follows is some hardcoded junk to try and deal with different wave header formats
+                if (format_chunk_size == 18)
+                {
+                    reader.ReadInt16();
+                }
             
                 string data_signature = new string(reader.ReadChars(4));
+                if (data_signature == "LIST")
+                {
+                    Console.WriteLine(reader.BaseStream.Position);
+                    int list_size = reader.ReadInt16();
+                    reader.ReadChars(2); //INFO tag
+                    reader.ReadChars(list_size);
+                    Console.WriteLine(reader.BaseStream.Position);
+                    data_signature = new string(reader.ReadChars(4));
+                }
+
                 if (data_signature != "data") //Signifying start of data block
                 {
+                    Console.WriteLine(data_signature);
                     throw new NotSupportedException("Specified wave file is not supported.");
                 }
                 //More info about the data
@@ -128,6 +145,20 @@ namespace TKQuake.Engine.Infrastructure.Audio
                 //Loading and storing the data
                 AL.BufferData(audioID, GetSoundFormat(num_channels, bits_per_sample), data, data.Length, sample_rate);
                 return new Audio(audioID, data , num_channels, bits_per_sample, sample_rate);
+            }
+        }
+
+        public void printHeader(String filename)
+        {
+            Stream stream = File.Open(filename, FileMode.Open);
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream");
+            }
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                String s = new string(reader.ReadChars(80));
+                Console.WriteLine(s);
             }
         }
 
