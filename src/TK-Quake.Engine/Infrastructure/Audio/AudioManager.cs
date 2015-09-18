@@ -8,6 +8,7 @@ using OpenTK.Audio.OpenAL;
 using OpenTK.Audio;
 using System.Threading;
 using TKQuake.Engine.Infrastructure.Abstract;
+using DragonOgg.Interactive;
 
 
 //This is not yet a manager, just me using a tutorial and making sure I could get it working.
@@ -48,9 +49,26 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteBuffer(aud.Id);
         }
 
+        public void Play(String key)
+        {
+            var audio = this.Get(key);
+            if (audio.FileName.Contains(".wav"))
+            {
+                PlayWav(key);
+            } else if (audio.FileName.Contains(".ogg"))
+            {
+                PlayOgg(key);
+            }
+        }
+
+        private void PlayOgg(String key)
+        {
+            AudioClip audio = new AudioClip(this.Get(key).FileName);
+            audio.Play();
+        }
 
         //Source probably needs to be passed in
-        public void Play(String key)
+        public void PlayWav(String key)
         {
             var audio = this.Get(key);
             int source = AL.GenSource();
@@ -88,7 +106,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
         private Audio LoadOgg(string filename)
         {
-            throw new NotImplementedException("Not yet implemeneted.");
+            return new Audio(filename);
         }
 
         //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
@@ -166,7 +184,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
                 //Loading and storing the data
                 AL.BufferData(audioID, GetSoundFormat(num_channels, bits_per_sample), data, data.Length, sample_rate);
-                return new Audio(audioID, data , num_channels, bits_per_sample, sample_rate);
+                return new Audio(audioID, data , num_channels, bits_per_sample, sample_rate, filename);
             }
         }
 
