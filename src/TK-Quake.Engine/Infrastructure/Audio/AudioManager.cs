@@ -69,8 +69,24 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteSource(source);
         }
 
-        //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
         private Audio LoadAudio(string filename)
+        {
+            if (filename.Contains(".wav"))
+            {
+                return LoadWav(filename);
+            } else if (filename.Contains(".ogg"))
+            {
+                return LoadOgg(filename);
+            } else throw new NotSupportedException("Audio format not supported.");
+        }
+
+        private Audio LoadOgg(string filename)
+        {
+            throw new NotImplementedException("Not yet implemeneted.");
+        }
+
+        //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
+        private Audio LoadWav(string filename)
         {
             if (!File.Exists(filename))
             {
