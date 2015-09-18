@@ -69,6 +69,12 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteSource(source);
         }
 
+        public void PlayAtSource(string key)
+        {
+            //TODO
+            throw new NotImplementedException("Not yet implemeneted.");
+        }
+
         private Audio LoadAudio(string filename)
         {
             if (filename.Contains(".wav"))
