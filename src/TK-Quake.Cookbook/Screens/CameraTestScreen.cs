@@ -94,13 +94,14 @@ namespace TKQuake.Cookbook.Screens
 
             var head = RenderableEntity.Create();
             head.Id = "sarge_head";
-            head.Position = new Vector3(-15, 1, -5);
+            head.Position = new Vector3(-10, 1, -10);
             head.Rotation = new Vector3(MathHelper.PiOver2, 0, 0);
             head.Scale = 0.025f;
             var headPath = Path.Combine("models", "players", "sarge");
             _textureManager.Add(head.Id, Path.Combine(headPath, "band.tga"));
             var md3 = Md3.FromFile(Path.Combine(headPath, "head.md3"));
             _renderer.RegisterMesh(head.Id, md3.ToMesh().Last());
+            head.Components.Add(new RotateOnUpdateComponent(head, new Vector3(0, MathHelper.PiOver2, 0)));
             Children.Add(head);
 
             foreach (var entity in Children)
