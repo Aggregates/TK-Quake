@@ -11,6 +11,7 @@ using ObjLoader.Loader.Data.VertexData;
 using ObjLoader.Loader.Loaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using TKQuake.Engine.Loader.Md3;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Engine.Infrastructure

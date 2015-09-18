@@ -95,6 +95,7 @@
     <Compile Include="Infrastructure\Input\RotateCommand.cs" />
     <Compile Include="InterOp\CMessage.cs" />
     <Compile Include="InterOp\PreciseTimer.cs" />
+    <Compile Include="Loader\Md3\Md3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\Renderer.cs" />

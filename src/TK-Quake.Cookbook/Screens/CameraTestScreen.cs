@@ -21,6 +21,7 @@ using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TKQuake.Engine.Loader.Md3;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -90,6 +91,15 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
+
+            var head = RenderableEntity.Create();
+            head.Id = "sarge_head";
+            head.Position = new Vector3(2, 1, -5);
+            head.Scale = 1;
+            var headPath = Path.Combine("models", "players", "sarge");
+            _textureManager.Add(head.Id, Path.Combine(headPath, "band.tga"));
+            _renderer.RegisterMesh(head.Id, Md3.FromFile(Path.Combine(headPath, "head.md3")).ToMesh().Last());
+            Children.Add(head);
 
             foreach (var entity in Children)
             {
