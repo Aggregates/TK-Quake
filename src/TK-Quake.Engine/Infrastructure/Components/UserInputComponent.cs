@@ -134,22 +134,22 @@ namespace TKQuake.Engine.Infrastructure.Components
                     }
                 case Key.Left:
                     {
-                        rotate(new Vector3(0, -1, 0));
+                        rotate(-Vector3.UnitY);
                         break;
                     }
                 case Key.Right:
                     {
-                        rotate(new Vector3(0, 1, 0));
+                        rotate(Vector3.UnitY);
                         break;
                     }
                 case Key.Up:
                     {
-                        rotate(new Vector3(1, 0, 0));
+                        rotate(Vector3.UnitX);
                         break;
                     }
                 case Key.Down:
                     {
-                        rotate(new Vector3(-1, 0, 0));
+                        rotate(-Vector3.UnitX);
                         break;
                     }
             }
