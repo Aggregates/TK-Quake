@@ -23,11 +23,13 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         // Instance variables
         private readonly List<Entity> _colliders;
+        private readonly List<Entity> _remove;
         private static CollisionDetector _instance;
 
         private CollisionDetector()
         {
             _colliders = new List<Entity>();
+            _remove = new List<Entity>();
         }
         
         /// <summary>
@@ -55,7 +57,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// <param name="collider">The entity to stop tracking in the collision detection routine</param>
         public void RemoveCollider(Entity collider)
         {
-            _colliders.Remove(collider);
+            _remove.Add(collider);
         }
 
         /// <summary>
@@ -64,6 +66,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// <param name="elapsedTime"></param>
         public override void Update(double elapsedTime)
         {
+            _remove.ForEach(e => _colliders.Remove(e));
+            _remove.Clear();
             DetectCollisions();
         }
 
@@ -79,7 +83,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
             {
                 foreach (var otherBox in boxes)
                 {
-                    if (box != otherBox && !box.Equals(otherBox))
+                    if (box != otherBox)
                     {
                         box.CheckCollision(otherBox);
                     }

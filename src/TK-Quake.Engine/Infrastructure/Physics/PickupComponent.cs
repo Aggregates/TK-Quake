@@ -28,7 +28,11 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         private void Box_Collided(object sender, CollisionEventArgs e)
         {
-            _entity.DestroyEntity();
+            // HACK: Pickups only work for Camera class. Need to extend for AI
+            if (e.Collider is TKQuake.Engine.Core.Camera || e.Sender is TKQuake.Engine.Core.Camera)
+            {
+                _entity.DestroyEntity();
+            }
         }
 
         public void Startup() { }

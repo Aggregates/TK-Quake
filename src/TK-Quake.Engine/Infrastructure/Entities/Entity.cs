@@ -23,12 +23,19 @@ namespace TKQuake.Engine.Infrastructure.Entities
         public Matrix4 Translation { get; set; }
         public Matrix4 Transform { get; set; }
 
+        public event EventHandler Destroy;
+        private List<IEntity> _removeEntities = new List<IEntity>(); 
+
         public Entity()
         {
             Translation = Matrix4.Identity;
         }
 
         public virtual void Update(double elapsedTime) {
+            // Remove all components and children marked for deletion
+            _removeEntities.ForEach(e => Children.Remove(e));
+            _removeEntities.Clear();
+
             //update all components
             foreach (var component in Components)
             {
@@ -42,7 +49,6 @@ namespace TKQuake.Engine.Infrastructure.Entities
             }
         }
 
-        public event EventHandler Destroy;
 
         public void DestroyEntity()
         {
@@ -52,6 +58,12 @@ namespace TKQuake.Engine.Infrastructure.Entities
         protected virtual void OnDestroy(EventArgs e)
         {
             Destroy?.Invoke(this, e);
+        }
+
+        public void RemoveEntity(IEntity entity)
+        {
+            System.Diagnostics.Debug.Assert(Children.Contains(entity), "Entity is not a direct child of this entity");
+            _removeEntities.Add(entity);
         }
     }
 }

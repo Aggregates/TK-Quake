@@ -214,7 +214,24 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
                 // Top
                 7,4,5,
-                6,7,5
+                6,7,5,
+
+                // Left
+                1,0,5,
+                6,1,5,
+
+                // Front
+                5,0,3,
+                5,4,3,
+
+                // Right
+                3,4,2,
+                7,4,2,
+
+                // Back
+                2,1,7,
+                6,1,7
+
 
             };
 

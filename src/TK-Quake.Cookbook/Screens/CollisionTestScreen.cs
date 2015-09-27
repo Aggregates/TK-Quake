@@ -29,6 +29,7 @@ namespace TKQuake.Cookbook.Screens
     {
         private readonly Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
+        private readonly CollisionDetector collisionDetector;
 
         public CollisionTestScreen(Renderer renderer)
         {
@@ -36,7 +37,7 @@ namespace TKQuake.Cookbook.Screens
             _textureManager = new TextureManager();
             _renderer.TextureManager = _textureManager;
 
-            CollisionDetector collisionDetector = CollisionDetector.Singleton();
+            collisionDetector = CollisionDetector.Singleton();
             Children.Add(collisionDetector);
 
             _camera.Position = new Vector3(0, 10, 0);
@@ -86,18 +87,26 @@ namespace TKQuake.Cookbook.Screens
             var floor1 = new FloorEntity(new Vector3(0, 0, 0), 10, 10, "floor1", true);
             var floor2 = new FloorEntity(new Vector3(0, -2, 10), 10, 10, "floor2", true);
             var floor3 = new FloorEntity(new Vector3(10, -2, 0), 10, 10, "floor3", true);
+            var floor4 = new FloorEntity(new Vector3(-10, -2, 0), 10, 10, "floor4", true);
+            var floor5 = new FloorEntity(new Vector3(0, -2, -10), 10, 10, "floor5", true);
 
             floor1.TextureId = "floor";
             floor2.TextureId = "floor";
             floor3.TextureId = "floor";
+            floor4.TextureId = "floor";
+            floor5.TextureId = "floor";
 
             _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
             _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
             _renderer.RegisterMesh("floor3", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            _renderer.RegisterMesh("floor4", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            _renderer.RegisterMesh("floor5", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
 
             Children.Add(floor1);
             Children.Add(floor2);
             Children.Add(floor3);
+            Children.Add(floor4);
+            Children.Add(floor5);
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -116,12 +125,11 @@ namespace TKQuake.Cookbook.Screens
             _textureManager.Add("floor", "floor.jpg");
 
             gunEntity.Components.Add(new GravityComponent(gunEntity));
-            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, 1, 0)));
 
             BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
             gunEntity.Children.Add(box);
-            //gunEntity.Components.Add(new PickupComponent(gunEntity));
-
+            gunEntity.Components.Add(new PickupComponent(gunEntity));
+            
             box.Collided += Box_Collided;
 
             Children.Add(gunEntity);
@@ -139,7 +147,9 @@ namespace TKQuake.Cookbook.Screens
 
         private void Entity_Destroy(object sender, EventArgs e)
         {
-            Children.Remove((IEntity)sender);
+            var entity = (IEntity) sender;
+            RemoveEntity(entity);
+            collisionDetector.RemoveCollider(entity.Children.OfType<BoundingBoxEntity>().FirstOrDefault());
         }
 
         private void Box_Collided(object sender, CollisionEventArgs e)
