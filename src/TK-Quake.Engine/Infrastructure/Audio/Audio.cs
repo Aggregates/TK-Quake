@@ -25,7 +25,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
             this.FileName = filename;
         }
 
-        public Audio(string filename) //for OGG
+        public Audio(string filename) //for OGG using DragonOGG library
         {
             Id = -1;
             AudioData = null;

@@ -31,6 +31,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DragonOgg, Version=1.0.4123.19930, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Debug\DragonOgg.dll</HintPath>
+    </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.1.0.0\lib\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
