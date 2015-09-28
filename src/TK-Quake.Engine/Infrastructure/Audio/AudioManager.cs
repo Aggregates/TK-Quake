@@ -118,7 +118,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
         }
         
         private void PlayWavAsAmbient(Audio audio)
-        {
+        { 
             audio = LoadWav(audio);
             int source = AL.GenSource();
             AL.Source(source, ALSourcei.Buffer, audio.Id);
