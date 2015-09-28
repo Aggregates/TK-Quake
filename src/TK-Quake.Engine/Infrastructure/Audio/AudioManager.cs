@@ -8,7 +8,6 @@ using OpenTK.Audio.OpenAL;
 using OpenTK.Audio;
 using System.Threading;
 using TKQuake.Engine.Infrastructure.Abstract;
-using DragonOgg.Interactive;
 
 
 //This is not yet a manager, just me using a tutorial and making sure I could get it working.
@@ -23,7 +22,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
         public void Add(string audioName, string filename)
         {
-            Audio audio = LoadAudio(filename);
+            Audio audio = BindAudio(filename);
             base.Add(audioName, audio);
         }
 
@@ -54,23 +53,34 @@ namespace TKQuake.Engine.Infrastructure.Audio
             var audio = this.Get(key);
             if (audio.FileName.Contains(".wav"))
             {
-                PlayWav(key);
-            } else if (audio.FileName.Contains(".ogg"))
+                PlayWav(audio);
+            }
+            else if (audio.FileName.Contains(".ogg"))
             {
-                PlayOgg(key);
+                PlayOgg(audio);
             }
         }
 
-        private void PlayOgg(String key)
+        private void PlayOgg(Audio audioIn)
         {
-            AudioClip audio = new AudioClip(this.Get(key).FileName);
-            audio.Play();
+            using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
+            using (var waveOut = new NAudio.Wave.WaveOut())
+            {
+                waveOut.Init(vorbis);
+                waveOut.Play();
+
+                while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
+                {
+                    Thread.Sleep(100);
+                }
+
+            }
         }
 
         //Source probably needs to be passed in
-        public void PlayWav(String key)
+        public void PlayWav(Audio audio)
         {
-            var audio = this.Get(key);
+            audio = LoadWav(audio);
             int source = AL.GenSource();
             AL.Source(source, ALSourcei.Buffer, audio.Id);
             AL.SourcePlay(source);
@@ -93,25 +103,33 @@ namespace TKQuake.Engine.Infrastructure.Audio
             throw new NotImplementedException("Not yet implemeneted.");
         }
 
-        private Audio LoadAudio(string filename)
+        private Audio BindAudio(string filename)
         {
             if (filename.Contains(".wav"))
             {
-                return LoadWav(filename);
-            } else if (filename.Contains(".ogg"))
+                return BindWav(filename);
+            }
+            else if (filename.Contains(".ogg"))
             {
-                return LoadOgg(filename);
-            } else throw new NotSupportedException("Audio format not supported.");
+                return BindOgg(filename);
+            }
+            else throw new NotSupportedException("Audio format not supported.");
         }
 
-        private Audio LoadOgg(string filename)
+        private Audio BindOgg(string filename)
+        {
+            return new Audio(filename);
+        }
+
+        private Audio BindWav(string filename)
         {
             return new Audio(filename);
         }
 
         //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
-        private Audio LoadWav(string filename)
+        private Audio LoadWav(Audio audio)
         {
+            String filename = audio.FileName;
             if (!File.Exists(filename))
             {
                 throw new ArgumentException(filename);
@@ -127,21 +145,24 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
             using (BinaryReader reader = new BinaryReader(stream))
             {
-                
+
                 // First comes the RIFF header
                 string signature = new string(reader.ReadChars(4));
-                if (signature != "RIFF") { 
+                if (signature != "RIFF")
+                {
                     throw new NotSupportedException("Specified stream is not a wave file.");
                 }
                 int riff_chunk_size = reader.ReadInt32();
                 string format = new string(reader.ReadChars(4));
-                if (format != "WAVE") { 
+                if (format != "WAVE")
+                {
                     throw new NotSupportedException("Specified stream is not a wave file.");
                 }
 
                 // Then the WAVE header
                 string format_signature = new string(reader.ReadChars(4));
-                if (format_signature != "fmt ") { 
+                if (format_signature != "fmt ")
+                {
                     throw new NotSupportedException("Specified wave file is not supported.");
                 }
 
@@ -159,7 +180,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
                 {
                     reader.ReadInt16();
                 }
-            
+
                 string data_signature = new string(reader.ReadChars(4));
                 if (data_signature == "LIST")
                 {
@@ -184,7 +205,8 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
                 //Loading and storing the data
                 AL.BufferData(audioID, GetSoundFormat(num_channels, bits_per_sample), data, data.Length, sample_rate);
-                return new Audio(audioID, data , num_channels, bits_per_sample, sample_rate, filename);
+                audio = new Audio(audioID, data, num_channels, bits_per_sample, sample_rate, filename);
+                return audio;
             }
         }
 
