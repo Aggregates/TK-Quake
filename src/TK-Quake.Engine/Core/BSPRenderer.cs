@@ -15,7 +15,12 @@ namespace TKQuake.Engine.Core
 {
     public class BSPRenderer
     {
-        private const int TESSELLATION_LEVEL = 3;
+        private const int   TESSELLATION_LEVEL = 3;
+        private const float NEAR_DISTANCE = 0.1f;
+        private const float FAR_DISTANCE = 20.0f;
+        private const float ASPECT_RATIO = 800.0f / 600.0f;
+        private const float FOV_Y = MathHelper.PiOver4;
+        private const float FOV_X = 1.009191290f; //2 * Math.Atan(Math.Tan(FOV_Y / 2) * ASPECT_RATIO);
 
         private string BSPFile;
         private Loader.BSPLoader BSP = null;
@@ -53,25 +58,29 @@ namespace TKQuake.Engine.Core
             return(BSPFile);
         }
 
-        public List<Mesh> GetMesh(Vector3 cameraPosition, Matrix4 clip)
+        //public List<Mesh> GetMesh(Vector3 cameraPosition, Matrix4 clip)
+        public List<Mesh> GetMesh(Camera camera)
         {
             List<Mesh> BSPMeshes = new List<Mesh>();
 
             // Find the cluster that the camera is currently in.
-            int cameraCluster = BSP.GetLeaf (FindCameraLeaf (cameraPosition)).cluster;
+            int cameraCluster = BSP.GetLeaf (FindCameraLeaf (camera.Position)).cluster;
 
             bool[]    alreadyVisible = new bool[BSP.GetFaces ().Length];
             List<int> visibleFaces   = new List<int> ();
 
             // Set the view frustum.
-            SetViewFrustum (clip);
+            //SetViewFrustum (clip);
+            SetViewFrustum (camera);
 
             // Find all leafs that are visible from cameraCluster.
-            foreach (Loader.BSP.Leaf.LeafEntry leaf in BSP.GetLeafs ())
+            for (int i = (BSP.GetLeafs().Length - 1); i >= 0; i--)
             {
+                Leaf.LeafEntry leaf = BSP.GetLeaf (i);
+
                 if ((IsClusterVisible (cameraCluster, leaf.cluster) == true) && (IsBoxInsideViewFrustum (leaf.mins, leaf.maxs)))
                 {
-                    for (int leafFace = leaf.leafFace; leafFace < (leaf.leafFace + leaf.n_leafFaces); leafFace++)
+                    for (int leafFace = (leaf.leafFace + leaf.n_leafFaces - 1); leafFace >= leaf.leafFace; leafFace--)
                     {
                         int face = BSP.GetLeafFace (leafFace).face;
 
@@ -115,7 +124,6 @@ namespace TKQuake.Engine.Core
 
                     case Face.FaceType.BILLBOARD:
                     {
-                        Console.WriteLine("BSPRenderer: Billboards are currently not supported.");
                         break;
                     }
 
@@ -128,6 +136,51 @@ namespace TKQuake.Engine.Core
             }
 
             return(BSPMeshes);
+        }
+
+        private void SetViewFrustum(Camera camera)
+        {
+            Vector3 view  = Vector3.Normalize (camera.ViewDirection);
+            Vector3 up    = Vector3.UnitY;
+            Vector3 right = Vector3.Cross (view, up);
+
+            // Half the height of the near plane.
+            float nearHeight = NEAR_DISTANCE * (float)Math.Tan (FOV_Y / 2.0f); 
+
+            // Half the width of the near plane.
+            float nearWidth = NEAR_DISTANCE * (float)Math.Tan (FOV_X / 2.0f);
+
+            // Find the center of the far clipping plane.
+            Vector3 farCenter = camera.Position + FAR_DISTANCE * view;
+
+            // Find the center of the near clipping plane.
+            Vector3 nearCenter = camera.Position + NEAR_DISTANCE * view;
+
+            // Find the far clipping plane.
+            frustum [0] = new Vector4 (-view, -Vector3.Dot (-view, farCenter));
+
+            // Find the near clipping plane.
+            frustum [1] = new Vector4 ( view, -Vector3.Dot (view, nearCenter));
+
+            Vector3 aux, normal;
+
+            // Find the top clipping plane.
+            aux = Vector3.Normalize ((nearCenter + nearHeight * up) - camera.Position);
+            normal = Vector3.Cross (aux, up);
+            frustum [2] = new Vector4 (-normal, -Vector3.Dot (-normal, (nearCenter + nearHeight * up)));
+
+            // Find the bottom clipping plane.
+            aux = Vector3.Normalize ((nearCenter - nearHeight * up) - camera.Position);
+            frustum [3] = new Vector4 ( normal, -Vector3.Dot ( normal, (nearCenter - nearHeight * up)));
+
+            // Find the left clipping plane.
+            aux = Vector3.Normalize ((nearCenter + nearWidth * right) - camera.Position);
+            normal = Vector3.Cross (aux, right);
+            frustum [4] = new Vector4 ( normal, -Vector3.Dot ( normal, (nearCenter + nearWidth * right)));
+
+            // Find the right clipping plane.
+            aux = Vector3.Normalize ((nearCenter - nearWidth * right) - camera.Position);
+            frustum [5] = new Vector4 (-normal, -Vector3.Dot (-normal, (nearCenter - nearWidth * right)));
         }
 
         private void SetViewFrustum(Matrix4 clip)
@@ -161,41 +214,56 @@ namespace TKQuake.Engine.Core
 
                 /* Extract the NEAR plane */
                 frustum [5] = Vector4.Normalize (Vector4.Add (clip.Column3, clip.Column2));
-                            }
+            }
         }
 
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
+            // If the view frustum has not been defined then dont even bother.
             if ((frustum[0] == Vector4.Zero) || (frustum[1] == Vector4.Zero) || (frustum[2] == Vector4.Zero) || 
                 (frustum[3] == Vector4.Zero) || (frustum[4] == Vector4.Zero) || (frustum[5] == Vector4.Zero))
             {
                 return(true);
             }
 
+            // Put all of the corners of the bounding box into an array for easier processing.
+            Vector4[] vertices = new Vector4[8];
+            vertices [0] = new Vector4 (min [0], min [1], min [2], 1.0f);
+            vertices [1] = new Vector4 (max [0], min [1], min [2], 1.0f);
+            vertices [2] = new Vector4 (min [0], max [1], min [2], 1.0f);
+            vertices [3] = new Vector4 (max [0], max [1], min [2], 1.0f);
+            vertices [4] = new Vector4 (min [0], min [1], max [2], 1.0f);
+            vertices [5] = new Vector4 (max [0], min [1], max [2], 1.0f);
+            vertices [6] = new Vector4 (min [0], max [1], max [2], 1.0f);
+            vertices [7] = new Vector4 (max [0], max [1], max [2], 1.0f);
+
+            int inside = 0, outside = 0;
+
             // Test the bounds of every the bounding box with every plane in the view frustum.
             foreach (Vector4 plane in frustum)
             {
-                bool[] dots = new bool[8];
+                // Check each vertex of the bounding box to see which side of the plane it is on.
+                // Stop checking as soon as we have at least on point on each side of the plane.
+                for (int i = 0; i < 8 && (inside == 0 || outside == 0); i++)
+                {
+                    if (Vector4.Dot (plane, vertices [i]) < 0)
+                    {
+                        outside++;
+                    }
 
-                // Test the bounds of the bounding box formed by min and max with the current plane.
-                dots [0] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], min[2], 1.0f))) >= 0.0f;
-                dots [1] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], min[2], 1.0f))) >= 0.0f;
-                dots [2] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], min[2], 1.0f))) >= 0.0f;
-                dots [3] = (Vector4.Dot (plane, new Vector4 (max[0], max[1], min[2], 1.0f))) >= 0.0f;
-                dots [4] = (Vector4.Dot (plane, new Vector4 (min[0], min[1], max[2], 1.0f))) >= 0.0f;
-                dots [5] = (Vector4.Dot (plane, new Vector4 (max[0], min[1], max[2], 1.0f))) >= 0.0f;
-                dots [6] = (Vector4.Dot (plane, new Vector4 (min[0], max[1], max[2], 1.0f))) >= 0.0f;
-                dots [7] = (Vector4.Dot (plane, new Vector4 (max[0], max[1], max[2], 1.0f))) >= 0.0f;
+                    else
+                    {
+                        inside++;
+                    }
+                }
 
-                // If all tests fail then the box is not inside the view frustum.
-                if (!(dots[0] || dots[1] || dots[2] || dots[3] || dots[4] || dots[5] || dots[6] || dots[7]))
+                // If all of the vertices are on the wrong side of this plane then we can give up now.
+                if (inside == 0)
                 {
                     return(false);
                 }
             }
 
-            // At least one test passed for every plane. So at least some part of the box
-            // is inside the view frustum.
             return(true);
         }
 
@@ -215,7 +283,7 @@ namespace TKQuake.Engine.Core
                 //double distance = Vector3.Dot (plane.normal, cameraPosition) - plane.dist;
 
                 // Determine which branch of the tree to traverse down.
-                if (distance <= 0)
+                if (distance >= 0)
                 {
                     index = node.children[0];
                 }
@@ -231,18 +299,20 @@ namespace TKQuake.Engine.Core
 
         private bool IsClusterVisible(int visCluster, int testCluster)
         {
+            VisData.VisDataEntry visData = BSP.GetVisData (0);
+
             // Make sure we have something to test.
-            if ((BSP.GetVisData (0).vecs == null) || (visCluster < 0))
+            if ((visData.vecs == null) || (visCluster < 0) || (testCluster < 0))
             {
                 return(true);
             }
 
             // Find the relevant section in the visData bit array.
-            int i = (visCluster * BSP.GetVisData (0).sz_vecs) + (testCluster >> 3);
-            byte visSet = BSP.GetVisData (0).vecs[i];
+            int i = (visCluster * visData.sz_vecs) + (testCluster >> 3);
+            byte visSet = visData.vecs[i];
 
             // Check to see if the testCluster is visible from visCluster
-            return((visSet & (1 << (testCluster & 7))) != 0);
+            return((visSet & (1 << (testCluster & 7))) > 0);
         }
 
         private List<Mesh> TessellateBezierPatch (Face.FaceEntry face)
