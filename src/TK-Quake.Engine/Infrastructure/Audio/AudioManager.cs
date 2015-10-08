@@ -48,20 +48,20 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteBuffer(aud.Id);
         }
 
-        public void Play(String key)
+        public void PlayAsAmbient(String key)
         {
             var audio = this.Get(key);
             if (audio.FileName.Contains(".wav"))
             {
-                PlayWav(audio);
+                PlayWavAsAmbient(audio);
             }
             else if (audio.FileName.Contains(".ogg"))
             {
-                PlayOgg(audio);
+                PlayOggAsAmbient(audio);
             }
         }
 
-        private void PlayOgg(Audio audioIn)
+        private void PlayOggAsAmbient(Audio audioIn)
         {
             using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
             using (var waveOut = new NAudio.Wave.WaveOut())
@@ -78,7 +78,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
         }
 
         //Source probably needs to be passed in
-        public void PlayWav(Audio audio)
+        public void PlayWavAsAmbient(Audio audio)
         {
             audio = LoadWav(audio);
             int source = AL.GenSource();
