@@ -186,15 +186,8 @@ namespace TKQuake.Cookbook.Screens
                 }
             }
 
-            // Get the current ModelView and Projection matrices.
-            Matrix4 rotation = Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * Matrix4.CreateRotationZ(0);
-            Matrix4 model = rotation * Matrix4.Identity * Matrix4.CreateTranslation(camera.Position) * Matrix4.CreateScale(1.0f);
-            Matrix4 view = Matrix4.LookAt(camera.Position, camera.Position + camera.ViewDirection, Vector3.UnitY);
-            Matrix4 modelView = Matrix4.Mult (view, model);
-            Matrix4 proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), gameScreenRation, 0.1f, 1000f);
-
             // Generate, register, and render the meshes that are potentially visible to the camera.
-            List<Mesh> meshes = BSP.GetMesh (camera.Position, Matrix4.Mult (proj, modelView));
+            List<Mesh> meshes = BSP.GetMesh (camera);
 
             totalMeshes = meshes.Count;
 
@@ -207,7 +200,7 @@ namespace TKQuake.Cookbook.Screens
                 var BSPEntity = RenderableEntity.Create ();
                 BSPEntity.Id = id;
                 BSPEntity.Position = camera.Position;
-                BSPEntity.Scale = 1.0f;
+                BSPEntity.Scale = 0.05f;
                 BSPEntity.Translation = Matrix4.Identity;
                 BSPEntity.Rotation = Vector3.Zero;
 
