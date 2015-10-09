@@ -15,7 +15,7 @@ namespace TKQuake.Engine.Core
 {
     public class BSPRenderer
     {
-        private const int   TESSELLATION_LEVEL = 3;
+        private const int   TESSELLATION_LEVEL = 5;
         private const float NEAR_DISTANCE = 0.1f;
         private const float FAR_DISTANCE = 20.0f;
         private const float ASPECT_RATIO = 800.0f / 600.0f;
@@ -451,16 +451,16 @@ namespace TKQuake.Engine.Core
                 List<Vector2> p0suv2, p1suv2, p2suv2;
                 List<Vector2> p0suv, p1suv, p2suv;
                 List<Vector3> p0s, p1s, p2s;
-                p0s    = Tessellate(vertControls [0], vertControls [3], vertControls [6]);
-                p0suv  = TessellateUV(textControls [0], textControls [3], textControls [6]);
+                p0s    = Tessellate  (vertControls  [0], vertControls  [3], vertControls  [6]);
+                p0suv  = TessellateUV(textControls  [0], textControls  [3], textControls  [6]);
                 p0suv2 = TessellateUV(lightControls [0], lightControls [3], lightControls [6]);
 
-                p1s    = Tessellate(vertControls [1], vertControls [4], vertControls [7]);
-                p1suv  = TessellateUV(textControls [1], textControls [4], textControls [7]);
+                p1s    = Tessellate  (vertControls  [1], vertControls  [4], vertControls  [7]);
+                p1suv  = TessellateUV(textControls  [1], textControls  [4], textControls  [7]);
                 p1suv2 = TessellateUV(lightControls [1], lightControls [4], lightControls [7]);
 
-                p2s    = Tessellate(vertControls [2], vertControls [5], vertControls [8]);
-                p2suv  = TessellateUV(textControls [2], textControls [5], textControls [8]);
+                p2s    = Tessellate  (vertControls  [2], vertControls  [5], vertControls  [8]);
+                p2suv  = TessellateUV(textControls  [2], textControls  [5], textControls  [8]);
                 p2suv2 = TessellateUV(lightControls [2], lightControls [5], lightControls [8]);
 
                 // Tessellate all those new sets of control points and pack
@@ -471,18 +471,18 @@ namespace TKQuake.Engine.Core
                     List<Vector3> points = new List<Vector3> ();
                     List<Vector2> texs = new List<Vector2> ();
 
-                    points.AddRange (Tessellate (p0s [i], p1s [i], p2s [i]));
-                    texs.AddRange (TessellateUV (p0suv [i], p1suv [i], p2suv [i]));
+                    points.AddRange      (Tessellate   (p0s    [i], p1s    [i], p2s    [i]));
+                    texs.AddRange        (TessellateUV (p0suv  [i], p1suv  [i], p2suv  [i]));
+//                    lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
 
                     for (int j = 0; j < points.Count; j++)
                     {
                         Infrastructure.Math.Vertex point;
                         point.Position = points [j];
-                        point.Normal   = new Vector3(0, 0, 1);
+                        point.Normal   = Vector3.UnitZ;                  // FIXME: Calculate the actual normal for this surface at this point.
                         point.TexCoord = texs [j];
                         vertices.Add (point);
                     }
-//                    lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
                 }
 
                 // This will produce (tessellationLevel + 1)^2 verts
@@ -534,8 +534,6 @@ namespace TKQuake.Engine.Core
                     }
                 }
 
-                // TODO: Figure out how to calculate vertex normals.
-
                 // Add mesh to list of meshes.
                 mesh.Vertices = vertices.ToArray ();
                 mesh.Indices  = indices.ToArray ();
@@ -559,7 +557,7 @@ namespace TKQuake.Engine.Core
 
             vects.Add (p0);
 
-            for (int i = 1; i < TESSELLATION_LEVEL; i++)
+            for (int i = 0; i < (TESSELLATION_LEVEL - 1); i++)
             {
                 vects.Add (BezCurve (step, p0, p1, p2));
                 step += stepDelta;
@@ -580,7 +578,7 @@ namespace TKQuake.Engine.Core
 
             vects.Add (p0);
 
-            for (int i = 1; i < TESSELLATION_LEVEL; i++)
+            for (int i = 0; i < (TESSELLATION_LEVEL - 1); i++)
             {
                 vects.Add (BezCurveUV (step, p0, p1, p2));
                 step += stepDelta;
@@ -595,17 +593,13 @@ namespace TKQuake.Engine.Core
         // p0 and p2 via p1.  
         private Vector3 BezCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
         {
-            float a = 1f - t;
+            float a = 1.0f - t;
             float tt = t * t;
 
-            float[] tPoints = new float[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                tPoints [i] = ((a * a) * p0 [i]) + (2 * a) * (t * p1 [i]) + (tt * p2 [i]);
-            }
-
-            return(new Vector3(tPoints [0], tPoints [1], tPoints [2]));
+            Vector3 p0s = Vector3.Multiply (p0, a * a);
+            Vector3 p1s = Vector3.Multiply (p1, 2 * a * t);
+            Vector3 p2s = Vector3.Multiply (p2, tt);
+            return(Vector3.Add (Vector3.Add (p0s, p1s), p2s));
         }
 
         // Calculate UVs for our tessellated vertices 
@@ -614,14 +608,10 @@ namespace TKQuake.Engine.Core
             float a = 1f - t;
             float tt = t * t;
 
-            float[] tPoints = new float[2];
-
-            for (int i = 0; i < 2; i++)
-            {
-                tPoints [i] = ((a * a) * p0 [i]) + (2 * a) * (t * p1 [i]) + (tt * p2 [i]);
-            }
-
-            return(new Vector2(tPoints [0], tPoints [1]));
+            Vector2 p0s = Vector2.Multiply (p0, a * a);
+            Vector2 p1s = Vector2.Multiply (p1, 2 * a * t);
+            Vector2 p2s = Vector2.Multiply (p2, tt);
+            return(Vector2.Add (Vector2.Add (p0s, p1s), p2s));
         }
 
         private Mesh RenderPolygon(Face.FaceEntry face)
@@ -660,12 +650,25 @@ namespace TKQuake.Engine.Core
             Infrastructure.Texture.Texture texture = null;
 
             string textureName = BSP.GetTexture (face.texture).name;
-            string textureFile = textureName + ".jpg";
 
             if (textureName.Contains ("noshader") == false)
             {
                 if (File.Exists (textureName + ".jpg") == true)
                 {
+                    string textureFile = textureName + ".jpg";
+
+                    if (texManager.Registered (textureName) == false)
+                    {
+                        texManager.Add (textureName, textureFile);
+                    }
+
+                    texture = texManager.Get (textureName);
+                }
+
+                else if (File.Exists (textureName + ".tga") == true)
+                {
+                    string textureFile = textureName + ".tga";
+
                     if (texManager.Registered (textureName) == false)
                     {
                         texManager.Add (textureName, textureFile);
