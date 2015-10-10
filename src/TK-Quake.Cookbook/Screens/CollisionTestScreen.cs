@@ -138,8 +138,8 @@ namespace TKQuake.Cookbook.Screens
 
             // Wind Tunnel
             WindTunnel tunnel = new WindTunnel(new Vector3(10, 10, 0), new Vector3(0, 0, -10));
-            tunnel.Direction = Vector3.UnitX;
-            tunnel.Force = 0.5f;
+            tunnel.Direction = Vector3.UnitX + Vector3.UnitZ;
+            tunnel.Force = 0.1f;
             Children.Add(tunnel);
 
             foreach (var entity in Children)

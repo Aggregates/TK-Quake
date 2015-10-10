@@ -94,6 +94,7 @@
     <Content Include="Resources\Fonts\MyriadPro.tga">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Shaders\MotionBlur.shader" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

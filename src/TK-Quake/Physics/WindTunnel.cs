@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Physics;
 
@@ -28,9 +29,17 @@ namespace TKQuake.Physics
             // Get the other object
             var other = (e.Sender == this) ? e.Collider : e.Sender;
 
+            // Retrieve the motion blur from depth buffer
+            GL.Accum(AccumOp.Return, 1f);
+            GL.Accum(AccumOp.Mult, 2f);
+
             // Move the other object
             Vector3 movement = Direction.Normalized()*Force;
             other.Position += movement;
+
+            // Store the depth buffer for motion blur
+            GL.Accum(AccumOp.Accum, 1f);
+
         }
     }
 }

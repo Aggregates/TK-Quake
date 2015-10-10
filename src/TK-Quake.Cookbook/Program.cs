@@ -93,6 +93,7 @@ namespace TKQuake.Cookbook
             var renderer = Renderer.Singleton();
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+            //renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "MotionBlur.shader")), ShaderType.FragmentShader);
             renderer.LinkShaders();
 
             //currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
