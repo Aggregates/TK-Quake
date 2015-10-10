@@ -22,6 +22,8 @@ using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TKQuake.Engine.Debug;
+using TKQuake.Physics;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -133,6 +135,12 @@ namespace TKQuake.Cookbook.Screens
             box.Collided += Box_Collided;
 
             Children.Add(gunEntity);
+
+            // Wind Tunnel
+            WindTunnel tunnel = new WindTunnel(new Vector3(10, 10, 0), new Vector3(0, 0, -10));
+            tunnel.Direction = Vector3.UnitX;
+            tunnel.Force = 0.5f;
+            Children.Add(tunnel);
 
             foreach (var entity in Children)
             {

@@ -74,6 +74,10 @@
       <Project>{3A707142-2A6F-4950-A083-B20738C40590}</Project>
       <Name>TK-Quake.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TK-Quake\TK-Quake.csproj">
+      <Project>{1676bda0-f1cc-4c97-90c9-3ec8add42ba1}</Project>
+      <Name>TK-Quake</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
