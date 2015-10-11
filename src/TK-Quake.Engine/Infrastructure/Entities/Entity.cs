@@ -49,17 +49,28 @@ namespace TKQuake.Engine.Infrastructure.Entities
             }
         }
 
-
+        /// <summary>
+        /// Destroys this entity
+        /// </summary>
         public void DestroyEntity()
         {
             OnDestroy(null);
         }
 
+        /// <summary>
+        /// Handler for when an Entity is destroyed
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnDestroy(EventArgs e)
         {
             Destroy?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Adds the entity to a queue to be removed on the next update cycle.
+        /// The entity must exist in this entity's Children
+        /// </summary>
+        /// <param name="entity"></param>
         public void RemoveEntity(IEntity entity)
         {
             System.Diagnostics.Debug.Assert(Children.Contains(entity), "Entity is not a direct child of this entity");
