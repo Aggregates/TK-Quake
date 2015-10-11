@@ -25,7 +25,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
             this.FileName = filename;
         }
 
-        public Audio(string filename) //for OGG using DragonOGG library
+        public Audio(string filename) 
         {
             Id = -1;
             AudioData = null;
@@ -34,16 +34,6 @@ namespace TKQuake.Engine.Infrastructure.Audio
             Rate = -1;
             this.FileName = filename;
         }
-        //public int Channels { get; set; }
-        //public int Bits { get; set; }
-        //public int Rate { get; set; }
-        
-        //public Audio (int channels, int bits, int rate)
-        //{
-        //    this.Channels = channels;
-        //    this.Bits = bits;
-        //    this.Rate = rate;
-        //}
 
     }
 }

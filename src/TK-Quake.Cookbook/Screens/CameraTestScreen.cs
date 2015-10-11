@@ -45,7 +45,7 @@ namespace TKQuake.Cookbook.Screens
 
             InitEntities();
             InitComponents();
-
+            
             // List loaded 'components'
             Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
             foreach (var component in Components)
@@ -57,13 +57,13 @@ namespace TKQuake.Cookbook.Screens
             //Might be to do with where I have declared it.
             //Thread th = new Thread(new ThreadStart(AudioManager.Play));
             //th.Start();
-            var filename = Path.Combine("Audio", "QuakeTheme.ogg");
+            var filename = Path.Combine("Audio", "PosTest.wav");
             new Thread(delegate ()
             {
                 using (AudioContext context = new AudioContext())
                 {
                     _audioManager.Add("bgm", filename);
-                    _audioManager.Play("bgm");
+                    _audioManager.PlayAtSource("bgm", new Vector3(50f, 50f, 50f), _camera.Position);
                 }
                 //_audioManager.printHeader(filename);
             }).Start();

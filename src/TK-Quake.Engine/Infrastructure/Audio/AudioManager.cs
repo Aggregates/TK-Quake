@@ -8,6 +8,7 @@ using OpenTK.Audio.OpenAL;
 using OpenTK.Audio;
 using System.Threading;
 using TKQuake.Engine.Infrastructure.Abstract;
+using OpenTK;
 
 
 //This is not yet a manager, just me using a tutorial and making sure I could get it working.
@@ -61,6 +62,19 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
+        public void PlayAtSource(String key, Vector3 sourcePos, Vector3 listenerPos)
+        {
+            var audio = this.Get(key);
+            if (audio.FileName.Contains(".wav"))
+            {
+                PlayWavAtSource(audio, sourcePos, listenerPos);
+            }
+            else if (audio.FileName.Contains(".ogg"))
+            {
+                PlayOggAtSource(audio, sourcePos, listenerPos);
+            }
+        }
+
         private void PlayOggAsAmbient(Audio audioIn)
         {
             using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
@@ -77,8 +91,23 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
-        //Source probably needs to be passed in
-        public void PlayWavAsAmbient(Audio audio)
+        private void PlayOggAtSource(Audio audioIn, Vector3 sourcePos, Vector3 listenerPos)
+        {
+            using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
+            using (var waveOut = new NAudio.Wave.WaveOut())
+            {
+                waveOut.Init(vorbis);
+                waveOut.Play();
+
+                while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
+                {
+                    Thread.Sleep(100);
+                }
+
+            }
+        }
+        
+        private void PlayWavAsAmbient(Audio audio)
         {
             audio = LoadWav(audio);
             int source = AL.GenSource();
@@ -97,10 +126,31 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteSource(source);
         }
 
-        public void PlayAtSource(string key)
+        //Audio file must be mono
+        private void PlayWavAtSource(Audio audio, Vector3 sourcePos, Vector3 listenerPos)
         {
-            //TODO
-            throw new NotImplementedException("Not yet implemeneted.");
+            audio = LoadWav(audio);
+            int source = AL.GenSource();
+            //AL.Source(source, ALSourcei.Buffer, audio.Id);
+            //AL.SourcePlay(source);
+
+            AL.Source(source, ALSourcei.Buffer, audio.Id);
+            AL.Source(source, ALSourcef.Pitch, 1.0f);
+            AL.Source(source, ALSourcef.Gain, 0.85f);
+            AL.Source(source, ALSource3f.Position, ref sourcePos);
+            AL.Listener(ALListener3f.Position, ref listenerPos);
+            AL.SourcePlay(source);
+
+            int state;
+            do
+            {
+                Thread.Sleep(1000);
+                Console.Write(".");
+                AL.GetSource(source, ALGetSourcei.SourceState, out state);
+            }
+            while ((ALSourceState)state == ALSourceState.Playing);
+            AL.SourceStop(source);
+            AL.DeleteSource(source);
         }
 
         private Audio BindAudio(string filename)
