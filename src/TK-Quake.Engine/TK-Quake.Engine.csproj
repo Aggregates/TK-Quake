@@ -31,6 +31,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Isg.Range, Version=1.0.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Isg.Range.1.0.1\lib\net40\Isg.Range.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LanguageExt.1.0.0\lib\LanguageExt.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -96,6 +104,8 @@
     <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
     <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
     <Compile Include="Infrastructure\Physics\Octree.cs" />
+    <Compile Include="Infrastructure\Physics\Particle.cs" />
+    <Compile Include="Infrastructure\Physics\ParticleEmitter.cs" />
     <Compile Include="Infrastructure\Physics\PickupComponent.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />

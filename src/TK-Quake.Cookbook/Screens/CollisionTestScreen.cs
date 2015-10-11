@@ -22,6 +22,8 @@ using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Isg.Range;
+using TKQuake.Cookbook.Entities;
 using TKQuake.Engine.Debug;
 using TKQuake.Physics;
 
@@ -36,8 +38,8 @@ namespace TKQuake.Cookbook.Screens
         public CollisionTestScreen(Renderer renderer)
         {
             _renderer = renderer;
-            _textureManager = new TextureManager();
-            _renderer.TextureManager = _textureManager;
+            _textureManager = TextureManager.Singleton();// TextureManager();
+            //_renderer.TextureManager = _textureManager;
 
             collisionDetector = CollisionDetector.Singleton();
             Children.Add(collisionDetector);
@@ -125,6 +127,7 @@ namespace TKQuake.Cookbook.Screens
 
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             _textureManager.Add("floor", "floor.jpg");
+            _textureManager.Add("FireParticle", "FireParticle.png");
 
             gunEntity.Components.Add(new GravityComponent(gunEntity));
 
@@ -137,10 +140,22 @@ namespace TKQuake.Cookbook.Screens
             Children.Add(gunEntity);
 
             // Wind Tunnel
-            WindTunnel tunnel = new WindTunnel(new Vector3(10, 10, 0), new Vector3(0, 0, -10));
-            tunnel.Direction = Vector3.UnitX + Vector3.UnitZ;
-            tunnel.Force = 0.1f;
-            Children.Add(tunnel);
+            //WindTunnel tunnel = new WindTunnel(new Vector3(10, 10, 0), new Vector3(0, 0, -10));
+            //tunnel.Direction = Vector3.UnitX + Vector3.UnitZ;
+            //tunnel.Force = 0.1f;
+            //Children.Add(tunnel);
+
+            // Particle Emitter
+            ParticleEmitter<FireParticle> emitter = new ParticleEmitter<FireParticle>
+            {
+                DirectionX = new Range<float> { Lower= -1, Upper = 1},
+                DirectionY = new Range<float> { Lower= -1, Upper = 1},
+                DirectionZ = new Range<float> { Lower= -1, Upper = 1},
+                TimeToLive = new Range<float> { Lower= 1, Upper = 10},
+                Velocity = new Range<float> { Lower= 1, Upper = 1 },
+            };
+            _renderer.RegisterMesh("FireParticle", new FireParticle().ToMesh());
+            Children.Add(emitter);
 
             foreach (var entity in Children)
             {
