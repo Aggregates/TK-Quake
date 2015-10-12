@@ -211,7 +211,7 @@ namespace TKQuake.Cookbook.Screens
                 var BSPEntity = RenderableEntity.Create ();
                 BSPEntity.Id = id;
                 BSPEntity.Position = camera.Position;
-                BSPEntity.Scale = 0.05f;
+                BSPEntity.Scale = 0.01f;
                 BSPEntity.Translation = Matrix4.Identity;
                 BSPEntity.Rotation = Vector3.Zero;
 

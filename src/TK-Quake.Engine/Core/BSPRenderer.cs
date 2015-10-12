@@ -145,7 +145,7 @@ namespace TKQuake.Engine.Core
             Vector3 right = Vector3.Cross (view, up);
 
             // Half the height of the near plane.
-            float nearHeight = NEAR_DISTANCE * (float)Math.Tan (FOV_Y / 2.0f); 
+            float nearHeight = NEAR_DISTANCE * (float)Math.Tan (FOV_Y / 2.0f);
 
             // Half the width of the near plane.
             float nearWidth = NEAR_DISTANCE * (float)Math.Tan (FOV_X / 2.0f);
@@ -220,7 +220,7 @@ namespace TKQuake.Engine.Core
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
             // If the view frustum has not been defined then dont even bother.
-            if ((frustum[0] == Vector4.Zero) || (frustum[1] == Vector4.Zero) || (frustum[2] == Vector4.Zero) || 
+            if ((frustum[0] == Vector4.Zero) || (frustum[1] == Vector4.Zero) || (frustum[2] == Vector4.Zero) ||
                 (frustum[3] == Vector4.Zero) || (frustum[4] == Vector4.Zero) || (frustum[5] == Vector4.Zero))
             {
                 return(true);
@@ -339,25 +339,26 @@ namespace TKQuake.Engine.Core
                 //We don't actually need to know how many are on the Y length
                 //but the forumla is here for historical/academic purposes
                 int n_patchesX = stepWidth;
-                //int n_patchesY = stepHeight;
-
+                int n_patchesY = stepHeight;
 
                 //Calculate what [n,m] patch we want by using an index
-                //called patchNumber  Think of patchNumber as if you 
+                //called patchNumber. Think of patchNumber as if you
                 //numbered the patches left to right, top to bottom on
                 //the grid in a piece of paper.
-                int pxStep = 0;
-                int pyStep = 0;
-                for (int i = 0; i < patch; i++)
-                {
-                    pxStep++;
-                    if (pxStep == n_patchesX)
-                    {
-                        pxStep = 0;
-                        pyStep++;
-                    }
-                }
-                    
+                //int pxStep = 0;
+                //int pyStep = 0;
+                //for (int i = 0; i < patch; i++)
+                //{
+                //    pxStep++;
+                //    if (pxStep == n_patchesX)
+                //    {
+                //        pxStep = 0;
+                //        pyStep++;
+                //    }
+                //}
+                int pxStep = patch % n_patchesX;
+                int pyStep = (patch / n_patchesX) % n_patchesY;
+
                 //Create an array the size of the grid, which is given by
                 //size[] on the face object.
                 Loader.BSP.Vertex.VertexEntry[,] vertGrid = new Loader.BSP.Vertex.VertexEntry[face.size [0], face.size [1]];
@@ -399,45 +400,45 @@ namespace TKQuake.Engine.Core
                 Vector2[] lightControls = new Vector2[9];
 
                 //Top row
-                vertControls [0] = vertGrid [vi    , vj].position;
-                vertControls [1] = vertGrid [vi + 1, vj].position;
-                vertControls [2] = vertGrid [vi + 2, vj].position;
+                vertControls [0]  = vertGrid [vi    , vj].position;
+                vertControls [1]  = vertGrid [vi + 1, vj].position;
+                vertControls [2]  = vertGrid [vi + 2, vj].position;
 
-                textControls [0] = vertGrid [vi    , vj].texCoord[0];
-                textControls [1] = vertGrid [vi + 1, vj].texCoord[0];
-                textControls [2] = vertGrid [vi + 2, vj].texCoord[0];
+                textControls [0]  = vertGrid [vi    , vj].texCoord[0];
+                textControls [1]  = vertGrid [vi + 1, vj].texCoord[0];
+                textControls [2]  = vertGrid [vi + 2, vj].texCoord[0];
 
                 lightControls [0] = vertGrid [vi    , vj].texCoord[1];
                 lightControls [1] = vertGrid [vi + 1, vj].texCoord[1];
                 lightControls [2] = vertGrid [vi + 2, vj].texCoord[1];
 
                 //Middle row
-                vertControls [3] = vertGrid [vi    , vj + 1].position;
-                vertControls [4] = vertGrid [vi + 1, vj + 1].position;
-                vertControls [5] = vertGrid [vi + 2, vj + 1].position;
+                vertControls [3]  = vertGrid [vi    , vj + 1].position;
+                vertControls [4]  = vertGrid [vi + 1, vj + 1].position;
+                vertControls [5]  = vertGrid [vi + 2, vj + 1].position;
 
-                textControls [3] = vertGrid [vi    , vj + 1].texCoord[0];
-                textControls [4] = vertGrid [vi + 1, vj + 1].texCoord[0];
-                textControls [5] = vertGrid [vi + 2, vj + 1].texCoord[0];
+                textControls [3]  = vertGrid [vi    , vj + 1].texCoord[0];
+                textControls [4]  = vertGrid [vi + 1, vj + 1].texCoord[0];
+                textControls [5]  = vertGrid [vi + 2, vj + 1].texCoord[0];
 
                 lightControls [3] = vertGrid [vi    , vj + 1].texCoord[1];
                 lightControls [4] = vertGrid [vi + 1, vj + 1].texCoord[1];
                 lightControls [5] = vertGrid [vi + 2, vj + 1].texCoord[1];
 
                 //Bottom row
-                vertControls [6] = vertGrid [vi    , vj + 2].position;
-                vertControls [7] = vertGrid [vi + 1, vj + 2].position;
-                vertControls [8] = vertGrid [vi + 2, vj + 2].position;
+                vertControls [6]  = vertGrid [vi    , vj + 2].position;
+                vertControls [7]  = vertGrid [vi + 1, vj + 2].position;
+                vertControls [8]  = vertGrid [vi + 2, vj + 2].position;
 
-                textControls [6] = vertGrid [vi    , vj + 2].texCoord[0];
-                textControls [7] = vertGrid [vi + 1, vj + 2].texCoord[0];
-                textControls [8] = vertGrid [vi + 2, vj + 2].texCoord[0];
+                textControls [6]  = vertGrid [vi    , vj + 2].texCoord[0];
+                textControls [7]  = vertGrid [vi + 1, vj + 2].texCoord[0];
+                textControls [8]  = vertGrid [vi + 2, vj + 2].texCoord[0];
 
                 lightControls [6] = vertGrid [vi    , vj + 2].texCoord[1];
                 lightControls [7] = vertGrid [vi + 1, vj + 2].texCoord[1];
                 lightControls [8] = vertGrid [vi + 2, vj + 2].texCoord[1];
 
-                // The incoming list is 9 entires, 
+                // The incoming list is 9 entires,
                 // referenced as p0 through p8 here.
 
                 // Generate extra rows to tessellate
@@ -448,48 +449,51 @@ namespace TKQuake.Engine.Core
                 // p1s from p1 p4 p7
                 // p2s from p2 p5 p8
 
-                List<Vector2> p0suv2, p1suv2, p2suv2;
-                List<Vector2> p0suv, p1suv, p2suv;
                 List<Vector3> p0s, p1s, p2s;
+                List<Vector2> p0suv, p1suv, p2suv;
+                //List<Vector2> p0suv2, p1suv2, p2suv2;
+
                 p0s    = Tessellate  (vertControls  [0], vertControls  [3], vertControls  [6]);
                 p0suv  = TessellateUV(textControls  [0], textControls  [3], textControls  [6]);
-                p0suv2 = TessellateUV(lightControls [0], lightControls [3], lightControls [6]);
+                //p0suv2 = TessellateUV(lightControls [0], lightControls [3], lightControls [6]);
 
                 p1s    = Tessellate  (vertControls  [1], vertControls  [4], vertControls  [7]);
                 p1suv  = TessellateUV(textControls  [1], textControls  [4], textControls  [7]);
-                p1suv2 = TessellateUV(lightControls [1], lightControls [4], lightControls [7]);
+                //p1suv2 = TessellateUV(lightControls [1], lightControls [4], lightControls [7]);
 
                 p2s    = Tessellate  (vertControls  [2], vertControls  [5], vertControls  [8]);
                 p2suv  = TessellateUV(textControls  [2], textControls  [5], textControls  [8]);
-                p2suv2 = TessellateUV(lightControls [2], lightControls [5], lightControls [8]);
+                //p2suv2 = TessellateUV(lightControls [2], lightControls [5], lightControls [8]);
 
                 // Tessellate all those new sets of control points and pack
                 // all the results into our vertex array, which we'll return.
                 // Make our uvs list while we're at it.
+                List<Vector3> points      = new List<Vector3> ();
+                List<Vector2> texs        = new List<Vector2> ();
+                //List<Vector2> lightCoords = new List<Vector2> ();
+
                 for (int i = 0; i <= TESSELLATION_LEVEL; i++)
                 {
-                    List<Vector3> points = new List<Vector3> ();
-                    List<Vector2> texs = new List<Vector2> ();
-
                     points.AddRange      (Tessellate   (p0s    [i], p1s    [i], p2s    [i]));
                     texs.AddRange        (TessellateUV (p0suv  [i], p1suv  [i], p2suv  [i]));
-//                    lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
-
-                    for (int j = 0; j < points.Count; j++)
-                    {
-                        Infrastructure.Math.Vertex point;
-                        point.Position = points [j];
-                        point.Normal   = Vector3.UnitZ;                  // FIXME: Calculate the actual normal for this surface at this point.
-                        point.TexCoord = texs [j];
-                        vertices.Add (point);
-                    }
+                    //lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
                 }
 
-                // This will produce (tessellationLevel + 1)^2 verts
+                // Reformat the tesselated points.
+                for (int j = 0; j < points.Count; j++)
+                {
+                    Infrastructure.Math.Vertex point;
+                    point.Position = points [j];
+                    point.Normal   = Vector3.UnitZ;                  // FIXME: Calculate the actual normal for this surface at this point.
+                    point.TexCoord = texs [j];
+                    vertices.Add (point);
+                }
+
+                // This will produce (TESSELLATION_LEVEL + 1)^2 verts
                 int numVerts = (TESSELLATION_LEVEL + 1) * (TESSELLATION_LEVEL + 1);
 
                 // Compute triangle indexes for forming a mesh.
-                // The mesh will be tessellationlevel + 1 verts
+                // The mesh will be (TESSELLATION_LEVEL + 1) verts
                 // wide and tall.
                 int xStep = 1;
                 int width = TESSELLATION_LEVEL + 1;
@@ -504,33 +508,30 @@ namespace TKQuake.Engine.Core
                         indices.Add (i + 1);
 
                         xStep++;
+                    }
 
-                        continue;
-                    } 
-
-                    else if (xStep == width) //on right edge
+                    //on right edge
+                    else if (xStep == width)
                     {
                         indices.Add (i);
                         indices.Add (i + (width - 1));
                         indices.Add (i + width);
 
                         xStep = 1;
-
-                        continue;
                     }
 
-                    else // not on an edge, so add two
+                    // not on an edge, so add two
+                    else
                     {
                         indices.Add (i);
                         indices.Add (i + (width - 1));
                         indices.Add (i + width);
+
                         indices.Add (i);
                         indices.Add (i + width);
                         indices.Add (i + 1);
 
                         xStep++;
-
-                        continue;
                     }
                 }
 
@@ -590,7 +591,7 @@ namespace TKQuake.Engine.Core
         }
 
         // Calculate a vector3 at point t on a bezier curve between
-        // p0 and p2 via p1.  
+        // p0 and p2 via p1.
         private Vector3 BezCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
         {
             float a = 1.0f - t;
@@ -602,7 +603,7 @@ namespace TKQuake.Engine.Core
             return(Vector3.Add (Vector3.Add (p0s, p1s), p2s));
         }
 
-        // Calculate UVs for our tessellated vertices 
+        // Calculate UVs for our tessellated vertices
         private Vector2 BezCurveUV(float t, Vector2 p0, Vector2 p1, Vector2 p2)
         {
             float a = 1f - t;
@@ -676,7 +677,7 @@ namespace TKQuake.Engine.Core
 
                     texture = texManager.Get (textureName);
                 }
-            } 
+            }
 
             return (texture);
         }
