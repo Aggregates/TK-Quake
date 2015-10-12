@@ -73,8 +73,7 @@ namespace TKQuake.Cookbook.Screens
                 component.Startup();
             }
 
-            Components.Add(new FloorGridComponent());
-            Components.Add(new BSPComponent(_BSP, _camera, _gameScreenRatio));
+            Components.Add(new BSPComponent(_BSP, _camera/*, _gameScreenRatio*/));
         }
 
         private void InitEntities()
@@ -148,8 +147,9 @@ namespace TKQuake.Cookbook.Screens
 
         private BSPRenderer BSP;
         private Camera camera;
-        private float gameScreenRation;
+//        private float gameScreenRation;
         private int totalMeshes;
+        private TextureManager texManager = TextureManager.Singleton ();
 
         private BSPComponent()
         {
@@ -158,10 +158,10 @@ namespace TKQuake.Cookbook.Screens
             totalMeshes = 0;
         }
 
-        public BSPComponent(string BSPFile, ref Camera cam) : this()
+        public BSPComponent(string BSPFile, Camera cam/*, float screenRatio*/) : this()
         {
             camera = cam;
-            gameScreenRation = screenRatio;
+//            gameScreenRation = screenRatio;
             ChangeBSP (BSPFile);
         }
 
@@ -180,7 +180,8 @@ namespace TKQuake.Cookbook.Screens
             {
                 string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
 
-                if (_renderer.IsMeshRegister (id) == true)
+                // Remove the mesh from the system.
+                if (_renderer.IsMeshRegistered (id) == true)
                 {
                     _renderer.UnregisterMesh (id);
                 }
@@ -207,6 +208,9 @@ namespace TKQuake.Cookbook.Screens
                 // Render the BSP entity.
                 _renderer.DrawEntity (BSPEntity);
             }
+
+            meshes.Clear ();
+            meshes = null;
         }
     }
 }

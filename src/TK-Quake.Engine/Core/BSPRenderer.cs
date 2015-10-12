@@ -319,11 +319,13 @@ namespace TKQuake.Engine.Core
 
         private List<Mesh> TessellateBezierPatch (Face.FaceEntry face)
         {
-            List<Mesh>    meshes = new List<Mesh> ();
-            List<Vector3> vertices;
-            List<Vector2> texCoords;
-            List<int>     indices;
-            Mesh          mesh;
+            List<Mesh>                       meshes = new List<Mesh> ();
+            List<Infrastructure.Math.Vertex> vertices;
+            List<int>                        indices;
+            Mesh                             mesh;
+            Vector3[]                        vertControls  = new Vector3[9];
+            Vector2[]                        textControls  = new Vector2[9];
+            Vector2[]                        lightControls = new Vector2[9];
 
             // The amount of increments we need to make for each dimension, so we have the (potentially) shared points between patches
             int stepWidth  = (face.size[0] - 1) / 2;
@@ -349,17 +351,6 @@ namespace TKQuake.Engine.Core
                 //called patchNumber. Think of patchNumber as if you
                 //numbered the patches left to right, top to bottom on
                 //the grid in a piece of paper.
-                //int pxStep = 0;
-                //int pyStep = 0;
-                //for (int i = 0; i < patch; i++)
-                //{
-                //    pxStep++;
-                //    if (pxStep == n_patchesX)
-                //    {
-                //        pxStep = 0;
-                //        pyStep++;
-                //    }
-                //}
                 int pxStep = patch % n_patchesX;
                 int pyStep = (patch / n_patchesX) % n_patchesY;
 
@@ -399,46 +390,42 @@ namespace TKQuake.Engine.Core
                 //the two verts at [vi+1,vj] and [vi+2,vj], and then [vi,vj+1], etc.
                 //the ending vert will at [vi+2,vj+2]
 
-                Vector3[] vertControls  = new Vector3[9];
-                Vector2[] textControls  = new Vector2[9];
-                Vector2[] lightControls = new Vector2[9];
-
                 //Top row
-                vertControls [0]  = vertGrid [vi    , vj].position;
-                vertControls [1]  = vertGrid [vi + 1, vj].position;
-                vertControls [2]  = vertGrid [vi + 2, vj].position;
+                vertControls [0]  = vertGrid [vi + 0, vj + 0].position;
+                vertControls [1]  = vertGrid [vi + 1, vj + 0].position;
+                vertControls [2]  = vertGrid [vi + 2, vj + 0].position;
 
-                textControls [0]  = vertGrid [vi    , vj].texCoord[0];
-                textControls [1]  = vertGrid [vi + 1, vj].texCoord[0];
-                textControls [2]  = vertGrid [vi + 2, vj].texCoord[0];
+                textControls [0]  = vertGrid [vi + 0, vj + 0].texCoord[0];
+                textControls [1]  = vertGrid [vi + 1, vj + 0].texCoord[0];
+                textControls [2]  = vertGrid [vi + 2, vj + 0].texCoord[0];
 
-                lightControls [0] = vertGrid [vi    , vj].texCoord[1];
-                lightControls [1] = vertGrid [vi + 1, vj].texCoord[1];
-                lightControls [2] = vertGrid [vi + 2, vj].texCoord[1];
+                lightControls [0] = vertGrid [vi + 0, vj + 0].texCoord[1];
+                lightControls [1] = vertGrid [vi + 1, vj + 0].texCoord[1];
+                lightControls [2] = vertGrid [vi + 2, vj + 0].texCoord[1];
 
                 //Middle row
-                vertControls [3]  = vertGrid [vi    , vj + 1].position;
+                vertControls [3]  = vertGrid [vi + 0, vj + 1].position;
                 vertControls [4]  = vertGrid [vi + 1, vj + 1].position;
                 vertControls [5]  = vertGrid [vi + 2, vj + 1].position;
 
-                textControls [3]  = vertGrid [vi    , vj + 1].texCoord[0];
+                textControls [3]  = vertGrid [vi + 0, vj + 1].texCoord[0];
                 textControls [4]  = vertGrid [vi + 1, vj + 1].texCoord[0];
                 textControls [5]  = vertGrid [vi + 2, vj + 1].texCoord[0];
 
-                lightControls [3] = vertGrid [vi    , vj + 1].texCoord[1];
+                lightControls [3] = vertGrid [vi + 0, vj + 1].texCoord[1];
                 lightControls [4] = vertGrid [vi + 1, vj + 1].texCoord[1];
                 lightControls [5] = vertGrid [vi + 2, vj + 1].texCoord[1];
 
                 //Bottom row
-                vertControls [6]  = vertGrid [vi    , vj + 2].position;
+                vertControls [6]  = vertGrid [vi + 0, vj + 2].position;
                 vertControls [7]  = vertGrid [vi + 1, vj + 2].position;
                 vertControls [8]  = vertGrid [vi + 2, vj + 2].position;
 
-                textControls [6]  = vertGrid [vi    , vj + 2].texCoord[0];
+                textControls [6]  = vertGrid [vi + 0, vj + 2].texCoord[0];
                 textControls [7]  = vertGrid [vi + 1, vj + 2].texCoord[0];
                 textControls [8]  = vertGrid [vi + 2, vj + 2].texCoord[0];
 
-                lightControls [6] = vertGrid [vi    , vj + 2].texCoord[1];
+                lightControls [6] = vertGrid [vi + 0, vj + 2].texCoord[1];
                 lightControls [7] = vertGrid [vi + 1, vj + 2].texCoord[1];
                 lightControls [8] = vertGrid [vi + 2, vj + 2].texCoord[1];
 
@@ -546,6 +533,11 @@ namespace TKQuake.Engine.Core
                 mesh.Indices  = indices.ToArray ();
                 mesh.tex      = GetTexture (face);
                 meshes.Add (mesh);
+
+                vertices.Clear ();
+                indices.Clear ();
+                vertices = null;
+                indices = null;
             }
 
             return(meshes);
@@ -612,7 +604,7 @@ namespace TKQuake.Engine.Core
         // Calculate UVs for our tessellated vertices
         private Vector2 BezCurveUV(float t, Vector2 p0, Vector2 p1, Vector2 p2)
         {
-            float a = 1f - t;
+            float a = 1.0f - t;
             float tt = t * t;
 
             Vector2 p0s = Vector2.Multiply (p0, a * a);
@@ -659,31 +651,29 @@ namespace TKQuake.Engine.Core
             Infrastructure.Texture.Texture texture = null;
 
             string textureName = BSP.GetTexture (face.texture).name;
+            string textureFileJPG = textureName + ".jpg";
+            string textureFileTGA = textureName + ".tga";
 
             if (textureName.Contains ("noshader") == false)
             {
-                if (File.Exists (textureName + ".jpg") == true)
+                if (File.Exists (textureFileJPG) == true)
                 {
-                    string textureFile = textureName + ".jpg";
-
-                    if (texManager.Registered (textureName) == false)
+                    if (texManager.Registered (textureFileJPG) == false)
                     {
-                        texManager.Add (textureName, textureFile);
+                        texManager.Add (textureFileJPG, textureFileJPG);
                     }
 
-                    texture = texManager.Get (textureName);
+                    texture = texManager.Get (textureFileJPG);
                 }
 
-                else if (File.Exists (textureName + ".tga") == true)
+                else if (File.Exists (textureFileTGA) == true)
                 {
-                    string textureFile = textureName + ".tga";
-
-                    if (texManager.Registered (textureName) == false)
+                    if (texManager.Registered (textureFileTGA) == false)
                     {
-                        texManager.Add (textureName, textureFile);
+                        texManager.Add (textureFileTGA, textureFileTGA);
                     }
 
-                    texture = texManager.Get (textureName);
+                    texture = texManager.Get (textureFileTGA);
                 }
             }
 

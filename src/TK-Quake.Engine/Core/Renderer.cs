@@ -145,14 +145,32 @@ namespace TKQuake.Engine.Core
         /// <param name="entityId">The id of the entity</param>
         public void UnregisterMesh(string entityId)
         {
+            // Get the mesh first.
+            Mesh mesh = GetMesh (entityId);
+
+            // Unbind and remove textures that are no longer in use.
+            if ((mesh.tex != null) && (TextureManager.Registered (mesh.tex.Path) == true))
+            {
+                TextureManager.Remove (mesh.tex.Path);
+            }
+
             _meshes.Remove(entityId);
+        }
+
+        /// <summary>
+        /// Retrieves an entity mesh from the Renderer
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public Mesh GetMesh(string entityId)
+        {
+            return(_meshes.Get (entityId));
         }
 
         /// <summary>
         /// Checks if an entity's mesh has been registered.
         /// </summary>
         /// <param name="entityId">The id of the entity</param>
-        public bool IsMeshRegister(string entityId)
+        public bool IsMeshRegistered(string entityId)
         {
             return(_meshes.Registered(entityId));
         }
