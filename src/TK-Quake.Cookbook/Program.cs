@@ -76,7 +76,7 @@ namespace TKQuake.Cookbook
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
             renderer.LinkShaders();
 
-            currentScreen = new CameraTestScreen("q3dm6.bsp"/*, (float)game.Width / game.Height*/);
+            currentScreen = new CameraTestScreen("maps/q3dm6.bsp"/*, (float)game.Width / game.Height*/);
 
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 

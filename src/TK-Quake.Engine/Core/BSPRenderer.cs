@@ -16,7 +16,7 @@ namespace TKQuake.Engine.Core
     {
         private const int   TESSELLATION_LEVEL = 5;
         private const float NEAR_DISTANCE = 0.1f;
-        private const float FAR_DISTANCE = 20.0f;
+        private const float FAR_DISTANCE = 1000.0f;
         private const float ASPECT_RATIO = 800.0f / 600.0f;
         private const float FOV_Y = MathHelper.PiOver4;
         private const float FOV_X = 1.009191290f; //2 * Math.Atan(Math.Tan(FOV_Y / 2) * ASPECT_RATIO);
@@ -65,11 +65,77 @@ namespace TKQuake.Engine.Core
             return(BSP);
         }
 
-        //public List<Mesh> GetMesh(Vector3 cameraPosition, Matrix4 clip)
-        public List<Mesh> GetMesh(Camera camera)
+        public List<Mesh> GetAllMeshes()
         {
             List<Mesh> BSPMeshes = new List<Mesh>();
 
+            // Generate meshes for every face in the BSP.
+            foreach (Face.FaceEntry currentFace in BSP.GetFaces())
+            {
+                List<Mesh> meshes = GenerateMesh(currentFace);
+
+                if (meshes != null)
+                {
+                    BSPMeshes.AddRange(meshes);
+                }
+            }
+
+            return(BSPMeshes);
+        }
+
+        public List<Mesh> GetVisibleMeshes(Camera camera)
+        {
+            List<Mesh> BSPMeshes   = new List<Mesh>();
+            List<int> visibleFaces = GetVisibleFaces(camera);
+
+            // Generate meshes for every face that is visible from the camera.
+            foreach (int face in visibleFaces)
+            {
+                List<Mesh> meshes = GenerateMesh(BSP.GetFace(face));
+
+                if (meshes != null)
+                {
+                    BSPMeshes.AddRange(meshes);
+                }
+            }
+
+            return(BSPMeshes);
+        }
+
+        private List<Mesh> GenerateMesh(Face.FaceEntry currentFace)
+        {
+            switch(currentFace.type)
+            {
+                case Face.FaceType.POLYGON:
+                {
+                    return (new List<Mesh>() { RenderPolygon (currentFace) });
+                }
+
+                case Face.FaceType.PATCH:
+                {
+                    return (TessellateBezierPatch (currentFace));
+                }
+
+                case Face.FaceType.MESH:
+                {
+                    return (new List<Mesh>() { RenderPolygon(currentFace) });
+                }
+
+                case Face.FaceType.BILLBOARD:
+                {
+                    return (null);
+                }
+
+                default:
+                {
+                    Console.WriteLine("BSPRenderer: Unknown face type detected.");
+                    return (null);
+                }
+            }
+        }
+
+        public List<int> GetVisibleFaces(Camera camera)
+        {
             // Find the cluster that the camera is currently in.
             int cameraCluster = BSP.GetLeaf (FindCameraLeaf (camera.Position)).cluster;
 
@@ -77,7 +143,6 @@ namespace TKQuake.Engine.Core
             List<int> visibleFaces   = new List<int> ();
 
             // Set the view frustum.
-            //SetViewFrustum (clip);
             SetViewFrustum (camera);
 
             // Find all leafs that are visible from cameraCluster.
@@ -101,48 +166,7 @@ namespace TKQuake.Engine.Core
                 }
             }
 
-            // Iterate through all the visible faces and collect all of the vertices.
-            foreach (int face in visibleFaces)
-            {
-                Face.FaceEntry currentFace = BSP.GetFace (face);
-
-                switch(currentFace.type)
-                {
-                    case Face.FaceType.POLYGON:
-                    {
-                        BSPMeshes.Add (RenderPolygon (currentFace));
-
-                        break;
-                    }
-
-                    case Face.FaceType.PATCH:
-                    {
-                        BSPMeshes.AddRange (TessellateBezierPatch (currentFace));
-
-                        break;
-                    }
-
-                    case Face.FaceType.MESH:
-                    {
-                        BSPMeshes.Add (RenderPolygon (currentFace));
-
-                        break;
-                    }
-
-                    case Face.FaceType.BILLBOARD:
-                    {
-                        break;
-                    }
-
-                    default:
-                    {
-                        Console.WriteLine("BSPRenderer: Unknown face type detected.");
-                        break;
-                    }
-                }
-            }
-
-            return(BSPMeshes);
+            return (visibleFaces);
         }
 
         private void SetViewFrustum(Camera camera)
