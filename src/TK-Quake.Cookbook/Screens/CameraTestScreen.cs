@@ -27,17 +27,15 @@ namespace TKQuake.Cookbook.Screens
 {
     public class CameraTestScreen : GameScreen
     {
-        private readonly Camera _camera = new Camera();
+        private Camera _camera = new Camera();
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
         private string _BSP = null;
-//        private float _gameScreenRatio;
 
-        public CameraTestScreen(string BSPFile/*, float screenRatio*/)
+        public CameraTestScreen(string BSPFile)
         {
             _renderer = Renderer.Singleton ();
             _textureManager = TextureManager.Singleton ();
             _BSP = BSPFile;
-//            _gameScreenRatio = screenRatio;
 
             InitEntities();
             InitComponents();
@@ -74,7 +72,7 @@ namespace TKQuake.Cookbook.Screens
                 component.Startup();
             }
 
-            Components.Add(new BSPComponent(_BSP, _camera/*, _gameScreenRatio*/));
+            Components.Add(new BSPComponent(_BSP, ref _camera));
         }
 
         private void InitEntities()
@@ -160,7 +158,6 @@ namespace TKQuake.Cookbook.Screens
 
         private BSPRenderer BSP;
         private Camera camera;
-//        private float gameScreenRation;
         private int totalMeshes;
         private TextureManager texManager = TextureManager.Singleton ();
 
@@ -171,10 +168,9 @@ namespace TKQuake.Cookbook.Screens
             totalMeshes = 0;
         }
 
-        public BSPComponent(string BSPFile, Camera cam/*, float screenRatio*/) : this()
+        public BSPComponent(string BSPFile, ref Camera cam) : this()
         {
             camera = cam;
-//            gameScreenRation = screenRatio;
             ChangeBSP (BSPFile);
         }
 
@@ -204,7 +200,7 @@ namespace TKQuake.Cookbook.Screens
                 BSPEntity.Id = string.Format ("{0}{1}", ENTITY_ID, face);
                 BSPEntity.Position = camera.Position;
                 BSPEntity.Scale = 0.01f;
-                BSPEntity.Translation = Matrix4.Identity;
+                BSPEntity.Translation = Matrix4.CreateTranslation(0.0f, -24.0f, 0.0f);
                 BSPEntity.Rotation = Vector3.Zero;
 
                 // Render the BSP entity.

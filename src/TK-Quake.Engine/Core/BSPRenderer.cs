@@ -694,11 +694,6 @@ namespace TKQuake.Engine.Core
                 }
             }
 
-            else if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered ("textures/notexture.jpg") == true))
-            {
-                texture = texManager.Get ("textures/notexture.jpg");
-            }
-
             return (texture);
         }
     }
