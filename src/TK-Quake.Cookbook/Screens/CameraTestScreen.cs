@@ -15,6 +15,7 @@ using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
+using TKQuake.Engine.Loader.BSP;
 using ObjLoader.Loader.Loaders;
 using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
@@ -30,14 +31,14 @@ namespace TKQuake.Cookbook.Screens
         private readonly IObjLoader _objLoader = new ObjLoaderFactory().Create();
 
         private string _BSP = null;
-        private float _gameScreenRatio;
+//        private float _gameScreenRatio;
 
-        public CameraTestScreen(string BSPFile, float screenRatio)
+        public CameraTestScreen(string BSPFile/*, float screenRatio*/)
         {
             _renderer = Renderer.Singleton ();
             _textureManager = TextureManager.Singleton ();
             _BSP = BSPFile;
-            _gameScreenRatio = screenRatio;
+//            _gameScreenRatio = screenRatio;
 
             InitEntities();
             InitComponents();
@@ -167,14 +168,16 @@ namespace TKQuake.Cookbook.Screens
 
         public void ChangeBSP(string BSPFile)
         {
+            UnloadAllTextures();
             BSP = new BSPRenderer (BSPFile);
+            LoadAllTextures();
         }
 
         public void Startup() { }
         public void Shutdown() { }
 
         public void Update(double elapsedTime)
-        {   
+        {
             // Make sure there are no meshes left over from the last rendering.
             for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
             {
@@ -211,6 +214,70 @@ namespace TKQuake.Cookbook.Screens
 
             meshes.Clear ();
             meshes = null;
+        }
+
+        private void LoadAllTextures()
+        {
+            if (BSP == null)
+            {
+                return;
+            }
+
+            if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered("textures/notexture.jpg") == false))
+            {
+                texManager.Add ("textures/notexture.jpg", "textures/notexture.jpg");
+            }
+
+            foreach (TKQuake.Engine.Loader.BSP.Texture.TextureEntry texture in BSP.GetLoader().GetTextures())
+            {
+                string JPG = texture.name + ".jpg";
+                string TGA = texture.name + ".tga";
+
+                if (texture.name.Contains ("noshader") == false)
+                {
+                    if ((File.Exists (JPG) == true) && (texManager.Registered(JPG) == false))
+                    {
+                        texManager.Add (JPG, JPG);
+                    }
+
+                    else if ((File.Exists (TGA) == true) && (texManager.Registered(TGA) == false))
+                    {
+                        texManager.Add (TGA, TGA);
+                    }
+                }
+            }
+        }
+
+        private void UnloadAllTextures()
+        {
+            if (BSP == null)
+            {
+                return;
+            }
+
+            if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered("textures/notexture.jpg") == false))
+            {
+                texManager.Remove ("textures/notexture.jpg");
+            }
+
+            foreach (TKQuake.Engine.Loader.BSP.Texture.TextureEntry texture in BSP.GetLoader().GetTextures())
+            {
+                string JPG = texture.name + ".jpg";
+                string TGA = texture.name + ".tga";
+
+                if (texture.name.Contains ("noshader") == false)
+                {
+                    if ((File.Exists (JPG) == true) && (texManager.Registered(JPG) == true))
+                    {
+                        texManager.Remove (JPG);
+                    }
+
+                    else if ((File.Exists (TGA) == true) && (texManager.Registered(TGA) == true))
+                    {
+                        texManager.Remove (TGA);
+                    }
+                }
+            }
         }
     }
 }

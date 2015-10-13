@@ -12,10 +12,10 @@ namespace TKQuake.Engine.Loader.BSP
     {
         public enum FaceType : byte
         {
-            POLYGON,
-            PATCH,
-            MESH,
-            BILLBOARD,
+            POLYGON   = 1,
+            PATCH     = 2,
+            MESH      = 3,
+            BILLBOARD = 4,
             UNKNOWN
         }
 

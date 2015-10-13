@@ -60,6 +60,11 @@ namespace TKQuake.Engine.Core
             return(BSPFile);
         }
 
+        public Loader.BSPLoader GetLoader()
+        {
+            return(BSP);
+        }
+
         //public List<Mesh> GetMesh(Vector3 cameraPosition, Matrix4 clip)
         public List<Mesh> GetMesh(Camera camera)
         {
@@ -651,30 +656,30 @@ namespace TKQuake.Engine.Core
             Infrastructure.Texture.Texture texture = null;
 
             string textureName = BSP.GetTexture (face.texture).name;
-            string textureFileJPG = textureName + ".jpg";
-            string textureFileTGA = textureName + ".tga";
+            string JPG = textureName + ".jpg";
+            string TGA = textureName + ".tga";
 
             if (textureName.Contains ("noshader") == false)
             {
-                if (File.Exists (textureFileJPG) == true)
+                if ((File.Exists (JPG) == true) && (texManager.Registered (JPG) == true))
                 {
-                    if (texManager.Registered (textureFileJPG) == false)
-                    {
-                        texManager.Add (textureFileJPG, textureFileJPG);
-                    }
-
-                    texture = texManager.Get (textureFileJPG);
+                    texture = texManager.Get (JPG);
                 }
 
-                else if (File.Exists (textureFileTGA) == true)
+                else if ((File.Exists (TGA) == true) && (texManager.Registered (TGA) == true))
                 {
-                    if (texManager.Registered (textureFileTGA) == false)
-                    {
-                        texManager.Add (textureFileTGA, textureFileTGA);
-                    }
-
-                    texture = texManager.Get (textureFileTGA);
+                    texture = texManager.Get (TGA);
                 }
+
+                else if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered ("textures/notexture.jpg") == true))
+                {
+                    texture = texManager.Get ("textures/notexture.jpg");
+                }
+            }
+
+            else if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered ("textures/notexture.jpg") == true))
+            {
+                texture = texManager.Get ("textures/notexture.jpg");
             }
 
             return (texture);
