@@ -180,9 +180,13 @@ namespace TKQuake.Cookbook.Screens
 
         public void ChangeBSP(string BSPFile)
         {
+            UnloadAllMeshes();
             UnloadAllTextures();
+
             BSP = new BSPRenderer (BSPFile);
+
             LoadAllTextures();
+            LoadAllMeshes();
         }
 
         public void Startup() { }
@@ -190,7 +194,41 @@ namespace TKQuake.Cookbook.Screens
 
         public void Update(double elapsedTime)
         {
-            // Make sure there are no meshes left over from the last rendering.
+            // Get the list of visible faces.
+            List<int> visibleFaces = BSP.GetVisibleFaces(camera);
+
+            for (int face = 0; face < visibleFaces.Count; face++)
+            {
+                // Create a renderable entity.
+                var BSPEntity = RenderableEntity.Create ();
+                BSPEntity.Id = string.Format ("{0}{1}", ENTITY_ID, face);
+                BSPEntity.Position = camera.Position;
+                BSPEntity.Scale = 0.01f;
+                BSPEntity.Translation = Matrix4.Identity;
+                BSPEntity.Rotation = Vector3.Zero;
+
+                // Render the BSP entity.
+                _renderer.DrawEntity (BSPEntity);
+            }
+        }
+
+        private void LoadAllMeshes()
+        {
+            // Generate and register all of the meshes in the BSP file.
+            List<Mesh> meshes = BSP.GetAllMeshes();
+
+            totalMeshes = meshes.Count;
+
+            for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
+            {
+                string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
+                _renderer.RegisterMesh (id, meshes[meshCount]);
+            }
+        }
+
+        private void UnloadAllMeshes()
+        {
+            // Unload all of the meshes from the previous BSP file.
             for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
             {
                 string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
@@ -201,31 +239,6 @@ namespace TKQuake.Cookbook.Screens
                     _renderer.UnregisterMesh (id);
                 }
             }
-
-            // Generate, register, and render the meshes that are potentially visible to the camera.
-            List<Mesh> meshes = BSP.GetMesh (camera);
-
-            totalMeshes = meshes.Count;
-
-            for (int meshCount = 0; meshCount < totalMeshes; meshCount++)
-            {
-                string id = string.Format ("{0}{1}", ENTITY_ID, meshCount);
-                _renderer.RegisterMesh (id, meshes[meshCount]);
-
-                // Create a renderable entity.
-                var BSPEntity = RenderableEntity.Create ();
-                BSPEntity.Id = id;
-                BSPEntity.Position = camera.Position;
-                BSPEntity.Scale = 0.01f;
-                BSPEntity.Translation = Matrix4.Identity;
-                BSPEntity.Rotation = Vector3.Zero;
-
-                // Render the BSP entity.
-                _renderer.DrawEntity (BSPEntity);
-            }
-
-            meshes.Clear ();
-            meshes = null;
         }
 
         private void LoadAllTextures()

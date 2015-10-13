@@ -47,7 +47,7 @@ namespace TKQuake.Engine.Loader.BSP
                 visDatas[size].vecs = new byte[visDatas[size].n_vecs * visDatas[size].sz_vecs];
                 file.Read (visDatas[size].vecs, 0, (visDatas[size].n_vecs * visDatas[size].sz_vecs));
 
-                bytesRead += VIS_DATA_SIZE + (visDatas[size].n_vecs + visDatas[size].sz_vecs);
+                bytesRead += VIS_DATA_SIZE + (visDatas[size].n_vecs * visDatas[size].sz_vecs);
             }
         }
 
