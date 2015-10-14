@@ -191,7 +191,7 @@ namespace TKQuake.Cookbook.Screens
 
             // Create the new loader and parse the file.
             loader = new BSPLoader(BSPFile, true);
-            loader.LoadFile ();
+            loader.ParseFile ();
             loader.DumpBSP ();
 
             // Create the new renderer.

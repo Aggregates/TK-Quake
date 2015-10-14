@@ -379,7 +379,7 @@ namespace TKQuake.Engine.Core
         /// <param name="testCluster">The cluster to test.</param>
         private bool IsClusterVisible(int visCluster, int testCluster)
         {
-            VisData.VisDataEntry visData = BSP.GetVisData (0);
+            VisData.VisDataEntry visData = BSP.GetVisData ();
 
             // Make sure we have something to test.
             if ((visData.vecs == null) || (visCluster < 0) || (testCluster < 0))
