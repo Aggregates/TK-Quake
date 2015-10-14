@@ -104,5 +104,11 @@ namespace TKQuake.Engine.Infrastructure.Texture
                 Remove(keyVal);
             }
         }
+
+        private static TextureManager _instance;
+        public static TextureManager Singleton()
+        {
+            return _instance ?? (_instance = new TextureManager());
+        }
     }
 }

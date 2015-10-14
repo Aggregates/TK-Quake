@@ -27,7 +27,7 @@ namespace TKQuake.Engine.Core
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
-        public TextureManager TextureManager;
+        private readonly TextureManager TextureManager = TextureManager.Singleton ();
         private SpriteBatch _batch = new SpriteBatch();
         private int? _program;
 
@@ -172,8 +172,8 @@ namespace TKQuake.Engine.Core
             System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
             var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
-                           Matrix4.CreateRotationY(entity.Rotation.Y)*
-                           Matrix4.CreateRotationZ(entity.Rotation.Z);
+                Matrix4.CreateRotationY(entity.Rotation.Y)*
+                Matrix4.CreateRotationZ(entity.Rotation.Z);
 
             var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
             var uniModel = GL.GetUniformLocation(Program, "model");
@@ -195,29 +195,6 @@ namespace TKQuake.Engine.Core
 
             //reset translation matrix?
             entity.Translation = Matrix4.Identity;
-        }
-
-        private void DrawImmediate(Mesh mesh)
-        {
-            GL.Begin(PrimitiveType.Triangles);
-            foreach (var index in mesh.Indices)
-            {
-                if (mesh.Vertices.Count() > index)
-                {
-                    GL.Vertex3(mesh.Vertices[index]);
-                }
-
-                if (mesh.Normals.Count() > index)
-                {
-                    GL.Normal3(mesh.Normals[index]);
-                }
-
-                if (mesh.Textures.Count() > index)
-                {
-                    GL.TexCoord2(mesh.Textures[index]);
-                }
-            }
-            GL.End();
         }
 
         private void DrawVbo(Mesh mesh)

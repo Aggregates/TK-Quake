@@ -417,8 +417,7 @@ namespace TKQuake.Engine.Core
             for (int patch = 0; patch < numPatches; patch++)
             {
                 mesh      = new Mesh ();
-                vertices  = new List<Vector3>();
-                texCoords = new List<Vector2>();
+                vertices  = new List<Infrastructure.Math.Vertex>();
                 indices   = new List<int>();
 
                 //Calculate how many patches there are using size[]
@@ -610,8 +609,6 @@ namespace TKQuake.Engine.Core
 
                 // Add mesh to list of meshes.
                 mesh.Vertices = vertices.ToArray ();
-                mesh.Normals  = new Vector3[0];
-                mesh.Textures = texCoords.ToArray ();
                 mesh.Indices  = indices.ToArray ();
                 mesh.tex      = GetTexture (face);
                 meshes.Add (mesh);
@@ -719,19 +716,19 @@ namespace TKQuake.Engine.Core
         /// <param name="face">The face for which the mesh should be generated.</param>
         private Mesh RenderPolygon(Face.FaceEntry face)
         {
-            List<Vector3> vertices  = new List<Vector3> ();
-            List<Vector3> normals   = new List<Vector3> ();
-            List<Vector2> texCoords = new List<Vector2> ();
-            List<int>     indices   = new List<int> ();
+            List<Infrastructure.Math.Vertex> vertices  = new List<Infrastructure.Math.Vertex> ();
+            List<int>                        indices   = new List<int> ();
 
-           // Add all the vertexes for the face to the mesh.
+            // Add all the vertexes for the face to the mesh.
             for (int vertex = face.vertex; vertex < (face.vertex + face.n_vertexes); vertex++)
             {
                 Loader.BSP.Vertex.VertexEntry currentVertex = BSP.GetVertex (vertex);
-                vertices.Add (currentVertex.position);
-                normals.Add (currentVertex.normal);
-                texCoords.Add (currentVertex.texCoord [0]);
-//                lightCoords.Add (currentVertex.texCoord [1]);
+                Infrastructure.Math.Vertex point;
+                point.Position = currentVertex.position;
+                point.Normal = currentVertex.normal;
+                point.TexCoord = currentVertex.texCoord [0];
+                //                lightCoords.Add (currentVertex.texCoord [1]);
+                vertices.Add (point);
             }
 
             // Add all the vertex indices for the face to the mesh.
@@ -743,11 +740,9 @@ namespace TKQuake.Engine.Core
 
             Mesh mesh = new Mesh ();
             mesh.Vertices = vertices.ToArray ();
-            mesh.Normals  = normals.ToArray ();
-            mesh.Textures = texCoords.ToArray ();
             mesh.Indices  = indices.ToArray ();
             mesh.tex      = GetTexture (face);
-            return(mesh);
+            return(mesh);            
          }
 
         /// <summary>

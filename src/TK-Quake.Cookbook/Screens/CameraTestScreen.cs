@@ -129,13 +129,25 @@ namespace TKQuake.Cookbook.Screens
                 var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
 
                 vertices.AddRange(new []
-                {
-                    new Vertex(v1, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v2, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v3, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v4, Vector3.Zero, Vector2.Zero),
-                });
+                    {
+                        new Vertex(v1, Vector3.Zero, Vector2.Zero),
+                        new Vertex(v2, Vector3.Zero, Vector2.Zero),
+                        new Vertex(v3, Vector3.Zero, Vector2.Zero),
+                        new Vertex(v4, Vector3.Zero, Vector2.Zero),
+                    });
+
+                indices.AddRange(new []
+                    {
+                        index, index + 1, index,
+                        index + 2, index + 3, index + 2
+                    });
             }
+
+            return new Mesh
+            {
+                Vertices = vertices.ToArray(),
+                Indices = indices.ToArray()
+            };
         }
     }
 
