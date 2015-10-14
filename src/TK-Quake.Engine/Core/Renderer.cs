@@ -204,13 +204,6 @@ namespace TKQuake.Engine.Core
             GL.BindVertexArray(0);
         }
 
-        private void DrawVbo(Mesh mesh)
-        {
-            GL.BindVertexArray(mesh.VaoId);
-            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
-            GL.BindVertexArray(0);
-        }
-
 //        public void DrawSprites(List<Sprite2> sprites)
 //        {
 //            foreach (Sprite2 s in sprites)

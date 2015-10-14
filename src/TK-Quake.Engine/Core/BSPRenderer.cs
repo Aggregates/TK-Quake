@@ -31,13 +31,12 @@ namespace TKQuake.Engine.Core
         // The view frustum defined by the 6 clipping planes.
         private Vector4[] frustum = new Vector4[6];
 
-        private TextureManager texManager;
+        private TextureManager texManager = TextureManager.Singleton ();
 
         public BSPRenderer ()
         {
             BSP = null;
             frustum = new Vector4[6];
-            texManager = new TextureManager ();
         }
 
         /// <summary>
@@ -75,18 +74,23 @@ namespace TKQuake.Engine.Core
         /// <summary>
         /// Generate all of the meshes for all of the faces in the BSP.
         /// </summary>
-        public List<Mesh> GetAllMeshes()
+        public Dictionary<int, List<Mesh>> GetAllMeshes()
         {
-            List<Mesh> BSPMeshes = new List<Mesh>();
+            Dictionary<int, List<Mesh>> BSPMeshes = new Dictionary<int, List<Mesh>>();
 
             // Generate meshes for every face in the BSP.
-            foreach (Face.FaceEntry currentFace in BSP.GetFaces())
+            for (int face = 0; face < BSP.GetFaces().Count(); face++)
             {
+                Face.FaceEntry currentFace = BSP.GetFace(face);
                 List<Mesh> meshes = GenerateMesh(currentFace);
 
+                // Make sure there is an entry in our dictionary for the current face.
+                BSPMeshes [face] = new List<Mesh> ();
+
+                // If meshes were generated, add them to the list.
                 if (meshes != null)
                 {
-                    BSPMeshes.AddRange(meshes);
+                    BSPMeshes[face].AddRange(meshes);
                 }
             }
 
@@ -97,9 +101,9 @@ namespace TKQuake.Engine.Core
         /// Generate all of the meshes that a visible from the camera.
         /// </summary>
         /// <param name="camera">The camera.</param>
-        public List<Mesh> GetVisibleMeshes(Camera camera)
+        public Dictionary<int, List<Mesh>> GetVisibleMeshes(Camera camera)
         {
-            List<Mesh> BSPMeshes   = new List<Mesh>();
+            Dictionary<int, List<Mesh>> BSPMeshes = new Dictionary<int, List<Mesh>>();
             List<int> visibleFaces = GetVisibleFaces(camera);
 
             // Generate meshes for every face that is visible from the camera.
@@ -108,10 +112,13 @@ namespace TKQuake.Engine.Core
                 // Generate the meshes.
                 List<Mesh> meshes = GenerateMesh(BSP.GetFace(face));
 
+                // Make sure there is an entry in our dictionary for the current face.
+                BSPMeshes [face] = new List<Mesh> ();
+
                 // If meshes were generated, add them to the list.
                 if (meshes != null)
                 {
-                    BSPMeshes.AddRange(meshes);
+                    BSPMeshes[face].AddRange(meshes);
                 }
             }
 
@@ -747,7 +754,7 @@ namespace TKQuake.Engine.Core
             mesh.Vertices = vertices.ToArray ();
             mesh.Indices  = indices.ToArray ();
             mesh.tex      = GetTexture (face);
-            return(mesh);            
+            return(mesh);
          }
 
         /// <summary>
