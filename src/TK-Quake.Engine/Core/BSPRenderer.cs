@@ -14,17 +14,21 @@ namespace TKQuake.Engine.Core
 {
     public class BSPRenderer
     {
+        // The amount of tesselation to perform on Bezier patches.
         private const int   TESSELLATION_LEVEL = 5;
+
+        // Information about the field of view.
+        // TODO: Get this information from some other central location.
         private const float NEAR_DISTANCE = 0.1f;
         private const float FAR_DISTANCE = 1000.0f;
         private const float ASPECT_RATIO = 800.0f / 600.0f;
         private const float FOV_Y = MathHelper.PiOver4;
         private const float FOV_X = 1.009191290f; //2 * Math.Atan(Math.Tan(FOV_Y / 2) * ASPECT_RATIO);
 
-        private string BSPFile;
-        private Loader.BSPLoader BSP;
+        private BSPLoader BSP = null;
 
-        private Vector4[] frustum;
+        // The view frustum defined by the 6 clipping planes.
+        private Vector4[] frustum = new Vector4[6];
 
         private TextureManager texManager;
 
@@ -35,36 +39,41 @@ namespace TKQuake.Engine.Core
             texManager = new TextureManager ();
         }
 
-        public BSPRenderer (string file) : this()
+        /// <summary>
+        /// Constructor that accepts a BSP file to load.
+        /// </summary>
+        /// <param name="loader">The new BSP loader to use.</param>
+        public BSPRenderer (BSPLoader loader) : this()
         {
-            SetFile (file);
+            SetLoader (loader);
         }
 
-        public void SetFile (string file)
+        /// <summary>
+        /// Change the BSP loader that is being rendered.
+        /// </summary>
+        /// <param name="loader">The new BSP loader to use.</param>
+        public void SetLoader (BSPLoader loader)
         {
-            BSPFile = file;
-
             // Delete old BSP.
             if (BSP != null)
             {
                 BSP = null;
             }
 
-            BSP = new Loader.BSPLoader (BSPFile, true);
-            BSP.LoadFile ();
-            BSP.DumpBSP ();
+            BSP = loader;
         }
 
-        public string GetFile ()
-        {
-            return(BSPFile);
-        }
-
-        public Loader.BSPLoader GetLoader()
+        /// <summary>
+        /// Return the BSP loader that is being rendered.
+        /// </summary>
+        public BSPLoader GetLoader()
         {
             return(BSP);
         }
 
+        /// <summary>
+        /// Generate all of the meshes for all of the faces in the BSP.
+        /// </summary>
         public List<Mesh> GetAllMeshes()
         {
             List<Mesh> BSPMeshes = new List<Mesh>();
@@ -83,6 +92,10 @@ namespace TKQuake.Engine.Core
             return(BSPMeshes);
         }
 
+        /// <summary>
+        /// Generate all of the meshes that a visible from the camera.
+        /// </summary>
+        /// <param name="camera">The camera.</param>
         public List<Mesh> GetVisibleMeshes(Camera camera)
         {
             List<Mesh> BSPMeshes   = new List<Mesh>();
@@ -91,8 +104,10 @@ namespace TKQuake.Engine.Core
             // Generate meshes for every face that is visible from the camera.
             foreach (int face in visibleFaces)
             {
+                // Generate the meshes.
                 List<Mesh> meshes = GenerateMesh(BSP.GetFace(face));
 
+                // If meshes were generated, add them to the list.
                 if (meshes != null)
                 {
                     BSPMeshes.AddRange(meshes);
@@ -102,6 +117,10 @@ namespace TKQuake.Engine.Core
             return(BSPMeshes);
         }
 
+        /// <summary>
+        /// Generate all of the meshes for the given face.
+        /// </summary>
+        /// <param name="currentFace">The face to generate meshes for.</param>
         private List<Mesh> GenerateMesh(Face.FaceEntry currentFace)
         {
             switch(currentFace.type)
@@ -134,6 +153,10 @@ namespace TKQuake.Engine.Core
             }
         }
 
+        /// <summary>
+        /// Create a list of every face that is visible from the camera.
+        /// </summary>
+        /// <param name="camera">The camera.</param>
         public List<int> GetVisibleFaces(Camera camera)
         {
             // Find the cluster that the camera is currently in.
@@ -145,13 +168,15 @@ namespace TKQuake.Engine.Core
             // Set the view frustum.
             SetViewFrustum (camera);
 
-            // Find all leafs that are visible from cameraCluster.
+            // Iteratate through all the leaf clusters in the BSP looking for the ones visible from the camera cluster.
             for (int i = (BSP.GetLeafs().Length - 1); i >= 0; i--)
             {
                 Leaf.LeafEntry leaf = BSP.GetLeaf (i);
 
+                // Check that the leaf cluster is visible from the camera cluster and the bounding box for the leaf is within the view frustum.
                 if ((IsClusterVisible (cameraCluster, leaf.cluster) == true) && (IsBoxInsideViewFrustum (leaf.mins, leaf.maxs)))
                 {
+                    // Iterate through every face in the leaf cluster.
                     for (int leafFace = (leaf.leafFace + leaf.n_leafFaces - 1); leafFace >= leaf.leafFace; leafFace--)
                     {
                         int face = BSP.GetLeafFace (leafFace).face;
@@ -169,8 +194,13 @@ namespace TKQuake.Engine.Core
             return (visibleFaces);
         }
 
+        /// <summary>
+        /// Create a view frustum from the camera view direction and field of view.
+        /// </summary>
+        /// <param name="camera">The camera.</param>
         private void SetViewFrustum(Camera camera)
         {
+            // Create our ONB.
             Vector3 view  = Vector3.Normalize (camera.ViewDirection);
             Vector3 up    = Vector3.UnitY;
             Vector3 right = Vector3.Cross (view, up);
@@ -214,6 +244,10 @@ namespace TKQuake.Engine.Core
             frustum [5] = new Vector4 (-normal, -Vector3.Dot (-normal, (nearCenter - nearWidth * right)));
         }
 
+        /// <summary>
+        /// Create a view frustum from a clipping matrix.
+        /// </summary>
+        /// <param name="clip">The clipping matrix.</param>
         private void SetViewFrustum(Matrix4 clip)
         {
             if (clip == Matrix4.Zero)
@@ -248,6 +282,11 @@ namespace TKQuake.Engine.Core
             }
         }
 
+        /// <summary>
+        /// Determines if some part of the specified bounding box is inside the view frustum of the camera.
+        /// </summary>
+        /// <param name="min">The position of one corner of the bounding box.</param>
+        /// <param name="max">The position of opposite corner of the bounding box.</param>
         private bool IsBoxInsideViewFrustum(Vector3 min, Vector3 max)
         {
             // If the view frustum has not been defined then dont even bother.
@@ -298,9 +337,15 @@ namespace TKQuake.Engine.Core
             return(true);
         }
 
+        /// <summary>
+        /// Finds the leaf node in the BSP tree that contains the given camera position.
+        /// </summary>
+        /// <param name="cameraPosition">The position of the camera.</param>
         private int FindCameraLeaf(Vector3 cameraPosition)
         {
             int index = 0;
+
+            // Convert the camera position to heterogenous coordinates.
             Vector4 cam = new Vector4 (cameraPosition [0], cameraPosition [1], cameraPosition [2], 1.0f);
 
             // Leaf nodes have negative indexes.
@@ -311,7 +356,6 @@ namespace TKQuake.Engine.Core
 
                 // Distance from point to the plane
                 double distance = Vector4.Dot (plane.plane, cam);
-                //double distance = Vector3.Dot (plane.normal, cameraPosition) - plane.dist;
 
                 // Determine which branch of the tree to traverse down.
                 if (distance >= 0)
@@ -328,6 +372,11 @@ namespace TKQuake.Engine.Core
             return(-index - 1);
         }
 
+        /// <summary>
+        /// Determines if a certain cluster is visible from a reference cluster.
+        /// </summary>
+        /// <param name="visCluster">The reference cluster.</param>
+        /// <param name="testCluster">The cluster to test.</param>
         private bool IsClusterVisible(int visCluster, int testCluster)
         {
             VisData.VisDataEntry visData = BSP.GetVisData (0);
@@ -346,6 +395,10 @@ namespace TKQuake.Engine.Core
             return((visSet & (1 << (testCluster & 7))) > 0);
         }
 
+        /// <summary>
+        /// Tesselates a Bezier patch into a triangular mesh.
+        /// </summary>
+        /// <param name="face">The Bezier patch to tesselate.</param>
         private List<Mesh> TessellateBezierPatch (Face.FaceEntry face)
         {
             List<Mesh>                       meshes = new List<Mesh> ();
@@ -572,10 +625,12 @@ namespace TKQuake.Engine.Core
             return(meshes);
         }
 
-        // This takes a tessellation level and three vector3
-        // p0 is start, p1 is the midpoint, p2 is the endpoint
-        // The returned list begins with p0, ends with p2, with
-        // the tessellated verts in between.
+        /// <summary>
+        /// Tesselates a Bezier curve into TESSELATION_LEVEL points.
+        /// </summary>
+        /// <param name="p0">The start point of the curve.</param>
+        /// <param name="p1">The "middle" point of the curve.</param>
+        /// <param name="p2">The end point of the curve.</param>
         private List<Vector3> Tessellate(Vector3 p0, Vector3 p1, Vector3 p2)
         {
             List<Vector3> vects = new List<Vector3>();
@@ -596,7 +651,12 @@ namespace TKQuake.Engine.Core
             return(vects);
         }
 
-        // Same as above, but for UVs
+        /// <summary>
+        /// Tesselates a Bezier curve into TESSELATION_LEVEL points.
+        /// </summary>
+        /// <param name="p0">The start point of the curve.</param>
+        /// <param name="p1">The "middle" point of the curve.</param>
+        /// <param name="p2">The end point of the curve.</param>
         private List<Vector2> TessellateUV(Vector2 p0, Vector2 p1, Vector2 p2)
         {
             List<Vector2> vects = new List<Vector2>();
@@ -617,8 +677,13 @@ namespace TKQuake.Engine.Core
             return vects;
         }
 
-        // Calculate a vector3 at point t on a bezier curve between
-        // p0 and p2 via p1.
+        /// <summary>
+        /// Find the point at time t along the Bezier curve between p0 and p2, via p1.
+        /// </summary>
+        /// <param name="t">The time along the curve.</param>
+        /// <param name="p0">The start point of the curve.</param>
+        /// <param name="p1">The "middle" point of the curve.</param>
+        /// <param name="p2">The end point of the curve.</param>
         private Vector3 BezCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
         {
             float a = 1.0f - t;
@@ -630,7 +695,13 @@ namespace TKQuake.Engine.Core
             return(Vector3.Add (Vector3.Add (p0s, p1s), p2s));
         }
 
-        // Calculate UVs for our tessellated vertices
+        /// <summary>
+        /// Find the point at time t along the Bezier curve between p0 and p2, via p1.
+        /// </summary>
+        /// <param name="t">The time along the curve.</param>
+        /// <param name="p0">The start point of the curve.</param>
+        /// <param name="p1">The "middle" point of the curve.</param>
+        /// <param name="p2">The end point of the curve.</param>
         private Vector2 BezCurveUV(float t, Vector2 p0, Vector2 p1, Vector2 p2)
         {
             float a = 1.0f - t;
@@ -642,6 +713,10 @@ namespace TKQuake.Engine.Core
             return(Vector2.Add (Vector2.Add (p0s, p1s), p2s));
         }
 
+        /// <summary>
+        /// Generates a mesh that is ready for rendering for the specified polygon.
+        /// </summary>
+        /// <param name="face">The face for which the mesh should be generated.</param>
         private Mesh RenderPolygon(Face.FaceEntry face)
         {
             List<Vector3> vertices  = new List<Vector3> ();
@@ -675,6 +750,10 @@ namespace TKQuake.Engine.Core
             return(mesh);
          }
 
+        /// <summary>
+        /// Finds the texture in the texture manager that corresponds to the current face.
+        /// </summary>
+        /// <param name="face">The face for which we want to find a texture for.</param>
         private Infrastructure.Texture.Texture GetTexture(Face.FaceEntry face)
         {
             Infrastructure.Texture.Texture texture = null;
