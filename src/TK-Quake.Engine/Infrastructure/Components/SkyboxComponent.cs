@@ -10,6 +10,7 @@ using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Math;
 using TKQuake.Engine.Infrastructure.Texture;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
+using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Engine.Infrastructure.Components
 {

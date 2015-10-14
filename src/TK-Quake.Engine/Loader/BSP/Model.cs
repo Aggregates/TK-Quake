@@ -27,8 +27,15 @@ namespace TKQuake.Engine.Loader.BSP
         private Model() { }
         public Model(bool swizzle) { this.swizzle = swizzle; }
 
+        /// <summary>
+        /// Parses the directory entry.
+        /// </summary>
+        /// <param name="file">The file to read the directory entry from.</param>
+        /// <param name="offset">The offset within the file that the directory entry starts at.</param>
+        /// <param name="offset">The length of the directory entry.</param>
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
+            // Calculate the number of elements in this directory entry.
             size = length / MODEL_SIZE;
 
             // Create models array.
@@ -40,6 +47,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[MODEL_SIZE];
 
+            // Read in each element of this directory entry.
             for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, MODEL_SIZE);
@@ -51,6 +59,7 @@ namespace TKQuake.Engine.Loader.BSP
                                                   BitConverter.ToSingle(buf, 4 * sizeof(float)),
                                                   BitConverter.ToSingle(buf, 5 * sizeof(float)));
 
+                // Change coordinate system to match OpenGLs.
                 if (swizzle == true)
                 {
                     Swizzle (ref models [i].maxs);
@@ -64,11 +73,18 @@ namespace TKQuake.Engine.Loader.BSP
             }
         }
 
+        /// <summary>
+        /// Return the array of directory entries.
+        /// </summary>
         public ModelEntry[] GetModels()
         {
             return(models);
         }
 
+        /// <summary>
+        /// Return a particular directory entry.
+        /// </summary>
+        /// <param name="brush">The index of the entry to retrieve.</param>
         public ModelEntry GetModel(int model)
         {
             return(models[model]);

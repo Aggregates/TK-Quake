@@ -17,10 +17,17 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Core
 {
+    public class Something
+    {
+        public int VerticesId { get; set; }
+        public int IndicesId { get; set; }
+        public Mesh Mesh { get; set; }
+    }
+
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
-        private TextureManager TextureManager = TextureManager.Singleton ();
+        private readonly TextureManager TextureManager = TextureManager.Singleton ();
         private SpriteBatch _batch = new SpriteBatch();
         private int? _program;
 
@@ -188,6 +195,13 @@ namespace TKQuake.Engine.Core
 
             //reset translation matrix?
             entity.Translation = Matrix4.Identity;
+        }
+
+        private void DrawVbo(Mesh mesh)
+        {
+            GL.BindVertexArray(mesh.VaoId);
+            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.BindVertexArray(0);
         }
 
         private void DrawVbo(Mesh mesh)

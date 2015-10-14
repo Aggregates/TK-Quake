@@ -10,15 +10,17 @@ namespace TKQuake.Engine.Loader.BSP
 {
     public class Face : Directory
     {
+        // The types of faces.
         public enum FaceType : byte
         {
-            POLYGON   = 1,
-            PATCH     = 2,
-            MESH      = 3,
-            BILLBOARD = 4,
+            POLYGON,
+            PATCH,
+            MESH,
+            BILLBOARD,
             UNKNOWN
         }
 
+        // The strcture of a face.
         public struct FaceEntry
         {
             public int       texture;
@@ -37,6 +39,7 @@ namespace TKQuake.Engine.Loader.BSP
             public int[]     size;
         }
 
+        // The size of a face entry.
         private const int FACE_SIZE = 104;
 
         private FaceEntry[] faces;
@@ -44,8 +47,15 @@ namespace TKQuake.Engine.Loader.BSP
         private Face() { }
         public Face(bool swizzle) { this.swizzle = swizzle; }
 
+        /// <summary>
+        /// Parses the directory entry.
+        /// </summary>
+        /// <param name="file">The file to read the directory entry from.</param>
+        /// <param name="offset">The offset within the file that the directory entry starts at.</param>
+        /// <param name="offset">The length of the directory entry.</param>
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
+            // Calculate the number of elements in this directory entry.
             size = length / FACE_SIZE;
 
             // Create faces array.
@@ -57,6 +67,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[FACE_SIZE];
 
+            // Read in each element of this directory entry.
             for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, FACE_SIZE);
@@ -65,9 +76,11 @@ namespace TKQuake.Engine.Loader.BSP
                 faces[i].lm_size     = new int[2];
                 faces[i].lm_vecs     = new Vector3[2];
                 faces[i].size        = new int[2];
+
                 faces[i].texture     = BitConverter.ToInt32(buf,   0 * sizeof(int));
                 faces[i].effect      = BitConverter.ToInt32(buf,   1 * sizeof(int));
 
+                // Determine the type of the face.
                 switch (BitConverter.ToInt32(buf, 2 * sizeof(int)))
                 {
                     case 1:
@@ -123,8 +136,12 @@ namespace TKQuake.Engine.Loader.BSP
                                                    BitConverter.ToSingle(buf, 22 * sizeof(float)),
                                                    BitConverter.ToSingle(buf, 23 * sizeof(float)));
 
+                // Change coordinate system to match OpenGL.
                 if (swizzle == true)
                 {
+                    Swizzle (ref faces [i].lm_origin);
+                    Swizzle (ref faces [i].lm_vecs[0]);
+                    Swizzle (ref faces [i].lm_vecs[1]);
                     Swizzle (ref faces [i].normal);
                 }
 
@@ -133,11 +150,18 @@ namespace TKQuake.Engine.Loader.BSP
             }
         }
 
+        /// <summary>
+        /// Return the array of directory entries.
+        /// </summary>
         public FaceEntry[] GetFaces()
         {
             return(faces);
         }
 
+        /// <summary>
+        /// Return a particular directory entry.
+        /// </summary>
+        /// <param name="brush">The index of the entry to retrieve.</param>
         public FaceEntry GetFace(int face)
         {
             return(faces[face]);
