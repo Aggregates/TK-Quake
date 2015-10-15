@@ -110,7 +110,8 @@ namespace TKQuake.Engine.Core
             foreach (int face in visibleFaces)
             {
                 // Generate the meshes.
-                List<Mesh> meshes = GenerateMesh(BSP.GetFace(face));
+                Face.FaceEntry currentFace = BSP.GetFace(face);
+                List<Mesh> meshes = GenerateMesh(currentFace);
 
                 // Make sure there is an entry in our dictionary for the current face.
                 BSPMeshes [face] = new List<Mesh> ();
@@ -431,8 +432,6 @@ namespace TKQuake.Engine.Core
                 //Calculate how many patches there are using size[]
                 //There are n_patchesX by n_patchesY patches in the grid, each of those
                 //starts at a vert (i,j) in the overall grid
-                //We don't actually need to know how many are on the Y length
-                //but the forumla is here for historical/academic purposes
                 int n_patchesX = stepWidth;
                 int n_patchesY = stepHeight;
 
@@ -696,11 +695,10 @@ namespace TKQuake.Engine.Core
         private Vector3 BezCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
         {
             float a = 1.0f - t;
-            float tt = t * t;
 
             Vector3 p0s = Vector3.Multiply (p0, a * a);
             Vector3 p1s = Vector3.Multiply (p1, 2 * a * t);
-            Vector3 p2s = Vector3.Multiply (p2, tt);
+            Vector3 p2s = Vector3.Multiply (p2, t * t);
             return(Vector3.Add (Vector3.Add (p0s, p1s), p2s));
         }
 
@@ -714,11 +712,10 @@ namespace TKQuake.Engine.Core
         private Vector2 BezCurveUV(float t, Vector2 p0, Vector2 p1, Vector2 p2)
         {
             float a = 1.0f - t;
-            float tt = t * t;
 
             Vector2 p0s = Vector2.Multiply (p0, a * a);
             Vector2 p1s = Vector2.Multiply (p1, 2 * a * t);
-            Vector2 p2s = Vector2.Multiply (p2, tt);
+            Vector2 p2s = Vector2.Multiply (p2, t * t);
             return(Vector2.Add (Vector2.Add (p0s, p1s), p2s));
         }
 
