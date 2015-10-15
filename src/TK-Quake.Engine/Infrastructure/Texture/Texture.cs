@@ -8,7 +8,7 @@ using TKQuake.Engine.Infrastructure.Math;
 
 namespace TKQuake.Engine.Infrastructure.Texture
 {
-    public struct Texture
+    public class Texture
     {
         public int Id { get; set; }
         public int Width { get; set; }
@@ -25,6 +25,14 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
                 return new Vector3(halfWidth, halfHeight, depth);
             }
+        }
+
+        private Texture ()
+        {
+            Id     = -1;
+            Width  = 0;
+            Height = 0;
+            Path   = "";
         }
 
         public Texture(int id, int width, int height, string path) : this()

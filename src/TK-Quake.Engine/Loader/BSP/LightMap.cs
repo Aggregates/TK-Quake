@@ -21,10 +21,18 @@ namespace TKQuake.Engine.Loader.BSP
 
         private LightMapEntry[] lightMaps;
 
-        public LightMap() { }
+        private LightMap() { }
+        public LightMap(bool swizzle) { this.swizzle = swizzle; }
 
+        /// <summary>
+        /// Parses the directory entry.
+        /// </summary>
+        /// <param name="file">The file to read the directory entry from.</param>
+        /// <param name="offset">The offset within the file that the directory entry starts at.</param>
+        /// <param name="offset">The length of the directory entry.</param>
         public override void ParseDirectoryEntry(FileStream file, int offset, int length)
         {
+            // Calculate the number of elements in this directory entry.
             size = length / LIGHT_MAP_SIZE;
 
             // Create lightmaps array.
@@ -36,6 +44,7 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[LIGHT_MAP_SIZE];
 
+            // Read in each element of this directory entry.
             for (int i = 0; i < size; i++)
             {
                 file.Read (buf, 0, LIGHT_MAP_SIZE);
@@ -54,11 +63,18 @@ namespace TKQuake.Engine.Loader.BSP
             }
         }
 
+        /// <summary>
+        /// Return the array of directory entries.
+        /// </summary>
         public LightMapEntry[] GetLightMaps()
         {
             return(lightMaps);
         }
 
+        /// <summary>
+        /// Return a particular directory entry.
+        /// </summary>
+        /// <param name="brush">The index of the entry to retrieve.</param>
         public LightMapEntry GetLightMap(int lightMap)
         {
             return(lightMaps[lightMap]);

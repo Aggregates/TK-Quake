@@ -24,13 +24,6 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
-            /*
-            var bsp = new Engine.Loader.BSPLoader ();
-            bsp.SetBSPFile ("/home/bidski/Projects/COMP3320/q3dm6.bsp");
-            bsp.LoadFile ();
-            bsp.DumpBSP ();
-            */
-
             using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
                 DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
             {
@@ -81,7 +74,7 @@ namespace TKQuake.Cookbook
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
             renderer.LinkShaders();
 
-            currentScreen = new CameraTestScreen(renderer);
+            currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
 
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 

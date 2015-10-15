@@ -4,24 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace TKQuake.Engine.Loader
 {
     public class BSPLoader
     {
+        private const string MAGIC_STRING    = "IBSP";
+        private const int    BSP_VERSION     = 0x2E;
+        private const int    NUM_DIRECTORIES = 17;
+
+        // The structure of each lump entry.
         private struct LumpEntry
         {
             public int offset;
             public int length;
         }
 
+        // The structure of the BSP header block.
         private struct HeaderEntry
         {
             public string      magic;
             public int         version;
-            public LumpEntry[] lumps; 
+            public LumpEntry[] lumps;
         }
 
+        // The supported firstory types.
         private enum DirectoryTypes : byte
         {
             Entity,
@@ -43,54 +51,70 @@ namespace TKQuake.Engine.Loader
             VisData
         };
 
-        private const string MAGIC_STRING    = "IBSP";
-        private const int    BSP_VERSION     = 0x2E;
-        private const int    NUM_DIRECTORIES = 17;
-
-        private HeaderEntry header;
         private BSP.Directory[] directoryParsers = new BSP.Directory[NUM_DIRECTORIES];
+        HeaderEntry header;
 
         private string BSPFile = "";
 
-        public BSPLoader()
+        /// <summary>
+        /// Constructor that allows vector swizzling to be enabled.
+        /// </summary>
+        /// <param name="swizzle">Sets whether vector components should be swizzled.</param>
+        public BSPLoader(bool swizzle)
         {
             header.lumps = new LumpEntry[NUM_DIRECTORIES];
 
-            directoryParsers[(int)DirectoryTypes.Entity]    = new BSP.Entity();
-            directoryParsers[(int)DirectoryTypes.Texture]   = new BSP.Texture();
-            directoryParsers[(int)DirectoryTypes.Plane]     = new BSP.Plane();
-            directoryParsers[(int)DirectoryTypes.Node]      = new BSP.Node();
-            directoryParsers[(int)DirectoryTypes.Leaf]      = new BSP.Leaf();
-            directoryParsers[(int)DirectoryTypes.LeafFace]  = new BSP.LeafFace();
-            directoryParsers[(int)DirectoryTypes.LeafBrush] = new BSP.LeafBrush();
-            directoryParsers[(int)DirectoryTypes.Model]     = new BSP.Model();
-            directoryParsers[(int)DirectoryTypes.Brush]     = new BSP.Brush();
-            directoryParsers[(int)DirectoryTypes.BrushSide] = new BSP.BrushSide();
-            directoryParsers[(int)DirectoryTypes.Vertex]    = new BSP.Vertex();
-            directoryParsers[(int)DirectoryTypes.MeshVert]  = new BSP.MeshVert();
-            directoryParsers[(int)DirectoryTypes.Effect]    = new BSP.Effect();
-            directoryParsers[(int)DirectoryTypes.Face]      = new BSP.Face();
-            directoryParsers[(int)DirectoryTypes.LightMap]  = new BSP.LightMap();
-            directoryParsers[(int)DirectoryTypes.LightVol]  = new BSP.LightVol();
-            directoryParsers[(int)DirectoryTypes.VisData]   = new BSP.VisData();
+            // Instantiate all of the directory parsers.
+            directoryParsers[(int)DirectoryTypes.Entity]    = new BSP.Entity(swizzle);
+            directoryParsers[(int)DirectoryTypes.Texture]   = new BSP.Texture(swizzle);
+            directoryParsers[(int)DirectoryTypes.Plane]     = new BSP.Plane(swizzle);
+            directoryParsers[(int)DirectoryTypes.Node]      = new BSP.Node(swizzle);
+            directoryParsers[(int)DirectoryTypes.Leaf]      = new BSP.Leaf(swizzle);
+            directoryParsers[(int)DirectoryTypes.LeafFace]  = new BSP.LeafFace(swizzle);
+            directoryParsers[(int)DirectoryTypes.LeafBrush] = new BSP.LeafBrush(swizzle);
+            directoryParsers[(int)DirectoryTypes.Model]     = new BSP.Model(swizzle);
+            directoryParsers[(int)DirectoryTypes.Brush]     = new BSP.Brush(swizzle);
+            directoryParsers[(int)DirectoryTypes.BrushSide] = new BSP.BrushSide(swizzle);
+            directoryParsers[(int)DirectoryTypes.Vertex]    = new BSP.Vertex(swizzle);
+            directoryParsers[(int)DirectoryTypes.MeshVert]  = new BSP.MeshVert(swizzle);
+            directoryParsers[(int)DirectoryTypes.Effect]    = new BSP.Effect(swizzle);
+            directoryParsers[(int)DirectoryTypes.Face]      = new BSP.Face(swizzle);
+            directoryParsers[(int)DirectoryTypes.LightMap]  = new BSP.LightMap(swizzle);
+            directoryParsers[(int)DirectoryTypes.LightVol]  = new BSP.LightVol(swizzle);
+            directoryParsers[(int)DirectoryTypes.VisData]   = new BSP.VisData(swizzle);
         }
 
-        public BSPLoader(string file) : this()
+        /// <summary>
+        /// Constructor that accepts a BSP file to load and allows vector swizzling to be enabled.
+        /// </summary>
+        /// <param name="file">The BSP file to load.</param>
+        /// <param name="swizzle">Sets whether vector components should be swizzled.</param>
+        public BSPLoader(string file, bool swizzle) : this(swizzle)
         {
             SetBSPFile(file);
         }
 
+        /// <summary>
+        /// Sets the BSP file that should be loaded.
+        /// </summary>
+        /// <param name="file">The BSP file to load.</param>
         public void SetBSPFile(string file)
         {
             BSPFile = file;
         }
 
+        /// <summary>
+        /// Gets the loaded BSP file.
+        /// </summary>
         public string GetBSPFile()
         {
             return (BSPFile);
         }
 
-        public bool LoadFile()
+        /// <summary>
+        /// Parses the contents of the specified BSP file.
+        /// </summary>
+        public bool ParseFile()
         {
             try
             {
@@ -153,6 +177,10 @@ namespace TKQuake.Engine.Loader
 			return (true);
         }
 
+        /// <summary>
+        /// Dumps the contents of the parsed BSP file into a human-readable format.
+        /// TODO: Create as print functions in the directory parsers.
+        /// </summary>
         public void DumpBSP()
         {
             System.IO.StreamWriter file = new System.IO.StreamWriter("./BSPDump.txt");
@@ -173,9 +201,10 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("********* Entity Lump *********");
             file.WriteLine(String.Format("Size : {0}", directoryParsers[(int)DirectoryTypes.Entity].GetSize()));
 
-            if (directoryParsers[(int)DirectoryTypes.Entity].GetSize() != 0)
+            for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Entity].GetSize(); i++)
             {
-                file.WriteLine(String.Format("Buffer : {0}", GetEntities().entities));
+                file.WriteLine(String.Format("Entity {0}", i));
+                file.WriteLine(String.Format("{0}\n", GetEntity(i).entity));
             }
 
             file.WriteLine("");
@@ -197,8 +226,7 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Plane].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Plane {0}", i));
-                file.WriteLine(String.Format("\tNormal : {0} {1} {2}", GetPlane(i).normal[0], GetPlane(i).normal[1], GetPlane(i).normal[2]));
-                file.WriteLine(String.Format("\tDistance : {0}", GetPlane(i).dist));
+                file.WriteLine(String.Format("\tVector form : {0}", GetPlane(i).plane));
             }
 
             file.WriteLine("");
@@ -210,8 +238,8 @@ namespace TKQuake.Engine.Loader
                 file.WriteLine(String.Format("Node {0}", i));
                 file.WriteLine(String.Format("\tPlane index : {0}", GetNode(i).plane));
                 file.WriteLine(String.Format("\tChildren index : {0} {1}", GetNode(i).children[0], GetNode(i).children[1]));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0} {1} {2}", GetNode(i).mins[0], GetNode(i).mins[1], GetNode(i).mins[2]));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0} {1} {2}", GetNode(i).maxs[0], GetNode(i).maxs[1], GetNode(i).maxs[2]));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetNode(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetNode(i).maxs));
             }
 
             file.WriteLine("");
@@ -222,8 +250,8 @@ namespace TKQuake.Engine.Loader
             {
                 file.WriteLine(String.Format("Leaf {0}", i));
                 file.WriteLine(String.Format("\tCluster {0}", GetLeaf(i).cluster));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0} {1} {2}", GetLeaf(i).mins[0], GetLeaf(i).mins[1], GetLeaf(i).mins[2]));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0} {1} {2}", GetLeaf(i).maxs[0], GetLeaf(i).maxs[1], GetLeaf(i).maxs[2]));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetLeaf(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetLeaf(i).maxs));
                 file.WriteLine(String.Format("\tLeafFace {0}", GetLeaf(i).leafFace));
                 file.WriteLine(String.Format("\tNb LeafFace {0}", GetLeaf(i).n_leafFaces));
                 file.WriteLine(String.Format("\tLeafBrush {0}", GetLeaf(i).leafBrush));
@@ -257,8 +285,8 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Model].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Model {0}", i));
-                file.WriteLine(String.Format("\tMin Bounding Box : {0} {1} {2}", GetModel(i).mins[0], GetModel(i).mins[1], GetModel(i).mins[2]));
-                file.WriteLine(String.Format("\tMax Bounding Box : {0} {1} {2}", GetModel(i).maxs[0], GetModel(i).maxs[1], GetModel(i).maxs[2]));
+                file.WriteLine(String.Format("\tMin Bounding Box : {0}", GetModel(i).mins));
+                file.WriteLine(String.Format("\tMax Bounding Box : {0}", GetModel(i).maxs));
                 file.WriteLine(String.Format("\tFace {0}", GetModel(i).face));
                 file.WriteLine(String.Format("\tNbFaces {0}", GetModel(i).n_faces));
                 file.WriteLine(String.Format("\tBrush {0}", GetModel(i).brush));
@@ -295,11 +323,11 @@ namespace TKQuake.Engine.Loader
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Vertex].GetSize(); i++)
             {
                 file.WriteLine(String.Format("Vertex {0}", i));
-                file.WriteLine(String.Format("\tPosition : {0} {1} {2}", GetVertex(i).position[0], GetVertex(i).position[1], GetVertex(i).position[2]));
-                file.WriteLine(String.Format("\tTexCoord0 : {0} {1}", GetVertex(i).texCoord[0, 0], GetVertex(i).texCoord[0, 1]));
-                file.WriteLine(String.Format("\tTexCoord0 : {0} {1}", GetVertex(i).texCoord[1, 0], GetVertex(i).texCoord[1, 1]));
-                file.WriteLine(String.Format("\tNormal : {0} {1} {2}", GetVertex(i).normal[0], GetVertex(i).normal[1], GetVertex(i).normal[2]));
-                file.WriteLine(String.Format("\tColor : {0} {1} {2} {3}", GetVertex(i).colour[0], GetVertex(i).colour[1], GetVertex(i).colour[2], GetVertex(i).colour[3]));
+                file.WriteLine(String.Format("\tPosition : {0}", GetVertex(i).position));
+                file.WriteLine(String.Format("\tTexCoord0 : {0}", GetVertex(i).texCoord[0]));
+                file.WriteLine(String.Format("\tTexCoord1 : {0}", GetVertex(i).texCoord[1]));
+                file.WriteLine(String.Format("\tNormal : {0}", GetVertex(i).normal));
+                file.WriteLine(String.Format("\tColor : {0}", GetVertex(i).colour));
             }
 
             file.WriteLine("");
@@ -327,6 +355,7 @@ namespace TKQuake.Engine.Loader
             file.WriteLine("");
 
             file.WriteLine("********* Face Lump *********");
+            file.WriteLine(String.Format("Num Faces {0}", directoryParsers[(int)DirectoryTypes.Face].GetSize()));
 
             for (int i = 0; i < directoryParsers[(int)DirectoryTypes.Face].GetSize(); i++)
             {
@@ -341,10 +370,10 @@ namespace TKQuake.Engine.Loader
                 file.WriteLine(String.Format("\tLightMapIndex : {0}", GetFace(i).lm_index));
                 file.WriteLine(String.Format("\tLightMapCorner : {0} {1}", GetFace(i).lm_start[0], GetFace(i).lm_start[1]));
                 file.WriteLine(String.Format("\tLightmapSize : {0} {1}", GetFace(i).lm_size[0], GetFace(i).lm_size[1]));
-                file.WriteLine(String.Format("\tLightmapOrigin : {0} {1} {2}", GetFace(i).lm_origin[0], GetFace(i).lm_origin[1], GetFace(i).lm_origin[2]));
-                file.WriteLine(String.Format("\tLightmapVecs S : {0} {1} {2}", GetFace(i).lm_vecs[0, 0], GetFace(i).lm_vecs[0, 1], GetFace(i).lm_vecs[0, 2]));
-                file.WriteLine(String.Format("\tLightmapVecs T : {0} {1} {2}", GetFace(i).lm_vecs[1, 0], GetFace(i).lm_vecs[1, 1], GetFace(i).lm_vecs[1, 2]));
-                file.WriteLine(String.Format("\tNormal : {0} {1} {2}", GetFace(i).normal[0], GetFace(i).normal[1], GetFace(i).normal[2]));
+                file.WriteLine(String.Format("\tLightmapOrigin : {0}", GetFace(i).lm_origin));
+                file.WriteLine(String.Format("\tLightmapVecs S : {0}", GetFace(i).lm_vecs[0]));
+                file.WriteLine(String.Format("\tLightmapVecs T : {0}", GetFace(i).lm_vecs[1]));
+                file.WriteLine(String.Format("\tNormal : {0}", GetFace(i).normal.ToString ()));
                 file.WriteLine(String.Format("\tPatchSize : {0} {1}", GetFace(i).size[0], GetFace(i).size[1]));
             }
 
@@ -370,8 +399,8 @@ namespace TKQuake.Engine.Loader
 
             if (directoryParsers[(int)DirectoryTypes.LightVol].GetSize() > 0)
             {
-                file.WriteLine(String.Format("\tNbCluster {0}", GetVisData(0).n_vecs));
-                file.WriteLine(String.Format("\tBytePerCluster {0}", GetVisData(0).sz_vecs));
+                file.WriteLine(String.Format("\tNbCluster {0}", GetVisData().n_vecs));
+                file.WriteLine(String.Format("\tBytePerCluster {0}", GetVisData().sz_vecs));
             }
 
             file.WriteLine("");
@@ -379,169 +408,284 @@ namespace TKQuake.Engine.Loader
             file.Close();
         }
 
-        public BSP.Entity.EntityEntry GetEntities()
+        /// <summary>
+        /// Return the entities from the parsed file.
+        /// </summary>
+        public BSP.Entity.EntityEntry[] GetEntities()
         {
             return(((BSP.Entity)directoryParsers[(int)DirectoryTypes.Entity]).GetEntities());
         }
 
+        /// <summary>
+        /// Return an entity from the parsed file.
+        /// </summary>
+        /// <param name="entity">The index of the entity to retrieve.</param>
+        public BSP.Entity.EntityEntry GetEntity(int entity)
+        {
+            return(((BSP.Entity)directoryParsers[(int)DirectoryTypes.Entity]).GetEntity(entity));
+        }
+
+        /// <summary>
+        /// Return the textures from the parsed file.
+        /// </summary>
         public BSP.Texture.TextureEntry[] GetTextures()
         {
             return(((BSP.Texture)directoryParsers[(int)DirectoryTypes.Texture]).GetTextures());
         }
 
+        /// <summary>
+        /// Return a texture from the parsed file.
+        /// </summary>
+        /// <param name="texture">The index of the texture to retrieve.</param>
         public BSP.Texture.TextureEntry GetTexture(int texture)
         {
             return(((BSP.Texture)directoryParsers[(int)DirectoryTypes.Texture]).GetTexture (texture));
         }
 
+        /// <summary>
+        /// Return the planes from the parsed file.
+        /// </summary>
         public BSP.Plane.PlaneEntry[] GetPlanes()
         {
             return(((BSP.Plane)directoryParsers[(int)DirectoryTypes.Plane]).GetPlanes());
         }
 
+        /// <summary>
+        /// Return a plane from the parsed file.
+        /// </summary>
+        /// <param name="plane">The index of the plane to retrieve.</param>
         public BSP.Plane.PlaneEntry GetPlane(int plane)
         {
             return(((BSP.Plane)directoryParsers[(int)DirectoryTypes.Plane]).GetPlane(plane));
         }
 
+        /// <summary>
+        /// Return the nodes from the parsed file.
+        /// </summary>
         public BSP.Node.NodeEntry[] GetNodes()
         {
             return(((BSP.Node)directoryParsers[(int)DirectoryTypes.Node]).GetNodes());
         }
 
+        /// <summary>
+        /// Return a node from the parsed file.
+        /// </summary>
+        /// <param name="node">The index of the node to retrieve.</param>
         public BSP.Node.NodeEntry GetNode(int node)
         {
             return(((BSP.Node)directoryParsers[(int)DirectoryTypes.Node]).GetNode(node));
         }
 
+        /// <summary>
+        /// Return the leafs from the parsed file.
+        /// </summary>
         public BSP.Leaf.LeafEntry[] GetLeafs()
         {
             return(((BSP.Leaf)directoryParsers[(int)DirectoryTypes.Leaf]).GetLeafs());
         }
 
+        /// <summary>
+        /// Return a leaf from the parsed file.
+        /// </summary>
+        /// <param name="leaf">The index of the leaf to retrieve.</param>
         public BSP.Leaf.LeafEntry GetLeaf(int leaf)
         {
             return(((BSP.Leaf)directoryParsers[(int)DirectoryTypes.Leaf]).GetLeaf(leaf));
         }
 
+        /// <summary>
+        /// Return the leaffaces from the parsed file.
+        /// </summary>
         public BSP.LeafFace.LeafFaceEntry[] GetLeafFaces()
         {
             return(((BSP.LeafFace)directoryParsers[(int)DirectoryTypes.LeafFace]).GetLeafFaces());
         }
 
+        /// <summary>
+        /// Return a leafface from the parsed file.
+        /// </summary>
+        /// <param name="leafface">The index of the leafface to retrieve.</param>
         public BSP.LeafFace.LeafFaceEntry GetLeafFace(int leafFace)
         {
             return(((BSP.LeafFace)directoryParsers[(int)DirectoryTypes.LeafFace]).GetLeafFace(leafFace));
         }
 
+        /// <summary>
+        /// Return the leafbrushes from the parsed file.
+        /// </summary>
         public BSP.LeafBrush.LeafBrushEntry[] GetLeafBrushes()
         {
             return(((BSP.LeafBrush)directoryParsers[(int)DirectoryTypes.LeafBrush]).GetLeafBrushes());
         }
 
+        /// <summary>
+        /// Return a leafbrush from the parsed file.
+        /// </summary>
+        /// <param name="leafbrush">The index of the leafbrush to retrieve.</param>
         public BSP.LeafBrush.LeafBrushEntry GetLeafBrush(int leafBrush)
         {
             return(((BSP.LeafBrush)directoryParsers[(int)DirectoryTypes.LeafBrush]).GetLeafBrush(leafBrush));
         }
 
+        /// <summary>
+        /// Return the models from the parsed file.
+        /// </summary>
         public BSP.Model.ModelEntry[] GetModels()
         {
             return(((BSP.Model)directoryParsers[(int)DirectoryTypes.Model]).GetModels());
         }
 
+        /// <summary>
+        /// Return a model from the parsed file.
+        /// </summary>
+        /// <param name="model">The index of the model to retrieve.</param>
         public BSP.Model.ModelEntry GetModel(int model)
         {
             return(((BSP.Model)directoryParsers[(int)DirectoryTypes.Model]).GetModel(model));
         }
 
+        /// <summary>
+        /// Return the brushes from the parsed file.
+        /// </summary>
         public BSP.Brush.BrushEntry[] GetBrushes()
         {
             return(((BSP.Brush)directoryParsers[(int)DirectoryTypes.Brush]).GetBrushes());
         }
 
+        /// <summary>
+        /// Return a brush from the parsed file.
+        /// </summary>
+        /// <param name="brush">The index of the brush to retrieve.</param>
         public BSP.Brush.BrushEntry GetBrush(int brush)
         {
             return(((BSP.Brush)directoryParsers[(int)DirectoryTypes.Brush]).GetBrush(brush));
         }
 
+        /// <summary>
+        /// Return the brushsides from the parsed file.
+        /// </summary>
         public BSP.BrushSide.BrushSideEntry[] GetBrushSides()
         {
             return(((BSP.BrushSide)directoryParsers[(int)DirectoryTypes.BrushSide]).GetBrushSides());
         }
 
+        /// <summary>
+        /// Return a brushside from the parsed file.
+        /// </summary>
+        /// <param name="brushside">The index of the brushside to retrieve.</param>
         public BSP.BrushSide.BrushSideEntry GetBrushSide(int brushSide)
         {
             return(((BSP.BrushSide)directoryParsers[(int)DirectoryTypes.BrushSide]).GetBrushSide(brushSide));
         }
 
+        /// <summary>
+        /// Return the vertexes from the parsed file.
+        /// </summary>
         public BSP.Vertex.VertexEntry[] GetVertexes()
         {
             return(((BSP.Vertex)directoryParsers[(int)DirectoryTypes.Vertex]).GetVertexes());
         }
 
+        /// <summary>
+        /// Return a vertex from the parsed file.
+        /// </summary>
+        /// <param name="vertex">The index of the vertex to retrieve.</param>
         public BSP.Vertex.VertexEntry GetVertex(int vertex)
         {
             return(((BSP.Vertex)directoryParsers[(int)DirectoryTypes.Vertex]).GetVertex(vertex));
         }
 
+        /// <summary>
+        /// Return the meshverts from the parsed file.
+        /// </summary>
         public BSP.MeshVert.MeshVertEntry[] GetMeshVerts()
         {
             return(((BSP.MeshVert)directoryParsers[(int)DirectoryTypes.MeshVert]).GetMeshVerts());
         }
 
+        /// <summary>
+        /// Return a meshvert from the parsed file.
+        /// </summary>
+        /// <param name="meshvert">The index of the meshvert to retrieve.</param>
         public BSP.MeshVert.MeshVertEntry GetMeshVert(int meshVert)
         {
             return(((BSP.MeshVert)directoryParsers[(int)DirectoryTypes.MeshVert]).GetMeshVert(meshVert));
         }
 
+        /// <summary>
+        /// Return the effects from the parsed file.
+        /// </summary>
         public BSP.Effect.EffectEntry[] GetEffects()
         {
             return(((BSP.Effect)directoryParsers[(int)DirectoryTypes.Effect]).GetEffects());
         }
 
+        /// <summary>
+        /// Return a effect from the parsed file.
+        /// </summary>
+        /// <param name="effect">The index of the effect to retrieve.</param>
         public BSP.Effect.EffectEntry GetEffect(int effect)
         {
             return(((BSP.Effect)directoryParsers[(int)DirectoryTypes.Effect]).GetEffect(effect));
         }
 
+        /// <summary>
+        /// Return the faces from the parsed file.
+        /// </summary>
         public BSP.Face.FaceEntry[] GetFaces()
         {
             return(((BSP.Face)directoryParsers[(int)DirectoryTypes.Face]).GetFaces());
         }
 
+        /// <summary>
+        /// Return a face from the parsed file.
+        /// </summary>
+        /// <param name="face">The index of the face to retrieve.</param>
         public BSP.Face.FaceEntry GetFace(int face)
         {
             return(((BSP.Face)directoryParsers[(int)DirectoryTypes.Face]).GetFace(face));
         }
 
+        /// <summary>
+        /// Return the lightmaps from the parsed file.
+        /// </summary>
         public BSP.LightMap.LightMapEntry[] GetLightMaps()
         {
             return(((BSP.LightMap)directoryParsers[(int)DirectoryTypes.LightMap]).GetLightMaps());
         }
 
+        /// <summary>
+        /// Return a lightmap from the parsed file.
+        /// </summary>
+        /// <param name="lightmap">The index of the lightmap to retrieve.</param>
         public BSP.LightMap.LightMapEntry GetLightMap(int lightMap)
         {
             return(((BSP.LightMap)directoryParsers[(int)DirectoryTypes.LightMap]).GetLightMap(lightMap));
         }
 
+        /// <summary>
+        /// Return the lightvols from the parsed file.
+        /// </summary>
         public BSP.LightVol.LightVolEntry[] GetLightVols()
         {
             return(((BSP.LightVol)directoryParsers[(int)DirectoryTypes.LightVol]).GetLightVols());
         }
 
+        /// <summary>
+        /// Return a lightvol from the parsed file.
+        /// </summary>
+        /// <param name="lightvol">The index of the lightvol to retrieve.</param>
         public BSP.LightVol.LightVolEntry GetLightVol(int lightVol)
         {
             return(((BSP.LightVol)directoryParsers[(int)DirectoryTypes.LightVol]).GetLightVol(lightVol));
         }
 
-        public BSP.VisData.VisDataEntry[] GetVisDatas()
+        /// <summary>
+        /// Return the visdata from the parsed file.
+        /// </summary>
+        public BSP.VisData.VisDataEntry GetVisData()
         {
-            return(((BSP.VisData)directoryParsers[(int)DirectoryTypes.VisData]).GetVisDatas());
-        }
-
-        public BSP.VisData.VisDataEntry GetVisData(int visData)
-        {
-            return(((BSP.VisData)directoryParsers[(int)DirectoryTypes.VisData]).GetVisData(visData));
+            return(((BSP.VisData)directoryParsers[(int)DirectoryTypes.VisData]).GetVisData());
         }
     }
 }

@@ -31,15 +31,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageExt.1.0.0\lib\LanguageExt.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -53,6 +45,21 @@
     </Reference>
     <Reference Include="nunit.core, Version=2.6.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Package>nunit</Package>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="LanguageExt.Core">
+      <HintPath>..\packages\LanguageExt.1.6.2\lib\LanguageExt.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -71,12 +78,9 @@
     <Compile Include="Infrastructure\Components\UserInputComponent.cs" />
     <Compile Include="Infrastructure\Entities\PlayerEntity.cs" />
     <Compile Include="Infrastructure\Abstract\ResourceManager.cs" />
-    <Compile Include="Infrastructure\Components\TextComponent.cs" />
     <Compile Include="Infrastructure\Font\CharacterData.cs" />
-    <Compile Include="Infrastructure\Font\CharacterSprite.cs" />
     <Compile Include="Infrastructure\Font\Font.cs" />
     <Compile Include="Infrastructure\Font\FontManager.cs" />
-    <Compile Include="Infrastructure\Entities\TextEntity.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
@@ -84,10 +88,8 @@
     <Compile Include="Infrastructure\Mesh.cs" />
     <Compile Include="Infrastructure\MeshManager.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
-    <Compile Include="Infrastructure\Texture\Sprite2.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />
-    <Compile Include="Infrastructure\Texture\Vertex.cs" />
     <Compile Include="Infrastructure\Input\ICommand.cs" />
     <Compile Include="Infrastructure\Input\CommandFactory.cs" />
     <Compile Include="Infrastructure\Input\CommandCentre.cs" />
@@ -117,13 +119,14 @@
     <Compile Include="Loader\BSP\LightVol.cs" />
     <Compile Include="Loader\BSP\MeshVert.cs" />
     <Compile Include="Loader\BSP\VisData.cs" />
+    <Compile Include="Core\BSPRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CjClutter.ObjLoader.Loader\CjClutter.ObjLoader.Loader.csproj">
-      <Project>{1fd37682-98d6-442f-8e15-646247c690dc}</Project>
+      <Project>{1FD37682-98D6-442F-8E15-646247C690DC}</Project>
       <Name>CjClutter.ObjLoader.Loader</Name>
     </ProjectReference>
     <ProjectReference Include="..\TargaImage\TargaImage.csproj">

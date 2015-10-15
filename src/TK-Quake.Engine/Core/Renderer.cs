@@ -27,7 +27,7 @@ namespace TKQuake.Engine.Core
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
-        public TextureManager TextureManager;
+        private readonly TextureManager TextureManager = TextureManager.Singleton ();
         private SpriteBatch _batch = new SpriteBatch();
         private int? _program;
 
@@ -139,6 +139,33 @@ namespace TKQuake.Engine.Core
             _meshes.Add(entityId, mesh);
         }
 
+        /// <summary>
+        /// Unregisters an entity mesh from the Renderer
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public void UnregisterMesh(string entityId)
+        {
+            _meshes.Remove(entityId);
+        }
+
+        /// <summary>
+        /// Retrieves an entity mesh from the Renderer
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public Mesh GetMesh(string entityId)
+        {
+            return(_meshes.Get (entityId));
+        }
+
+        /// <summary>
+        /// Checks if an entity's mesh has been registered.
+        /// </summary>
+        /// <param name="entityId">The id of the entity</param>
+        public bool IsMeshRegistered(string entityId)
+        {
+            return(_meshes.Registered(entityId));
+        }
+
         public void DrawEntity(IEntity entity)
         {
             var mesh = _meshes.Get(entity.Id);
@@ -153,7 +180,17 @@ namespace TKQuake.Engine.Core
             GL.UniformMatrix4(uniModel, false, ref model);
 
             //bind texture
-            TextureManager.Bind(entity.Id);
+            if (mesh.tex != null)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, mesh.tex.Id);
+            }
+
+            else if (TextureManager.Registered (entity.Id) == true)
+            {
+                TextureManager.Bind(entity.Id);
+            }
+
             DrawVbo(mesh);
 
             //reset translation matrix?
@@ -167,18 +204,18 @@ namespace TKQuake.Engine.Core
             GL.BindVertexArray(0);
         }
 
-        public void DrawSprites(List<Sprite2> sprites)
-        {
-            foreach (Sprite2 s in sprites)
-            {
-                DrawSprite(s);
-            }
-        }
-
-        public void DrawSprite(Sprite2 sprite)
-        {
-            _batch.AddSprite(sprite);
-        }
+//        public void DrawSprites(List<Sprite2> sprites)
+//        {
+//            foreach (Sprite2 s in sprites)
+//            {
+//                DrawSprite(s);
+//            }
+//        }
+//
+//        public void DrawSprite(Sprite2 sprite)
+//        {
+//            _batch.AddSprite(sprite);
+//        }
 
         /// <summary>
         /// Needs to be called every Frame.
@@ -193,16 +230,16 @@ namespace TKQuake.Engine.Core
             _batch.Draw();
         }
 
-        public void DrawText(TextEntity text)
-        {
-            foreach (CharacterSprite s in text.CharacterSprites)
-            {
-                s.Sprite.RenderWidth = s.Data.Width;
-                s.Sprite.RenderHeight = s.Data.Height;
-                DrawSprite(s.Sprite);
-            }
-        }
-
+//        public void DrawText(TextEntity text)
+//        {
+//            foreach (CharacterSprite s in text.CharacterSprites)
+//            {
+//                s.Sprite.RenderWidth = s.Data.Width;
+//                s.Sprite.RenderHeight = s.Data.Height;
+//                DrawSprite(s.Sprite);
+//            }
+//        }
+//
         private static Renderer _instance;
         public static Renderer Singleton()
         {

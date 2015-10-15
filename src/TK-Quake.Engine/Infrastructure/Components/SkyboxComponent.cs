@@ -8,7 +8,9 @@ using OpenTK.Graphics.OpenGL4;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Math;
+using TKQuake.Engine.Infrastructure.Texture;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
+using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 
 namespace TKQuake.Engine.Infrastructure.Components
 {
@@ -35,6 +37,7 @@ namespace TKQuake.Engine.Infrastructure.Components
         public void Startup()
         {
             var renderer = Renderer.Singleton();
+            var texturer = TextureManager.Singleton();
 
             //back face
             var backMesh = new Mesh()
@@ -52,7 +55,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var back = RenderableEntity.Create();
             back.Id = $"{Name}_back";
             renderer.RegisterMesh(back.Id, backMesh);
-            renderer.TextureManager.Add(back.Id, Back);
+            texturer.Add(back.Id, Back);
             _scene.Children.Add(back);
 
             //left face
@@ -71,7 +74,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var left = RenderableEntity.Create();
             left.Id = $"{Name}_left";
             renderer.RegisterMesh(left.Id, leftMesh);
-            renderer.TextureManager.Add(left.Id, Left);
+            texturer.Add(left.Id, Left);
             _scene.Children.Add(left);
 
             //front face
@@ -90,7 +93,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var front = RenderableEntity.Create();
             front.Id = $"{Name}_front";
             renderer.RegisterMesh(front.Id, frontMesh);
-            renderer.TextureManager.Add(front.Id, Front);
+            texturer.Add(front.Id, Front);
             _scene.Children.Add(front);
 
             //right face
@@ -109,7 +112,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var right = RenderableEntity.Create();
             right.Id = $"{Name}_right";
             renderer.RegisterMesh(right.Id, rightMesh);
-            renderer.TextureManager.Add(right.Id, Right);
+            texturer.Add(right.Id, Right);
             _scene.Children.Add(right);
 
             //top face
@@ -128,7 +131,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var top = RenderableEntity.Create();
             top.Id = $"{Name}_top";
             renderer.RegisterMesh(top.Id, topMesh);
-            renderer.TextureManager.Add(top.Id, Top);
+            texturer.Add(top.Id, Top);
             _scene.Children.Add(top);
 
             //bottom face
@@ -147,7 +150,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             var bottom = RenderableEntity.Create();
             bottom.Id = $"{Name}_bottom";
             renderer.RegisterMesh(bottom.Id, bottomMesh);
-            renderer.TextureManager.Add(bottom.Id, Bottom);
+            texturer.Add(bottom.Id, Bottom);
             _scene.Children.Add(bottom);
         }
 

@@ -89,8 +89,8 @@ namespace TKQuake.Engine.Infrastructure.Components
             var cosYaw = (float) Cos(yaw);
 
             var front = new Vector3(cosPitch*cosYaw, sinPitch, cosPitch*sinYaw);
-            var command = CommandFactory.Create(typeof (RotateCommand), Vector3.Normalize(front), 1);
-            CommandCentre.PushCommand(command, _entity);
+            //var command = CommandFactory.Create(typeof (RotateCommand), Vector3.Normalize(front), 1);
+            //CommandCentre.PushCommand(command, _entity);
         }
 
         public void HandleInput(Key k, double elapsedTime)

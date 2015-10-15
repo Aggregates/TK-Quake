@@ -17,7 +17,7 @@ namespace TKQuake.Engine.Infrastructure.GameScreen
         protected ScreenManager _screenManager;
         protected TextureManager _textureManager;
         protected Renderer _renderer;
-        protected List<Sprite2> _spriteList;
+//        protected List<Sprite2> _spriteList;
         protected FontManager _fontManager;
 
         public static string StateNameKey;

@@ -17,7 +17,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
     {
         public double Health { get; set;}
         public bool Alive { get; protected set; }
-        public Sprite2 Sprite { get; set; }
+        //public Sprite2 Sprite { get; set; }
 
         // ILivableEntity properties
         public float MoveSpeed { get; set; }
@@ -94,7 +94,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
         /// </summary>
         public virtual void Render()
         {
-            Sprite.Render();
+            //Sprite.Render();
         }
 
     }

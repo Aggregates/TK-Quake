@@ -90,7 +90,11 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
-            return new Texture(textureId, bmp.Width, bmp.Height, filename);
+            Texture tex = new Texture (textureId, bmp.Width, bmp.Height, filename);
+            bmp.Dispose ();
+            bmp = null;
+
+            return tex;
         }
 
         public void Dispose()
@@ -99,6 +103,12 @@ namespace TKQuake.Engine.Infrastructure.Texture
             {
                 Remove(keyVal);
             }
+        }
+
+        private static TextureManager _instance;
+        public static TextureManager Singleton()
+        {
+            return _instance ?? (_instance = new TextureManager());
         }
     }
 }
