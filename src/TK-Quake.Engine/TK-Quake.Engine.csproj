@@ -103,7 +103,6 @@
     <Compile Include="Infrastructure\Physics\CollisionEventArgs.cs" />
     <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
     <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
-    <Compile Include="Infrastructure\Physics\Octree.cs" />
     <Compile Include="Infrastructure\Physics\Particle.cs" />
     <Compile Include="Infrastructure\Physics\ParticleEmitter.cs" />
     <Compile Include="Infrastructure\Physics\PickupComponent.cs" />
