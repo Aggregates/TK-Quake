@@ -21,7 +21,7 @@ namespace TKQuake.Cookbook.Entities
                 DirectionZ = new Range<float> { Lower = -0.1f, Upper = 0.1f },
                 TimeToLive = new Range<float> { Lower = 1, Upper = 10 },
                 Velocity = new Range<float> { Lower = 1, Upper = 1 },
-                ParticleScale = new Range<float> { Lower = 0.1f, Upper = 0.5f },
+                ParticleScale = new Range<float> { Lower = 0.1f, Upper = 0.1f },
                 SpawnVariance = new Range<float> { Lower = 1, Upper = 1 },
             };
             Children.Add(fireEmitter);
@@ -34,8 +34,8 @@ namespace TKQuake.Cookbook.Entities
                 DirectionZ = new Range<float> { Lower = -0.5f, Upper = 0.5f },
                 TimeToLive = new Range<float> { Lower = 1, Upper = 10 },
                 Velocity = new Range<float> { Lower = 1, Upper = 2 },
-                ParticleScale = new Range<float> { Lower = 0.1f, Upper = 0.5f },
-                SpawnVariance = new Range<float> { Lower = 3, Upper = 3 },
+                ParticleScale = new Range<float> { Lower = 0.1f, Upper = 0.1f },
+                SpawnVariance = new Range<float> { Lower = 1, Upper = 1 },
             };
             Children.Add(smokeEmitter);
         }
