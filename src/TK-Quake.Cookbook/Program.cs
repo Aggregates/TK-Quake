@@ -71,6 +71,10 @@ namespace TKQuake.Cookbook
                 game.WindowState = game.WindowState == WindowState.Normal ? WindowState.Fullscreen : WindowState.Normal;
 
             GL.Enable(EnableCap.DepthTest);
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             currentScreen.Update(e.Time);

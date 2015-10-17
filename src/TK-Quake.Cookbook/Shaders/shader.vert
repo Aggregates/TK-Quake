@@ -1,11 +1,13 @@
 #version 330 core
 
+// In from world
 in vec3 position;
 in vec3 color;
 in vec2 texcoord;
 in vec2 lightmapcoord;
 in vec3 normal;
 
+// Out to Fragment Shader
 out vec3 Color;
 out vec2 TexCoord;
 out vec2 LightMapCoord;

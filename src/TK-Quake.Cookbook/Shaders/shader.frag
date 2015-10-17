@@ -14,4 +14,5 @@ void main()
     vec4 text = texture(Texture, TexCoord);
     vec4 lm   = texture(LightMap, LightMapCoord);
     outColor  = text * (lm + vec4(0.5, 0.5, 0.5, 0.5));
+    //outColor = texture2D(outTexture, TexCoord);
 }

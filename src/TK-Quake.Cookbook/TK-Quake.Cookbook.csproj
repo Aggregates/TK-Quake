@@ -57,7 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\SmokeParticle.cs" />
     <Compile Include="Entities\FireParticle.cs" />
+    <Compile Include="Entities\FireParticleSystem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\CameraTestScreen.cs" />

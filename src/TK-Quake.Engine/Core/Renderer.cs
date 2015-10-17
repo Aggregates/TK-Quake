@@ -168,6 +168,7 @@ namespace TKQuake.Engine.Core
 
         public void DrawEntity(IEntity entity)
         {
+           
             var mesh = _meshes.Get(entity.Id);
             //System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 

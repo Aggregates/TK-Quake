@@ -17,6 +17,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public Range<float> DirectionZ { get; set; }
         public Range<float> TimeToLive { get; set; }
         public Range<float> Velocity { get; set; }
+        public Range<float> ParticleScale { get; set; }
+        public Range<float> SpawnVariance { get; set; }
 
         private Random rand = new Random();
 
@@ -32,31 +34,39 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
         public void Emit()
         {
-            // Get random value between TimeToLive min and max
-            float ttl = RandRange(TimeToLive);
 
-            // Geneate a random vector for velocity
-            Vector3 dir = new Vector3
+            // Spawn n particles
+            float numberToSpawn = RandRange(SpawnVariance);
+            for (int i = 0; i < numberToSpawn; i++)
             {
-                X = RandRange(DirectionX),
-                Y = RandRange(DirectionY),
-                Z = RandRange(DirectionZ)
-            };
 
-            float speed = RandRange(Velocity);
+                // Get random value between TimeToLive min and max
+                float ttl = RandRange(TimeToLive);
 
-            T particle = (T)Activator.CreateInstance(typeof(T));
+                // Geneate a random vector for velocity
+                Vector3 dir = new Vector3
+                {
+                    X = RandRange(DirectionX),
+                    Y = RandRange(DirectionY),
+                    Z = RandRange(DirectionZ)
+                };
 
-            // Set the data
-            particle.TimeToLive = ttl;
-            particle.Direction = dir.Normalized();
-            particle.Speed = speed;
-            particle.Position = this.Position;
-            particle.Scale = 0.1f;
+                float speed = RandRange(Velocity);
+                float size = RandRange(ParticleScale);
 
-            particle.Destroy += Particle_Destroy;
+                T particle = (T) Activator.CreateInstance(typeof (T));
 
-            Children.Add(particle);
+                // Set the data
+                particle.TimeToLive = ttl;
+                particle.Direction = dir.Normalized();
+                particle.Speed = speed;
+                particle.Position = this.Position;
+                particle.Scale = size;
+
+                particle.Destroy += Particle_Destroy;
+
+                Children.Add(particle);
+            }
         }
 
         private void Particle_Destroy(object sender, EventArgs e)

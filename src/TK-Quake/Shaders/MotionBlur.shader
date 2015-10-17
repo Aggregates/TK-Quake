@@ -12,7 +12,7 @@ noperspective in vec3 vViewRay; // for extracting current world space position
 out result;
 
 void main() {
-
+	
 	//http://john-chapman-graphics.blogspot.com/2013/01/what-is-motion-blur-motion-pictures-are.html
 
 	// get current world space position:

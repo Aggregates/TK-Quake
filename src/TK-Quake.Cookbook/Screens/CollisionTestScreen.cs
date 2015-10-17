@@ -89,10 +89,10 @@ namespace TKQuake.Cookbook.Screens
             Children.Add(_camera);
 
             var floor1 = new FloorEntity(new Vector3(0, 0, 0), 10, 10, "floor1", true);
-            var floor2 = new FloorEntity(new Vector3(0, -2, 10), 10, 10, "floor2", true);
-            var floor3 = new FloorEntity(new Vector3(10, -2, 0), 10, 10, "floor3", true);
-            var floor4 = new FloorEntity(new Vector3(-10, -2, 0), 10, 10, "floor4", true);
-            var floor5 = new FloorEntity(new Vector3(0, -2, -10), 10, 10, "floor5", true);
+            var floor2 = new FloorEntity(new Vector3(0, -2, 10), 10, 10, "floor1", true);
+            var floor3 = new FloorEntity(new Vector3(10, -2, 0), 10, 10, "floor1", true);
+            var floor4 = new FloorEntity(new Vector3(-10, -2, 0), 10, 10, "floor1", true);
+            var floor5 = new FloorEntity(new Vector3(0, -2, -10), 10, 10, "floor1", true);
 
             floor1.TextureId = "floor";
             floor2.TextureId = "floor";
@@ -101,10 +101,6 @@ namespace TKQuake.Cookbook.Screens
             floor5.TextureId = "floor";
 
             _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor3", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor4", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor5", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
 
             Children.Add(floor1);
             Children.Add(floor2);
@@ -128,6 +124,7 @@ namespace TKQuake.Cookbook.Screens
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             _textureManager.Add("floor", "floor.jpg");
             _textureManager.Add("FireParticle", "FireParticle.png");
+            _textureManager.Add("SmokeParticle", "Smoke.png");
 
             gunEntity.Components.Add(new GravityComponent(gunEntity));
 
@@ -145,17 +142,11 @@ namespace TKQuake.Cookbook.Screens
             //tunnel.Force = 0.1f;
             //Children.Add(tunnel);
 
-            // Particle Emitter
-            ParticleEmitter<FireParticle> emitter = new ParticleEmitter<FireParticle>
-            {
-                DirectionX = new Range<float> { Lower= -1, Upper = 1},
-                DirectionY = new Range<float> { Lower= -1, Upper = 1},
-                DirectionZ = new Range<float> { Lower= -1, Upper = 1},
-                TimeToLive = new Range<float> { Lower= 1, Upper = 10},
-                Velocity = new Range<float> { Lower= 1, Upper = 1 },
-            };
+            FireParticleSystem fps = new FireParticleSystem();
+            Children.Add(fps);
             _renderer.RegisterMesh("FireParticle", new FireParticle().ToMesh());
-            Children.Add(emitter);
+            _renderer.RegisterMesh("SmokeParticle", new SmokeParticle().ToMesh());
+
 
             foreach (var entity in Children)
             {
