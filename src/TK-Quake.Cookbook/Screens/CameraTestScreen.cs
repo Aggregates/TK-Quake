@@ -54,15 +54,27 @@ namespace TKQuake.Cookbook.Screens
             //Might be to do with where I have declared it.
             //Thread th = new Thread(new ThreadStart(AudioManager.Play));
             //th.Start();
+            _audioManager.UpdateListenerPosition(_camera.Position);
             var filename = Path.Combine("Audio", "PosTest.wav");
             new Thread(delegate ()
             {
                 using (AudioContext context = new AudioContext())
                 {
                     _audioManager.Add("bgm", filename);
-                    _audioManager.PlayAtSource("bgm", new Vector3(50f, 50f, 50f), _camera.Position);
+                    _audioManager.PlayAtSource("bgm", new Vector3(0f, 0f, 0f));
                 }
                 //_audioManager.printHeader(filename);
+            }).Start();
+
+            //Setting this as a new thread will keep the camera position up to date. Probably should be placed on the renderer loop
+            //rather than its own thread.
+            new Thread(delegate ()
+            {
+                    while (true)
+                    {
+                        _audioManager.UpdateListenerPosition(_camera.Position);
+                        Thread.Sleep(1000);
+                    }
             }).Start();
 
         }
