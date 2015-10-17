@@ -17,6 +17,8 @@ namespace TKQuake.Engine.Infrastructure.Audio
 {
     public class AudioManager : ResourceManager<Audio>, IDisposable
     {
+       
+
         public AudioManager() : base()
         {
         }
@@ -49,6 +51,11 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteBuffer(aud.Id);
         }
 
+        public void UpdateListenerPosition(Vector3 listenerPos)
+        {
+            AL.Listener(ALListener3f.Position, ref listenerPos);
+        }
+
         public void PlayAsAmbient(String key)
         {
             var audio = this.Get(key);
@@ -62,16 +69,16 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
-        public void PlayAtSource(String key, Vector3 sourcePos, Vector3 listenerPos)
+        public void PlayAtSource(String key, Vector3 sourcePos)
         {
             var audio = this.Get(key);
             if (audio.FileName.Contains(".wav"))
             {
-                PlayWavAtSource(audio, sourcePos, listenerPos);
+                PlayWavAtSource(audio, sourcePos);
             }
             else if (audio.FileName.Contains(".ogg"))
             {
-                PlayOggAtSource(audio, sourcePos, listenerPos);
+                throw new NotSupportedException(".ogg files cannot yet be played from a position, only as ambient.");
             }
         }
 
@@ -91,8 +98,10 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
-        private void PlayOggAtSource(Audio audioIn, Vector3 sourcePos, Vector3 listenerPos)
+        private void PlayOggAtSource(Audio audioIn, Vector3 sourcePos)
         {
+
+            //byte[] data = reader.ReadBytes((int)reader.BaseStream.Length);
             using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
             using (var waveOut = new NAudio.Wave.WaveOut())
             {
@@ -127,7 +136,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
         }
 
         //Audio file must be mono
-        private void PlayWavAtSource(Audio audio, Vector3 sourcePos, Vector3 listenerPos)
+        private void PlayWavAtSource(Audio audio, Vector3 sourcePos)
         {
             audio = LoadWav(audio);
             int source = AL.GenSource();
@@ -138,9 +147,8 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.Source(source, ALSourcef.Pitch, 1.0f);
             AL.Source(source, ALSourcef.Gain, 0.85f);
             AL.Source(source, ALSource3f.Position, ref sourcePos);
-            AL.Listener(ALListener3f.Position, ref listenerPos);
             AL.SourcePlay(source);
-
+            
             int state;
             do
             {
