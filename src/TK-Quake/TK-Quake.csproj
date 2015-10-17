@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fonts\MyriadPro.cs" />
+    <Compile Include="Components\PickupComponent.cs" />
     <Compile Include="Physics\WindTunnel.cs" />
     <Compile Include="ScreenStates\DrawSpritesScreen.cs" />
     <Compile Include="ScreenStates\SplashScreen.cs" />

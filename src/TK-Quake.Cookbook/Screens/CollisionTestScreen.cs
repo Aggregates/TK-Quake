@@ -23,6 +23,7 @@ using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Isg.Range;
+using TKQuake.Components;
 using TKQuake.Cookbook.Entities;
 using TKQuake.Engine.Debug;
 using TKQuake.Physics;

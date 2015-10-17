@@ -105,7 +105,6 @@
     <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
     <Compile Include="Infrastructure\Physics\Particle.cs" />
     <Compile Include="Infrastructure\Physics\ParticleEmitter.cs" />
-    <Compile Include="Infrastructure\Physics\PickupComponent.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />

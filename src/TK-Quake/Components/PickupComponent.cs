@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
+using TKQuake.Engine.Infrastructure.Physics;
 
-namespace TKQuake.Engine.Infrastructure.Physics
+namespace TKQuake.Components
 {
     public class PickupComponent : IComponent
     {
