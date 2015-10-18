@@ -89,25 +89,28 @@ namespace TKQuake.Cookbook.Screens
         {
             Children.Add(_camera);
 
-            var floor1 = new FloorEntity(new Vector3(0, 0, 0), 10, 10, "floor1", true);
-            var floor2 = new FloorEntity(new Vector3(0, -2, 10), 10, 10, "floor1", true);
-            var floor3 = new FloorEntity(new Vector3(10, -2, 0), 10, 10, "floor1", true);
-            var floor4 = new FloorEntity(new Vector3(-10, -2, 0), 10, 10, "floor1", true);
-            var floor5 = new FloorEntity(new Vector3(0, -2, -10), 10, 10, "floor1", true);
+            var floor1 = new FloorEntity(new Vector3(0, 0, 0), 10, 10, "floor", true);
+            var floor2 = new FloorEntity(new Vector3(0, -2, 10), 10, 10, "floor", true);
+            var floor3 = new FloorEntity(new Vector3(10, -2, 0), 10, 10, "floor", true);
+            var floor4 = new FloorEntity(new Vector3(-10, -2, 0), 10, 10, "floor", true);
+            var floor5 = new FloorEntity(new Vector3(0, -2, -10), 10, 10, "floor", true);
 
-            floor1.TextureId = "floor";
-            floor2.TextureId = "floor";
-            floor3.TextureId = "floor";
-            floor4.TextureId = "floor";
-            floor5.TextureId = "floor";
+            var floor6 = new FloorEntity(new Vector3(-10, -2, 10), 10, 10, "floor", true);
+            var floor7 = new FloorEntity(new Vector3(10, -2, 10), 10, 10, "floor", true);
+            var floor8 = new FloorEntity(new Vector3(-10, -2, -10), 10, 10, "floor", true);
+            var floor9 = new FloorEntity(new Vector3(10, -2, -10), 10, 10, "floor", true);
 
-            _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            _renderer.RegisterMesh("floor", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
 
             Children.Add(floor1);
             Children.Add(floor2);
             Children.Add(floor3);
             Children.Add(floor4);
             Children.Add(floor5);
+            Children.Add(floor6);
+            Children.Add(floor7);
+            Children.Add(floor8);
+            Children.Add(floor9);
 
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
@@ -144,9 +147,11 @@ namespace TKQuake.Cookbook.Screens
             //Children.Add(tunnel);
 
             FireParticleSystem fps = new FireParticleSystem();
+            fps.Camera = _camera;
+            fps.Position = new Vector3(5,0,5);
             Children.Add(fps);
-            _renderer.RegisterMesh("FireParticle", new FireParticle().ToMesh());
-            _renderer.RegisterMesh("SmokeParticle", new SmokeParticle().ToMesh());
+            _renderer.RegisterMesh("FireParticle", new FireParticle().Mesh);
+            _renderer.RegisterMesh("SmokeParticle", new SmokeParticle().Mesh);
 
 
             foreach (var entity in Children)

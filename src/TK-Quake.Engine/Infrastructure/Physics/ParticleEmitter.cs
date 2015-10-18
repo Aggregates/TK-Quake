@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Isg.Range;
 using OpenTK;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Infrastructure.Physics
@@ -19,6 +20,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
         public Range<float> Velocity { get; set; }
         public Range<float> ParticleScale { get; set; }
         public Range<float> SpawnVariance { get; set; }
+        public Camera Camera { get; set; }
 
         private Random rand = new Random();
 
@@ -62,6 +64,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
                 particle.Speed = speed;
                 particle.Position = this.Position;
                 particle.Scale = size;
+                particle.Camera = this.Camera;
 
                 particle.Destroy += Particle_Destroy;
 

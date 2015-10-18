@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics;
+//using OpenTK.Graphics.ES10;
+using OpenTK.Graphics.OpenGL;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Math;
 
@@ -39,12 +42,16 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// </summary>
         public float Speed { get; set; }
 
+        public Mesh Mesh { get; set; }
+        public Camera Camera { get; set; }
+
         public Particle() : this(0) { }
 
         public Particle(float timetoLive)
         {
             this.Age = 0;
             this.TimeToLive = timetoLive;
+            this.Mesh = ToMesh();
         }
 
         public override void Update(double elapsedTime)
@@ -57,6 +64,16 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
             // Move the particle
             this.Position += Direction * Speed * (float)elapsedTime;
+
+            // Align to billboard if we have a reference to the camera
+            if (Camera != null)
+            {
+                Vector3 normal = -Camera.ViewDirection;
+                float dot = Vector3.Dot(-Vector3.UnitZ, normal);
+                float rotationAngle = (float)System.Math.Acos(dot);
+
+                this.Rotation = new Vector3(0, rotationAngle, 0);
+            }
 
             base.Update(elapsedTime);
         }

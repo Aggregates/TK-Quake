@@ -43,7 +43,7 @@ namespace TKQuake.Engine.Core
         }
     }
 
-    class CameraComponent : IComponent
+    public class CameraComponent : IComponent
     {
         private readonly IEntity _entity;
         private readonly Renderer _renderer = Renderer.Singleton();
