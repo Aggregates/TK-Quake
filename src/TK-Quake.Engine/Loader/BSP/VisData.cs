@@ -37,9 +37,6 @@ namespace TKQuake.Engine.Loader.BSP
             // Create buffer to hold data.
             byte[] buf = new byte[VIS_DATA_SIZE];
 
-            // Keep track of the number of bytes read so far.
-            int bytesRead = 0;
-
             // Read in the size of the visData block.
             file.Read (buf, 0, VIS_DATA_SIZE);
 

@@ -4,6 +4,7 @@ using OpenTK.Input;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -229,26 +230,11 @@ namespace TKQuake.Cookbook.Screens
         /// <param name="elapsedTime">Not used.</param>
         public void Update(double elapsedTime)
         {
-            // Get the list of visible faces.
-            List<int> visibleFaces = renderer.GetVisibleFaces(camera);
-
-            // Iterate over all of the visible faces.
-            foreach (int face in visibleFaces)
+//            var visibleFaces = renderer.GetVisibleFaces(camera);
+            var visibleFaces = BSPEntities.Keys;
+            foreach (var face in visibleFaces)
             {
-                // Iterate over all of the renderable entities for each visible face.
-                try
-                {
-                    foreach (RenderableEntity BSPEntity in BSPEntities[face])
-                    {
-                        // Render the BSP entity.
-                        _renderer.DrawEntity (BSPEntity);
-                    }
-                }
-
-                catch (KeyNotFoundException)
-                {
-                    Console.WriteLine ("KeyNotFoundException thrown for face {0}", face);
-                }
+                BSPEntities[face].ForEach(_renderer.DrawEntity);
             }
         }
 
@@ -290,6 +276,7 @@ namespace TKQuake.Cookbook.Screens
                         BSPEntity.Scale = 0.01f;
                         BSPEntity.Translation = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
                         BSPEntity.Rotation = Vector3.Zero;
+                        BSPEntity.Transform = Matrix4.CreateTranslation(camera.Position)*Matrix4.CreateScale(BSPEntity.Scale);
 
                         // Add it to our renderable entity dictionary.
                         BSPEntities[meshSet.Key].Add(BSPEntity);

@@ -22,7 +22,7 @@ namespace TKQuake.Engine.Core
         private const int ColorDimensions = 4;
         private const int UVDimensions = 2;
 
-        private Texture _texture;
+        private Texture _texture = null;
 
 //        public void AddSprite(Sprite2 sprite)
 //        {

@@ -37,6 +37,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
         Vector3 OrthogonalDirection { get; }
 
         Matrix4 Translation { get; set; }
+        Matrix4 Transform { get; set; }
 
         void Update(double elapsedTime);
     }

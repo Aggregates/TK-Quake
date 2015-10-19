@@ -169,13 +169,14 @@ namespace TKQuake.Engine.Core
         public void DrawEntity(IEntity entity)
         {
             var mesh = _meshes.Get(entity.Id);
-            System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
+            //System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
-            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
-                           Matrix4.CreateRotationY(entity.Rotation.Y)*
-                           Matrix4.CreateRotationZ(entity.Rotation.Z);
+//            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
+//                           Matrix4.CreateRotationY(entity.Rotation.Y)*
+//                           Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
+//            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
+            var model = entity.Transform;
             var uniModel = GL.GetUniformLocation(Program, "model");
             GL.UniformMatrix4(uniModel, false, ref model);
 
@@ -194,7 +195,7 @@ namespace TKQuake.Engine.Core
             DrawVbo(mesh);
 
             //reset translation matrix?
-            entity.Translation = Matrix4.Identity;
+            //entity.Translation = Matrix4.Identity;
         }
 
         private void DrawVbo(Mesh mesh)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,7 +80,7 @@ namespace TKQuake.Engine.Core
             Dictionary<int, List<Mesh>> BSPMeshes = new Dictionary<int, List<Mesh>>();
 
             // Generate meshes for every face in the BSP.
-            for (int face = 0; face < BSP.GetFaces().Count(); face++)
+            for (int face = 0; face < BSP.GetFaces().Length; face++)
             {
                 Face.FaceEntry currentFace = BSP.GetFace(face);
                 List<Mesh> meshes = GenerateMesh(currentFace);
@@ -97,33 +98,35 @@ namespace TKQuake.Engine.Core
             return(BSPMeshes);
         }
 
+        private readonly Stopwatch _sw = new Stopwatch();
+
         /// <summary>
         /// Generate all of the meshes that a visible from the camera.
         /// </summary>
         /// <param name="camera">The camera.</param>
         public Dictionary<int, List<Mesh>> GetVisibleMeshes(Camera camera)
         {
-            Dictionary<int, List<Mesh>> BSPMeshes = new Dictionary<int, List<Mesh>>();
-            List<int> visibleFaces = GetVisibleFaces(camera);
+            var bspMeshes = new Dictionary<int, List<Mesh>>();
+            var visibleFaces = GetVisibleFaces(camera);
 
             // Generate meshes for every face that is visible from the camera.
-            foreach (int face in visibleFaces)
+            foreach (var face in visibleFaces)
             {
                 // Generate the meshes.
-                Face.FaceEntry currentFace = BSP.GetFace(face);
-                List<Mesh> meshes = GenerateMesh(currentFace);
+                var currentFace = BSP.GetFace(face);
+                var meshes = GenerateMesh(currentFace);
 
                 // Make sure there is an entry in our dictionary for the current face.
-                BSPMeshes [face] = new List<Mesh> ();
+                bspMeshes [face] = new List<Mesh> ();
 
                 // If meshes were generated, add them to the list.
                 if (meshes != null)
                 {
-                    BSPMeshes[face].AddRange(meshes);
+                    bspMeshes[face].AddRange(meshes);
                 }
             }
 
-            return(BSPMeshes);
+            return(bspMeshes);
         }
 
         /// <summary>
@@ -169,10 +172,9 @@ namespace TKQuake.Engine.Core
         public List<int> GetVisibleFaces(Camera camera)
         {
             // Find the cluster that the camera is currently in.
-            int cameraCluster = BSP.GetLeaf (FindCameraLeaf (camera.Position)).cluster;
-
-            bool[]    alreadyVisible = new bool[BSP.GetFaces ().Length];
-            List<int> visibleFaces   = new List<int> ();
+            int cameraCluster  = BSP.GetLeaf (FindCameraLeaf (camera.Position)).cluster;
+            var alreadyVisible = new bool[BSP.GetFaces ().Length];
+            var visibleFaces   = new List<int> ();
 
             // Set the view frustum.
             SetViewFrustum (camera);
@@ -180,10 +182,12 @@ namespace TKQuake.Engine.Core
             // Iteratate through all the leaf clusters in the BSP looking for the ones visible from the camera cluster.
             for (int i = (BSP.GetLeafs().Length - 1); i >= 0; i--)
             {
-                Leaf.LeafEntry leaf = BSP.GetLeaf (i);
+                var leaf                   = BSP.GetLeaf (i);
+                var isClusterVisible       = IsClusterVisible(cameraCluster, leaf.cluster);
+                var isBoxInsideViewFrustum = IsBoxInsideViewFrustum(leaf.mins, leaf.maxs);
 
                 // Check that the leaf cluster is visible from the camera cluster and the bounding box for the leaf is within the view frustum.
-                if ((IsClusterVisible (cameraCluster, leaf.cluster) == true) && (IsBoxInsideViewFrustum (leaf.mins, leaf.maxs)))
+                if (isClusterVisible && isBoxInsideViewFrustum)
                 {
                     // Iterate through every face in the leaf cluster.
                     for (int leafFace = (leaf.leafFace + leaf.n_leafFaces - 1); leafFace >= leaf.leafFace; leafFace--)
