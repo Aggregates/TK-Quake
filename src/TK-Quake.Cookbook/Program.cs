@@ -10,11 +10,11 @@ using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Input;
 
 namespace TKQuake.Cookbook
-{
+{    
     public class Program
     {
         private GameWindow game;
-        private GameScreen currentScreen;
+        private GameScreen currentScreen;        
 
         public static void Main(string[] args)
         {
@@ -24,6 +24,7 @@ namespace TKQuake.Cookbook
 
         private void Run()
         {
+            
             using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
                 DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
             {
@@ -89,14 +90,13 @@ namespace TKQuake.Cookbook
         }
 
         private void game_Load(object sender, EventArgs e)
-        {
+        {            
             var renderer = Renderer.Singleton();
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
             renderer.LinkShaders();
 
-            currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
-
+            currentScreen = new CameraTestScreen("maps/q3dm6.bsp");            
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 
             Console.Write("GL Window loaded");
@@ -106,5 +106,5 @@ namespace TKQuake.Cookbook
             Console.WriteLine("Renderer: " + GL.GetString(StringName.Renderer));
             Console.WriteLine("Shading Language Version: " + GL.GetString(StringName.ShadingLanguageVersion));
         }
-    }
+    }    
 }

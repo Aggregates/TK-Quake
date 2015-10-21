@@ -28,6 +28,8 @@ namespace TKQuake.Engine.Core
         private int? _vertexShader;
         private int? _fragmentShader;
         private int _uniModel;
+        private int _uniLightPosition;
+        private int _uniLightIntensities;
 
         private Renderer() { }
 
@@ -35,7 +37,7 @@ namespace TKQuake.Engine.Core
         {
             var id = GL.CreateShader(type);
             GL.ShaderSource(id, shader);
-            GL.CompileShader(id);
+            GL.CompileShader(id);            
             GetShaderCompileStatus(id);
 
             switch (type)
@@ -53,8 +55,7 @@ namespace TKQuake.Engine.Core
 
         public void LinkShaders()
         {
-            _program = GL.CreateProgram();
-
+            _program = GL.CreateProgram();            
             if (_vertexShader.HasValue)
             {
                 GL.AttachShader(_program.Value, _vertexShader.Value);
@@ -69,6 +70,10 @@ namespace TKQuake.Engine.Core
             GL.UseProgram(_program.Value);
 
             _uniModel = GL.GetUniformLocation(Program, "model");
+
+            // Link up the uniform parameters of the light struct in the frag shader
+            _uniLightPosition = GL.GetUniformLocation(Program, "light.position");
+            _uniLightIntensities = GL.GetUniformLocation(Program, "light.intensities");
         }
 
         private bool GetShaderCompileStatus(int shader)
@@ -162,6 +167,13 @@ namespace TKQuake.Engine.Core
             return(_meshes.Registered(entityId));
         }
 
+        static float NextFloat(Random random)
+        {
+            double mantissa = (random.NextDouble() * 2.0) - 1.0;
+            double exponent = Math.Pow(2.0, random.Next(-126, 128));
+            return (float)(mantissa * exponent);
+        }
+
         public void DrawEntity(IEntity entity)
         {
             var mesh = _meshes.Get(entity.Id);
@@ -174,7 +186,9 @@ namespace TKQuake.Engine.Core
 //            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
             var model = entity.Transform;
             GL.UniformMatrix4(_uniModel, false, ref model);
-
+            
+            GL.Uniform3(_uniLightPosition, new Vector3(0.0f, 1.0f, 1.0f));
+            GL.Uniform3(_uniLightIntensities, new Vector3(0.5f, 0.5f, 0.1f));
             //bind texture
             if (mesh.tex != null)
             {
