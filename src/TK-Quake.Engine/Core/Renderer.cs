@@ -17,13 +17,6 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Core
 {
-    public class Something
-    {
-        public int VerticesId { get; set; }
-        public int IndicesId { get; set; }
-        public Mesh Mesh { get; set; }
-    }
-
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
@@ -34,6 +27,7 @@ namespace TKQuake.Engine.Core
         public int Program => _program ?? 0;
         private int? _vertexShader;
         private int? _fragmentShader;
+        private int _uniModel;
 
         private Renderer() { }
 
@@ -73,6 +67,8 @@ namespace TKQuake.Engine.Core
 
             GL.LinkProgram(_program.Value);
             GL.UseProgram(_program.Value);
+
+            _uniModel = GL.GetUniformLocation(Program, "model");
         }
 
         private bool GetShaderCompileStatus(int shader)
@@ -169,15 +165,15 @@ namespace TKQuake.Engine.Core
         public void DrawEntity(IEntity entity)
         {
             var mesh = _meshes.Get(entity.Id);
-            System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
+            //System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
-            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
-                           Matrix4.CreateRotationY(entity.Rotation.Y)*
-                           Matrix4.CreateRotationZ(entity.Rotation.Z);
+//            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
+//                           Matrix4.CreateRotationY(entity.Rotation.Y)*
+//                           Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
-            var uniModel = GL.GetUniformLocation(Program, "model");
-            GL.UniformMatrix4(uniModel, false, ref model);
+//            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
+            var model = entity.Transform;
+            GL.UniformMatrix4(_uniModel, false, ref model);
 
             //bind texture
             if (mesh.tex != null)
@@ -194,7 +190,7 @@ namespace TKQuake.Engine.Core
             DrawVbo(mesh);
 
             //reset translation matrix?
-            entity.Translation = Matrix4.Identity;
+            //entity.Translation = Matrix4.Identity;
         }
 
         private void DrawVbo(Mesh mesh)

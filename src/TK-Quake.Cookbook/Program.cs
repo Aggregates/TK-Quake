@@ -36,8 +36,29 @@ namespace TKQuake.Cookbook
             }
         }
 
+        static double _time = 0.0, _frames = 0.0;
+        static int _fps = 0;
+
+        public static int GetFps(double time)
+        {
+            _time += time;
+            if (_time < 1.0)
+            {
+                _frames++;
+                return _fps;
+            }
+            else
+            {
+                _fps = (int)_frames;
+                _time = 0.0;
+                _frames = 0.0;
+                return _fps;
+            }
+        }
+
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
+            Console.Write("FPS: {0}\r", GetFps(e.Time));
             game.SwapBuffers();
         }
 

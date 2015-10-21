@@ -19,6 +19,7 @@ namespace TKQuake.Engine.Infrastructure.Entities
         public Vector3 ViewDirection { get; }
         public Vector3 OrthogonalDirection { get; }
         public Matrix4 Translation { get; set; }
+        public Matrix4 Transform { get; set; }
 
         public Entity()
         {
