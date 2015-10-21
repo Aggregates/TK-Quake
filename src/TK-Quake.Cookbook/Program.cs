@@ -58,8 +58,7 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            Console.Clear();
-            Console.WriteLine(GetFps(e.Time));
+            Console.Write("FPS: {0}\r", GetFps(e.Time));
             game.SwapBuffers();
         }
 
