@@ -22,10 +22,7 @@ namespace TKQuake.Engine.Infrastructure.Abstract
 
         public virtual T Get(string key)
         {
-            if (!Registered(key))
-                throw new Exception(string.Format("Key '{0}' has not been registered with the Resource Manager", key));
-            else
-                return Database[key];
+            return Database[key];
         }
         
         public virtual void Add(string key, T data)
