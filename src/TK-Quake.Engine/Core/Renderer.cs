@@ -17,13 +17,6 @@ using TKQuake.Engine.Infrastructure.Entities;
 
 namespace TKQuake.Engine.Core
 {
-    public class Something
-    {
-        public int VerticesId { get; set; }
-        public int IndicesId { get; set; }
-        public Mesh Mesh { get; set; }
-    }
-
     public class Renderer
     {
         private readonly ResourceManager<Mesh> _meshes = new MeshManager();
@@ -34,6 +27,7 @@ namespace TKQuake.Engine.Core
         public int Program => _program ?? 0;
         private int? _vertexShader;
         private int? _fragmentShader;
+        private int _uniModel;
 
         private Renderer() { }
 
@@ -73,6 +67,8 @@ namespace TKQuake.Engine.Core
 
             GL.LinkProgram(_program.Value);
             GL.UseProgram(_program.Value);
+
+            _uniModel = GL.GetUniformLocation(Program, "model");
         }
 
         private bool GetShaderCompileStatus(int shader)
@@ -177,8 +173,7 @@ namespace TKQuake.Engine.Core
 
 //            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
             var model = entity.Transform;
-            var uniModel = GL.GetUniformLocation(Program, "model");
-            GL.UniformMatrix4(uniModel, false, ref model);
+            GL.UniformMatrix4(_uniModel, false, ref model);
 
             //bind texture
             if (mesh.tex != null)
