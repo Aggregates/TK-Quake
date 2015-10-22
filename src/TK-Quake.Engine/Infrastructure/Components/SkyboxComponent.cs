@@ -44,10 +44,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new []
                 {
-                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(1, 1)),
-                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(0, 1)),
+                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
@@ -63,10 +63,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new []
                 {
-                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1)),
-                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(0, 1)),
+                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
@@ -82,10 +82,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new []
                 {
-                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1)),
-                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1)),
+                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
@@ -101,10 +101,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new[]
                 {
-                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(1, 1)),
-                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1)),
+                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
@@ -120,10 +120,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new[]
                 {
-                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(0, 1)),
-                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(1, 1)),
+                    new Vertex(new Vector3(Size, Size, Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, Size, Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, Size, -Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, Size, -Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
@@ -139,10 +139,10 @@ namespace TKQuake.Engine.Infrastructure.Components
             {
                 Vertices = new[]
                 {
-                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(1, 0)),
-                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(0, 0)),
-                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1)),
-                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1)),
+                    new Vertex(new Vector3(Size, -Size, Size), Vector3.Zero, new Vector2(1, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, Size), Vector3.Zero, new Vector2(0, 0), new Vector2(0, 0)),
+                    new Vertex(new Vector3(-Size, -Size, -Size), Vector3.Zero, new Vector2(0, 1), new Vector2(0, 0)),
+                    new Vertex(new Vector3(Size, -Size, -Size), Vector3.Zero, new Vector2(1, 1), new Vector2(0, 0)),
                 },
                 Indices = new [] {0, 1, 2, 2, 3, 0}
             };
