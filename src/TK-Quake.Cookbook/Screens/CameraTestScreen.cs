@@ -41,7 +41,8 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
-            var _audioManager = new AudioManager();
+            var _audioManager = AudioManager.Singleton();
+            _audioManager.UpdateListenerPosition(_camera.Position);
 
             InitEntities();
             InitComponents();
@@ -80,7 +81,6 @@ namespace TKQuake.Cookbook.Screens
                         Thread.Sleep(1000);
                     }
             }).Start();
-
         }
         
 
