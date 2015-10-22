@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TKQuake.Engine.Infrastructure.Audio
 {
-    public struct Audio
+    public class Audio
     {
         public int Id { get; set; }
         public byte[] AudioData { get; set; }
@@ -14,8 +14,11 @@ namespace TKQuake.Engine.Infrastructure.Audio
         public int Bits { get; set; }
         public int Rate { get; set; }
         public string FileName { get; set; }
+        public bool Loop {
+            get;
+            set; }
 
-        public Audio (int id, byte[] data, int channels, int bits, int rate, string filename)
+        public Audio (int id, byte[] data, int channels, int bits, int rate, string filename, bool loop)
         {
             this.Id = id;
             this.AudioData = data;
@@ -23,9 +26,10 @@ namespace TKQuake.Engine.Infrastructure.Audio
             this.Bits = bits;
             this.Rate = rate;
             this.FileName = filename;
+            this.Loop = loop;
         }
 
-        public Audio(string filename) 
+        public Audio(string filename, bool loop) 
         {
             Id = -1;
             AudioData = null;
@@ -33,6 +37,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
             Bits = -1;
             Rate = -1;
             this.FileName = filename;
+            this.Loop = loop;
         }
 
     }
