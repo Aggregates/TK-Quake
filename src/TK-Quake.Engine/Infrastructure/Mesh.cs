@@ -22,7 +22,8 @@ namespace TKQuake.Engine.Infrastructure
         public int VaoId { get; set; }
         public int VboId { get; set; }
         public int EboId { get; set; }
-        public Texture.Texture tex;
+        public Texture.Texture texture;
+        public Texture.Texture lightMap;
     }
 
     public static class MeshExtensions
@@ -63,7 +64,7 @@ namespace TKQuake.Engine.Infrastructure
             var vertices = new List<Vertex>();
             for (var i = 0; i < inPositions.Count; i++)
             {
-                var v = new Vertex(inPositions[i], inNormals[i], inTextures[i]);
+                var v = new Vertex(inPositions[i], inNormals[i], inTextures[i], new Vector2(0, 0));
                 //v.Position = new Vector3(v.Position.X, v.Position.Z, v.Position.Y);
                 //v.Normal = new Vector3(v.Normal.X, v.Normal.Z, v.Normal.Y);
 

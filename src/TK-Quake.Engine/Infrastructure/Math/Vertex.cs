@@ -14,12 +14,14 @@ namespace TKQuake.Engine.Infrastructure.Math
         public Vector3 Position;
         public Vector3 Normal;
         public Vector2 TexCoord;
+        public Vector2 LightMapCoord;
 
-        public Vertex(Vector3 position, Vector3 normal, Vector2 texCoord)
+        public Vertex(Vector3 position, Vector3 normal, Vector2 texCoord, Vector2 lightMapCoord)
         {
             Position = position;
             Normal = normal;
             TexCoord = texCoord;
+            LightMapCoord = lightMapCoord;
         }
     }
 }
