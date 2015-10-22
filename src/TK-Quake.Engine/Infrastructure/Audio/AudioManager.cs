@@ -333,6 +333,13 @@ namespace TKQuake.Engine.Infrastructure.Audio
         {
             throw new NotImplementedException();
         }
+
+
+        private static AudioManager _instance;
+        public static AudioManager Singleton()
+        {
+            return _instance ?? (_instance = new AudioManager());
+        }
     }
 }
 
