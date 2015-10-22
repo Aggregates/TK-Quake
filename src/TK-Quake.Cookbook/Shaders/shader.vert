@@ -11,6 +11,7 @@ in vec3 normal;
 out vec3 Color;
 out vec2 TexCoord;
 out vec2 LightMapCoord;
+out vec3 ViewRay;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -22,4 +23,5 @@ void main()
 	TexCoord = texcoord;
 	LightMapCoord = lightmapcoord;
     gl_Position = proj * view * model * vec4(position, 1.0);
+	ViewRay = gl_Position.xyz;
 }

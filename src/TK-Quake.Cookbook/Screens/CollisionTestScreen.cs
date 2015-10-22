@@ -46,8 +46,9 @@ namespace TKQuake.Cookbook.Screens
             Children.Add(collisionDetector);
 
             _camera.Position = new Vector3(0, 10, 0);
-            _camera.Rotation = new Vector3(0, MathHelper.PiOver2, 0);
+            //_camera.Rotation = new Vector3(0, MathHelper.PiOver2, 0);
             _camera.Components.Add(new GravityComponent(_camera));
+            _camera.Components.Add(new DebugPositionComponent(_camera));
 
             InitEntities();
             InitComponents();
@@ -140,11 +141,26 @@ namespace TKQuake.Cookbook.Screens
 
             Children.Add(gunEntity);
 
-            // Wind Tunnel
-            //WindTunnel tunnel = new WindTunnel(new Vector3(10, 10, 0), new Vector3(0, 0, -10));
-            //tunnel.Direction = Vector3.UnitX + Vector3.UnitZ;
-            //tunnel.Force = 0.1f;
-            //Children.Add(tunnel);
+            //// Wind Tunnel
+            WindTunnel tunnel1 = new WindTunnel(new Vector3(15, 10, 10), new Vector3(-10, -2, 20));
+            tunnel1.Direction = Vector3.UnitX;
+            tunnel1.Force = 0.1f;
+            Children.Add(tunnel1);
+
+            WindTunnel tunnel2 = new WindTunnel(new Vector3(20, 10, -15), new Vector3(10, -2, 20));
+            tunnel2.Direction = -Vector3.UnitZ;
+            tunnel2.Force = 0.1f;
+            Children.Add(tunnel2);
+
+            WindTunnel tunnel3 = new WindTunnel(new Vector3(20, 10, -10), new Vector3(-5, -2, 0));
+            tunnel3.Direction = -Vector3.UnitX;
+            tunnel3.Force = 0.1f;
+            Children.Add(tunnel3);
+
+            WindTunnel tunnel4 = new WindTunnel(new Vector3(0, 10, -10), new Vector3(-10, -2, 10));
+            tunnel4.Direction = Vector3.UnitZ;
+            tunnel4.Force = 0.1f;
+            Children.Add(tunnel4);
 
             FireParticleSystem fps = new FireParticleSystem();
             fps.Camera = _camera;

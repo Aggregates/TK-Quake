@@ -59,6 +59,22 @@ namespace TKQuake.Cookbook
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
             Console.Write("FPS: {0}\r", GetFps(e.Time));
+            
+            // Store the current view model projection data
+            var renderer = Renderer.Singleton();
+            var model = renderer.GetUniform("model");
+            var view = renderer.GetUniform("view");
+            var proj = renderer.GetUniform("proj");
+
+            var mvp = model*view*proj;
+            var inverseModelView = (model*view).Inverted();
+
+            var uniPrevMvpLocation = GL.GetUniformLocation(renderer.Program, "uPrevModelViewProj");
+            GL.UniformMatrix4(uniPrevMvpLocation, false, ref mvp);
+
+            var uInverseModelViewMat = GL.GetUniformLocation(renderer.Program, "uInverseModelViewMat");
+            GL.UniformMatrix4(uInverseModelViewMat, false, ref inverseModelView);
+            
             game.SwapBuffers();
         }
 
@@ -97,7 +113,10 @@ namespace TKQuake.Cookbook
             var renderer = Renderer.Singleton();
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
             renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+
+            // Motion Blur shader doesn't work and breaks Particle transparency
             //renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "MotionBlur.shader")), ShaderType.FragmentShader);
+
             renderer.LinkShaders();
 
             //currentScreen = new CameraTestScreen("maps/q3dm6.bsp");

@@ -28,6 +28,7 @@ namespace TKQuake.Engine.Core
         private int? _vertexShader;
         private int? _fragmentShader;
         private int _uniModel;
+        private int? _motionBlurShader;
 
         private Renderer() { }
 
@@ -44,7 +45,11 @@ namespace TKQuake.Engine.Core
                     _vertexShader = id;
                     break;
                 case ShaderType.FragmentShader:
-                    _fragmentShader = id;
+
+                    if (shader.Contains("MotionBlur"))
+                        _motionBlurShader = id;
+                    else
+                        _fragmentShader = id;
                     break;
                 default:
                     throw new Exception("Invalid shader type");
@@ -59,10 +64,17 @@ namespace TKQuake.Engine.Core
             {
                 GL.AttachShader(_program.Value, _vertexShader.Value);
             }
+
             if (_fragmentShader.HasValue)
             {
                 GL.AttachShader(_program.Value, _fragmentShader.Value);
                 GL.BindFragDataLocation(_program.Value, 0, "outColor");
+            }
+
+            if (_motionBlurShader.HasValue)
+            {
+                GL.AttachShader(_program.Value, _motionBlurShader.Value);
+                GL.BindFragDataLocation(_program.Value, 1, "outColor");
             }
 
             GL.LinkProgram(_program.Value);
@@ -277,6 +289,27 @@ namespace TKQuake.Engine.Core
         public static Renderer Singleton()
         {
             return _instance ?? (_instance = new Renderer());
+        }
+
+        public Matrix4 GetUniform(string name)
+        {
+            if (_program.HasValue)
+            {
+                var location = GL.GetUniformLocation((int) _program, name);
+                float[] data = new float[16];
+                GL.GetUniform((int)_program, location, data);
+
+                // Convert data to matrix
+                Matrix4 mat = new Matrix4(
+                    new Vector4(data[0], data[1], data[2], data[3]),
+                    new Vector4(data[4], data[5], data[6], data[7]),
+                    new Vector4(data[8], data[9], data[10], data[11]),
+                    new Vector4(data[12], data[13], data[14], data[15])
+                );
+                return mat;
+            }
+            else return Matrix4.Zero;
+
         }
     }
 }

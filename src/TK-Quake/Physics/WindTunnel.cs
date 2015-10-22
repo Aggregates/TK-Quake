@@ -30,15 +30,18 @@ namespace TKQuake.Physics
             var other = (e.Sender == this) ? e.Collider : e.Sender;
 
             // Retrieve the motion blur from depth buffer
+            GL.Accum(AccumOp.Accum, 1f);
             GL.Accum(AccumOp.Return, 1f);
-            GL.Accum(AccumOp.Mult, 2f);
+            GL.Accum(AccumOp.Mult, 50f);
+
+            //Matrix4 mat = Matrix4.Identity;
+            //mat.Row0 = null;
 
             // Move the other object
             Vector3 movement = Direction.Normalized()*Force;
             other.Position += movement;
 
             // Store the depth buffer for motion blur
-            GL.Accum(AccumOp.Accum, 1f);
 
         }
     }
