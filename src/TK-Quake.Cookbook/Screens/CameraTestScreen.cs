@@ -41,7 +41,8 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton ();
             _textureManager = TextureManager.Singleton ();
             _BSP = BSPFile;
-            var _audioManager = new AudioManager();
+            var _audioManager = AudioManager.Singleton();
+            _audioManager.UpdateListenerPosition(_camera.Position);
 
             InitEntities();
             InitComponents();
@@ -53,21 +54,6 @@ namespace TKQuake.Cookbook.Screens
                 Console.WriteLine(component.ToString());
             }
             Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
-            //Apparently OpenAL should manage its own threading, however if this wasn't created as a thread the GameScreen would not run.
-            //Might be to do with where I have declared it.
-            //Thread th = new Thread(new ThreadStart(AudioManager.Play));
-            //th.Start();
-            _audioManager.UpdateListenerPosition(_camera.Position);
-            var filename = Path.Combine("Audio", "PosTest.wav");
-            new Thread(delegate ()
-            {
-                using (AudioContext context = new AudioContext())
-                {
-                    _audioManager.Add("bgm", filename);
-                    _audioManager.PlayAtSource("bgm", new Vector3(0f, 0f, 0f));
-                }
-                //_audioManager.printHeader(filename);
-            }).Start();
 
             //Setting this as a new thread will keep the camera position up to date. Probably should be placed on the renderer loop
             //rather than its own thread.
@@ -79,34 +65,6 @@ namespace TKQuake.Cookbook.Screens
                         Thread.Sleep(1000);
                     }
             }).Start();
-
-            //Apparently OpenAL should manage its own threading, however if this wasn't created as a thread the GameScreen would not run.
-            //Might be to do with where I have declared it.
-            //Thread th = new Thread(new ThreadStart(AudioManager.Play));
-            //th.Start();
-            _audioManager.UpdateListenerPosition(_camera.Position);
-            var filename = Path.Combine("Audio", "PosTest.wav");
-            new Thread(delegate ()
-            {
-                using (AudioContext context = new AudioContext())
-                {
-                    _audioManager.Add("bgm", filename);
-                    _audioManager.PlayAtSource("bgm", new Vector3(0f, 0f, 0f));
-                }
-                //_audioManager.printHeader(filename);
-            }).Start();
-
-            //Setting this as a new thread will keep the camera position up to date. Probably should be placed on the renderer loop
-            //rather than its own thread.
-            new Thread(delegate ()
-            {
-                    while (true)
-                    {
-                        _audioManager.UpdateListenerPosition(_camera.Position);
-                        Thread.Sleep(1000);
-                    }
-            }).Start();
-
         }
         
 
@@ -221,6 +179,7 @@ namespace TKQuake.Cookbook.Screens
         // The system texture manager.
         private readonly TextureManager texManager = TextureManager.Singleton ();
 
+
         // The BSP loader and renderer.
         private BSPLoader loader;
         private BSPRenderer renderer;
@@ -233,6 +192,9 @@ namespace TKQuake.Cookbook.Screens
 
         // The camera.
         private Camera camera;
+
+
+        private readonly AudioManager audioManager = AudioManager.Singleton();
 
         private BSPComponent()
         {
@@ -278,6 +240,7 @@ namespace TKQuake.Cookbook.Screens
             // Order is important here.
             LoadAllTextures();
             LoadAllMeshes();
+            LoadAudio();
         }
 
         public void Startup() { }
@@ -295,6 +258,33 @@ namespace TKQuake.Cookbook.Screens
             {
                 BSPEntities[face].ForEach(_renderer.DrawEntity);
             }
+        }
+
+        private void LoadAudio()
+        {
+            String filename = "";
+            foreach (TKQuake.Engine.Loader.BSP.Entity.EntityEntry entity in loader.GetEntities())
+            {
+                string orig = entity.entity.ToString();
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("([^\"]((\\w|\\d|_)*|\\/)*\\.wav)");
+                string result = regex.Match(orig).ToString();
+                if (result.Equals("") == false)
+                {
+                    filename = result;
+                    break;
+                }
+            }
+            var splitFN = filename.Split('/');
+            filename = Path.Combine(splitFN);
+            Console.Out.WriteLine(filename);
+            new Thread(delegate ()
+            {
+                using (AudioContext context = new AudioContext())
+                {
+                    audioManager.Add("bgm", filename, true);
+                    audioManager.PlayAtSource("bgm", new Vector3(0f, 0f, 0f));
+                }
+            }).Start();
         }
 
         /// <summary>
