@@ -118,9 +118,13 @@ namespace TKQuake.Engine.Core
             GL.VertexAttribPointer(normalAttrib, 3, VertexAttribPointerType.Float, false, vStride, 3*sizeof (float));
             GL.EnableVertexAttribArray(normalAttrib);
 
-            var textureAttrib = GL.GetAttribLocation(Program, "texcoord");
-            GL.VertexAttribPointer(textureAttrib, 2, VertexAttribPointerType.Float, false, vStride, 6*sizeof (float));
-            GL.EnableVertexAttribArray(textureAttrib);
+            var textureAttrib1 = GL.GetAttribLocation(Program, "texcoord");
+            GL.VertexAttribPointer(textureAttrib1, 2, VertexAttribPointerType.Float, false, vStride, 6*sizeof (float));
+            GL.EnableVertexAttribArray(textureAttrib1);
+
+            var textureAttrib2 = GL.GetAttribLocation(Program, "lightmapcoord");
+            GL.VertexAttribPointer(textureAttrib2, 2, VertexAttribPointerType.Float, false, vStride, 8*sizeof (float));
+            GL.EnableVertexAttribArray(textureAttrib2);
 
             int ebo;
             GL.GenBuffers(1, out ebo);
@@ -180,15 +184,29 @@ namespace TKQuake.Engine.Core
             GL.UniformMatrix4(uniModel, false, ref model);
 
             //bind texture
-            if (mesh.tex != null)
+            if (mesh.texture != null)
             {
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, mesh.tex.Id);
+                TextureManager.Bind(mesh.texture);
             }
 
             else if (TextureManager.Registered (entity.Id) == true)
             {
                 TextureManager.Bind(entity.Id);
+            }
+
+            else
+            {
+                TextureManager.Unbind();
+            }
+
+            if (mesh.lightMap != null)
+            {
+                TextureManager.BindUV(mesh.lightMap);
+            }
+
+            else
+            {
+                TextureManager.UnbindUV();
             }
 
             DrawVbo(mesh);

@@ -129,10 +129,10 @@ namespace TKQuake.Cookbook.Screens
 
                 vertices.AddRange(new []
                 {
-                    new Vertex(v1, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v2, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v3, Vector3.Zero, Vector2.Zero),
-                    new Vertex(v4, Vector3.Zero, Vector2.Zero),
+                    new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v3, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
                 });
 
                 indices.AddRange(new []
@@ -229,27 +229,33 @@ namespace TKQuake.Cookbook.Screens
         /// <param name="elapsedTime">Not used.</param>
         public void Update(double elapsedTime)
         {
-            // Get the list of visible faces.
-            List<int> visibleFaces = renderer.GetVisibleFaces(camera);
-
-            // Iterate over all of the visible faces.
-            foreach (int face in visibleFaces)
+            var visibleFaces = BSPEntities.Keys;
+            foreach (var face in visibleFaces)
             {
-                // Iterate over all of the renderable entities for each visible face.
-                try
-                {
-                    foreach (RenderableEntity BSPEntity in BSPEntities[face])
-                    {
-                        // Render the BSP entity.
-                        _renderer.DrawEntity (BSPEntity);
-                    }
-                }
-
-                catch (KeyNotFoundException)
-                {
-                    Console.WriteLine ("KeyNotFoundException thrown for face {0}", face);
-                }
+                BSPEntities[face].ForEach(_renderer.DrawEntity);
             }
+
+            // Get the list of visible faces.
+//            List<int> visibleFaces = renderer.GetVisibleFaces(camera);
+//
+//            // Iterate over all of the visible faces.
+//            foreach (int face in visibleFaces)
+//            {
+//                // Iterate over all of the renderable entities for each visible face.
+//                try
+//                {
+//                    foreach (RenderableEntity BSPEntity in BSPEntities[face])
+//                    {
+//                        // Render the BSP entity.
+//                        _renderer.DrawEntity (BSPEntity);
+//                    }
+//                }
+//
+//                catch (KeyNotFoundException)
+//                {
+//                    Console.WriteLine ("KeyNotFoundException thrown for face {0}", face);
+//                }
+//            }
         }
 
         /// <summary>
@@ -362,6 +368,31 @@ namespace TKQuake.Cookbook.Screens
                     {
                         texManager.Add (TGA, TGA);
                     }
+                }
+            }
+
+            for (int face = 0; face < loader.GetFaces().Length; face++)
+            {
+                Face.FaceEntry currentFace = loader.GetFace(face);
+
+                if (currentFace.lm_index >= 0)
+                {
+                    byte[,,] lightMap = new byte[currentFace.lm_size[0], currentFace.lm_size[1], 3];
+
+                    LightMap.LightMapEntry map = loader.GetLightMap(currentFace.lm_index);
+
+                    // Make a copy of the relevant part of the light map.
+                    for (int x = 0; x < currentFace.lm_size[0]; x++)
+                    {
+                        for (int y = 0; y < currentFace.lm_size[1]; y++)
+                        {
+                            lightMap[x, y, 0] = map.map[x + currentFace.lm_start[0], y + currentFace.lm_start[1], 0];
+                            lightMap[x, y, 1] = map.map[x + currentFace.lm_start[0], y + currentFace.lm_start[1], 1];
+                            lightMap[x, y, 2] = map.map[x + currentFace.lm_start[0], y + currentFace.lm_start[1], 2];
+                        }
+                    }
+
+                    texManager.AddUV(lightMap, loader.GetFace (face).lm_size, string.Format ("FACE{0}", face));
                 }
             }
         }

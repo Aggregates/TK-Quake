@@ -81,8 +81,7 @@ namespace TKQuake.Engine.Core
             // Generate meshes for every face in the BSP.
             for (int face = 0; face < BSP.GetFaces().Count(); face++)
             {
-                Face.FaceEntry currentFace = BSP.GetFace(face);
-                List<Mesh> meshes = GenerateMesh(currentFace);
+                List<Mesh> meshes = GenerateMesh(face);
 
                 // Make sure there is an entry in our dictionary for the current face.
                 BSPMeshes [face] = new List<Mesh> ();
@@ -110,8 +109,7 @@ namespace TKQuake.Engine.Core
             foreach (int face in visibleFaces)
             {
                 // Generate the meshes.
-                Face.FaceEntry currentFace = BSP.GetFace(face);
-                List<Mesh> meshes = GenerateMesh(currentFace);
+                List<Mesh> meshes = GenerateMesh(face);
 
                 // Make sure there is an entry in our dictionary for the current face.
                 BSPMeshes [face] = new List<Mesh> ();
@@ -129,24 +127,24 @@ namespace TKQuake.Engine.Core
         /// <summary>
         /// Generate all of the meshes for the given face.
         /// </summary>
-        /// <param name="currentFace">The face to generate meshes for.</param>
-        private List<Mesh> GenerateMesh(Face.FaceEntry currentFace)
+        /// <param name="faceIndex">The face to generate meshes for.</param>
+        private List<Mesh> GenerateMesh(int faceIndex)
         {
-            switch(currentFace.type)
+            switch(BSP.GetFace (faceIndex).type)
             {
                 case Face.FaceType.POLYGON:
                 {
-                    return (new List<Mesh>() { RenderPolygon (currentFace) });
+                    return (new List<Mesh>() { RenderPolygon (faceIndex) });
                 }
 
                 case Face.FaceType.PATCH:
                 {
-                    return (TessellateBezierPatch (currentFace));
+                    return (TessellateBezierPatch (faceIndex));
                 }
 
                 case Face.FaceType.MESH:
                 {
-                    return (new List<Mesh>() { RenderPolygon(currentFace) });
+                    return (new List<Mesh>() { RenderPolygon(faceIndex) });
                 }
 
                 case Face.FaceType.BILLBOARD:
@@ -408,7 +406,7 @@ namespace TKQuake.Engine.Core
         /// Tesselates a Bezier patch into a triangular mesh.
         /// </summary>
         /// <param name="face">The Bezier patch to tesselate.</param>
-        private List<Mesh> TessellateBezierPatch (Face.FaceEntry face)
+        private List<Mesh> TessellateBezierPatch (int faceIndex)
         {
             List<Mesh>                       meshes = new List<Mesh> ();
             List<Infrastructure.Math.Vertex> vertices;
@@ -417,6 +415,8 @@ namespace TKQuake.Engine.Core
             Vector3[]                        vertControls  = new Vector3[9];
             Vector2[]                        textControls  = new Vector2[9];
             Vector2[]                        lightControls = new Vector2[9];
+
+            Face.FaceEntry face = BSP.GetFace (faceIndex);
 
             // The amount of increments we need to make for each dimension, so we have the (potentially) shared points between patches
             int stepWidth  = (face.size[0] - 1) / 2;
@@ -530,41 +530,42 @@ namespace TKQuake.Engine.Core
 
                 List<Vector3> p0s, p1s, p2s;
                 List<Vector2> p0suv, p1suv, p2suv;
-                //List<Vector2> p0suv2, p1suv2, p2suv2;
+                List<Vector2> p0suv2, p1suv2, p2suv2;
 
                 p0s    = Tessellate  (vertControls  [0], vertControls  [3], vertControls  [6]);
                 p0suv  = TessellateUV(textControls  [0], textControls  [3], textControls  [6]);
-                //p0suv2 = TessellateUV(lightControls [0], lightControls [3], lightControls [6]);
+                p0suv2 = TessellateUV(lightControls [0], lightControls [3], lightControls [6]);
 
                 p1s    = Tessellate  (vertControls  [1], vertControls  [4], vertControls  [7]);
                 p1suv  = TessellateUV(textControls  [1], textControls  [4], textControls  [7]);
-                //p1suv2 = TessellateUV(lightControls [1], lightControls [4], lightControls [7]);
+                p1suv2 = TessellateUV(lightControls [1], lightControls [4], lightControls [7]);
 
                 p2s    = Tessellate  (vertControls  [2], vertControls  [5], vertControls  [8]);
                 p2suv  = TessellateUV(textControls  [2], textControls  [5], textControls  [8]);
-                //p2suv2 = TessellateUV(lightControls [2], lightControls [5], lightControls [8]);
+                p2suv2 = TessellateUV(lightControls [2], lightControls [5], lightControls [8]);
 
                 // Tessellate all those new sets of control points and pack
                 // all the results into our vertex array, which we'll return.
                 // Make our uvs list while we're at it.
                 List<Vector3> points      = new List<Vector3> ();
                 List<Vector2> texs        = new List<Vector2> ();
-                //List<Vector2> lightCoords = new List<Vector2> ();
+                List<Vector2> lightCoords = new List<Vector2> ();
 
                 for (int i = 0; i <= TESSELLATION_LEVEL; i++)
                 {
                     points.AddRange      (Tessellate   (p0s    [i], p1s    [i], p2s    [i]));
                     texs.AddRange        (TessellateUV (p0suv  [i], p1suv  [i], p2suv  [i]));
-                    //lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
+                    lightCoords.AddRange (TessellateUV (p0suv2 [i], p1suv2 [i], p2suv2 [i]));
                 }
 
                 // Reformat the tesselated points.
                 for (int j = 0; j < points.Count; j++)
                 {
                     Infrastructure.Math.Vertex point;
-                    point.Position = points [j];
-                    point.Normal   = Vector3.UnitZ;                  // FIXME: Calculate the actual normal for this surface at this point.
-                    point.TexCoord = texs [j];
+                    point.Position      = points [j];
+                    point.Normal        = face.normal;                  // FIXME: Calculate the actual normal for this surface at this point.
+                    point.TexCoord      = texs [j];
+                    point.LightMapCoord = lightCoords [j];
                     vertices.Add (point);
                 }
 
@@ -617,7 +618,8 @@ namespace TKQuake.Engine.Core
                 // Add mesh to list of meshes.
                 mesh.Vertices = vertices.ToArray ();
                 mesh.Indices  = indices.ToArray ();
-                mesh.tex      = GetTexture (face);
+                mesh.texture  = GetTexture (face);
+                mesh.lightMap = GetTextureUV (faceIndex);
                 meshes.Add (mesh);
 
                 vertices.Clear ();
@@ -723,20 +725,22 @@ namespace TKQuake.Engine.Core
         /// Generates a mesh that is ready for rendering for the specified polygon.
         /// </summary>
         /// <param name="face">The face for which the mesh should be generated.</param>
-        private Mesh RenderPolygon(Face.FaceEntry face)
+        private Mesh RenderPolygon(int faceIndex)
         {
             List<Infrastructure.Math.Vertex> vertices  = new List<Infrastructure.Math.Vertex> ();
             List<int>                        indices   = new List<int> ();
+
+            Face.FaceEntry face = BSP.GetFace (faceIndex);
 
             // Add all the vertexes for the face to the mesh.
             for (int vertex = face.vertex; vertex < (face.vertex + face.n_vertexes); vertex++)
             {
                 Loader.BSP.Vertex.VertexEntry currentVertex = BSP.GetVertex (vertex);
                 Infrastructure.Math.Vertex point;
-                point.Position = currentVertex.position;
-                point.Normal = currentVertex.normal;
-                point.TexCoord = currentVertex.texCoord [0];
-                // lightCoords.Add (currentVertex.texCoord [1]);
+                point.Position      = currentVertex.position;
+                point.Normal        = currentVertex.normal;
+                point.TexCoord      = currentVertex.texCoord[0];
+                point.LightMapCoord = currentVertex.texCoord[1];
                 vertices.Add (point);
             }
 
@@ -750,7 +754,8 @@ namespace TKQuake.Engine.Core
             Mesh mesh = new Mesh ();
             mesh.Vertices = vertices.ToArray ();
             mesh.Indices  = indices.ToArray ();
-            mesh.tex      = GetTexture (face);
+            mesh.texture  = GetTexture (face);
+            mesh.lightMap = GetTextureUV (faceIndex);
             return(mesh);
          }
 
@@ -781,6 +786,29 @@ namespace TKQuake.Engine.Core
                 else if ((File.Exists ("textures/notexture.jpg") == true) && (texManager.Registered ("textures/notexture.jpg") == true))
                 {
                     texture = texManager.Get ("textures/notexture.jpg");
+                }
+            }
+
+            return (texture);
+        }
+
+        /// <summary>
+        /// Finds the lightmap texture in the texture manager that corresponds to the current face.
+        /// </summary>
+        /// <param name="faceIndex">The face for which we want to find a texture for.</param>
+        private Infrastructure.Texture.Texture GetTextureUV(int faceIndex)
+        {
+            Face.FaceEntry face = BSP.GetFace(faceIndex);
+
+            Infrastructure.Texture.Texture texture = null;
+
+            if (face.lm_index >= 0)
+            {
+                string textureName = string.Format("FACE{0}", faceIndex);
+
+                if (texManager.Registered (textureName) == true)
+                {
+                    texture = texManager.Get (textureName);
                 }
             }
 
