@@ -57,39 +57,43 @@ namespace TKQuake.Engine.Infrastructure.Texture
 
         public void Bind(string key)
         {
-            var texture = this.Get(key);
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+            BindTexture (this.Get(key), TextureUnit.Texture0);
         }
 
         public void Bind(Texture texture)
         {
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+            BindTexture (texture, TextureUnit.Texture0);
         }
 
         public void BindUV(string key)
         {
-            var texture = this.Get(key);
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+            BindTexture (this.Get(key), TextureUnit.Texture1);
         }
 
         public void BindUV(Texture texture)
         {
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+            BindTexture (texture, TextureUnit.Texture1);
         }
 
         public void Unbind()
         {
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            UnbindTexture (TextureUnit.Texture0);
         }
 
         public void UnbindUV()
         {
-            GL.ActiveTexture(TextureUnit.Texture1);
+            UnbindTexture (TextureUnit.Texture1);
+        }
+
+        private void BindTexture(Texture texture, TextureUnit textureUnit)
+        {
+            GL.ActiveTexture(textureUnit);
+            GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+        }
+
+        private void UnbindTexture(TextureUnit texture)
+        {
+            GL.ActiveTexture(texture);
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
