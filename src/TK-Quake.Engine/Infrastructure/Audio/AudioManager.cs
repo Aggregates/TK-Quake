@@ -23,9 +23,9 @@ namespace TKQuake.Engine.Infrastructure.Audio
         {
         }
 
-        public void Add(string audioName, string filename)
+        public void Add(string audioName, string filename, Boolean loop)
         {
-            Audio audio = BindAudio(filename);
+            Audio audio = BindAudio(filename, loop);
             base.Add(audioName, audio);
         }
 
@@ -122,19 +122,31 @@ namespace TKQuake.Engine.Infrastructure.Audio
             audio = LoadWav(audio);
             int source = AL.GenSource();
             AL.Source(source, ALSourcei.Buffer, audio.Id);
+            AL.Source(source, ALSourceb.Looping, audio.Loop);
             AL.SourcePlay(source);
-            int state;
 
-            do
+            if (audio.Loop == true)
             {
-                Thread.Sleep(1000);
-                Console.Write(".");
-                AL.GetSource(source, ALGetSourcei.SourceState, out state);
+                do
+                {
+
+                } while (audio.Loop == true);
             }
-            while ((ALSourceState)state == ALSourceState.Playing);
+            else
+            {
+                int state;
+                do
+                {
+                    Thread.Sleep(1000);
+                    Console.Write(".");
+                    AL.GetSource(source, ALGetSourcei.SourceState, out state);
+                }
+                while ((ALSourceState)state == ALSourceState.Playing);
+            }
             AL.SourceStop(source);
             AL.DeleteSource(source);
         }
+
 
         //Audio file must be mono
         private void PlayWavAtSource(Audio audio, Vector3 sourcePos)
@@ -148,8 +160,17 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.Source(source, ALSourcef.Pitch, 1.0f);
             AL.Source(source, ALSourcef.Gain, 0.85f);
             AL.Source(source, ALSource3f.Position, ref sourcePos);
+            AL.Source(source, ALSourceb.Looping, audio.Loop);
             AL.SourcePlay(source);
-            
+
+            if (audio.Loop == true)
+            {
+                do
+                {
+
+                } while (audio.Loop == true);
+            }
+            else { 
             int state;
             do
             {
@@ -158,31 +179,32 @@ namespace TKQuake.Engine.Infrastructure.Audio
                 AL.GetSource(source, ALGetSourcei.SourceState, out state);
             }
             while ((ALSourceState)state == ALSourceState.Playing);
+            }
             AL.SourceStop(source);
             AL.DeleteSource(source);
         }
 
-        private Audio BindAudio(string filename)
+        private Audio BindAudio(string filename, bool loop)
         {
             if (filename.Contains(".wav"))
             {
-                return BindWav(filename);
+                return BindWav(filename, loop);
             }
             else if (filename.Contains(".ogg"))
             {
-                return BindOgg(filename);
+                return BindOgg(filename, loop);
             }
             else throw new NotSupportedException("Audio format not supported.");
         }
 
-        private Audio BindOgg(string filename)
+        private Audio BindOgg(string filename, bool loop)
         {
-            return new Audio(filename);
+            return new Audio(filename, loop);
         }
 
-        private Audio BindWav(string filename)
+        private Audio BindWav(string filename, bool loop)
         {
-            return new Audio(filename);
+            return new Audio(filename, loop);
         }
 
         //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
@@ -264,7 +286,7 @@ namespace TKQuake.Engine.Infrastructure.Audio
 
                 //Loading and storing the data
                 AL.BufferData(audioID, GetSoundFormat(num_channels, bits_per_sample), data, data.Length, sample_rate);
-                audio = new Audio(audioID, data, num_channels, bits_per_sample, sample_rate, filename);
+                audio = new Audio(audioID, data, num_channels, bits_per_sample, sample_rate, filename, audio.Loop);
                 return audio;
             }
         }
