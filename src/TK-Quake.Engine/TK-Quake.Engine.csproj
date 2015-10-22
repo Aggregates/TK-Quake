@@ -120,6 +120,7 @@
     <Compile Include="Loader\BSP\MeshVert.cs" />
     <Compile Include="Loader\BSP\VisData.cs" />
     <Compile Include="Core\BSPRenderer.cs" />
+    <Compile Include="Infrastructure\Components\BSPComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
