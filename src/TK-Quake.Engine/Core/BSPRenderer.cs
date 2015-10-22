@@ -97,8 +97,6 @@ namespace TKQuake.Engine.Core
             return(BSPMeshes);
         }
 
-        private readonly Stopwatch _sw = new Stopwatch();
-
         /// <summary>
         /// Generate all of the meshes that a visible from the camera.
         /// </summary>
@@ -112,8 +110,7 @@ namespace TKQuake.Engine.Core
             foreach (var face in visibleFaces)
             {
                 // Generate the meshes.
-                var currentFace = BSP.GetFace(face);
-                var meshes = GenerateMesh(currentFace);
+                var meshes = GenerateMesh(face);
 
                 // Make sure there is an entry in our dictionary for the current face.
                 bspMeshes [face] = new List<Mesh> ();
