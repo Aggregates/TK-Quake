@@ -110,7 +110,7 @@ namespace TKQuake.Engine.Core
             foreach (var face in visibleFaces)
             {
                 // Generate the meshes.
-                var meshes = GenerateMesh(face);
+                List<Mesh> meshes = GenerateMesh(face);
 
                 // Make sure there is an entry in our dictionary for the current face.
                 bspMeshes [face] = new List<Mesh> ();

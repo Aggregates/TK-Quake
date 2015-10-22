@@ -163,6 +163,11 @@ namespace TKQuake.Engine.Infrastructure.Components
                         BSPEntity.Translation = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
                         BSPEntity.Rotation = Vector3.Zero;
 
+                        BSPEntity.Transform = Matrix4.CreateRotationX (0.0f) * Matrix4.CreateRotationY (0.0f) * Matrix4.CreateRotationZ (0.0f) * 
+                            Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f) * 
+                            Matrix4.CreateTranslation(camera.Position) * 
+                            Matrix4.CreateScale(0.01f);
+
                         // Add it to our renderable entity dictionary.
                         BSPEntities[meshSet.Key].Add(BSPEntity);
 
