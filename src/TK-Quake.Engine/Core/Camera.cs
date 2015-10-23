@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Infrastructure.Components;
+using TKQuake.Engine.Infrastructure.Physics;
 
 namespace TKQuake.Engine.Core
 {
@@ -20,7 +21,15 @@ namespace TKQuake.Engine.Core
             Position = new Vector3(0, 0.5f, 0);
             Rotation = -Vector3.UnitZ;
 
-            Components.Add(new CameraComponent(this));
+            CameraComponent cam = new CameraComponent(this);
+            cam.PositionOffset = new Vector3(0, 3, 0);
+
+            BoundingBoxEntity box = new BoundingBoxEntity(this,
+                new Vector3(0.5f, 0.5f, 0.5f) + cam.PositionOffset,
+                new Vector3(-0.5f, 0.0f, -0.5f), true);
+
+            Components.Add(cam);
+            Children.Add(box);
         }
 
         public override void Rotate(float dx, float dy, float dz)
@@ -34,7 +43,7 @@ namespace TKQuake.Engine.Core
         }
     }
 
-    class CameraComponent : IComponent
+    public class CameraComponent : IComponent
     {
         private readonly IEntity _entity;
         private readonly Renderer _renderer = Renderer.Singleton();
@@ -42,9 +51,12 @@ namespace TKQuake.Engine.Core
         public int Width { get; set; } = 800;
         public int Height { get; set; } = 600;
 
+        public Vector3 PositionOffset { get; set; }
+
         public CameraComponent(IEntity entity)
         {
             _entity = entity;
+            PositionOffset = new Vector3(0, 0, 0);
         }
 
         public void Startup() { }
@@ -53,8 +65,9 @@ namespace TKQuake.Engine.Core
         public void Update(double elapsedTime)
         {
             var program = _renderer.Program;
+            var pos = _entity.Position + PositionOffset;
 
-            var view = Matrix4.LookAt(_entity.Position, _entity.Position + _entity.ViewDirection, Vector3.UnitY);
+            var view = Matrix4.LookAt(pos, pos + _entity.ViewDirection, Vector3.UnitY);
             var uniView = GL.GetUniformLocation(program, "view");
             GL.UniformMatrix4(uniView, false, ref view);
         }

@@ -23,12 +23,12 @@ namespace TKQuake.ScreenStates
             this._textureManager = texManager;
 
             this._renderer = Renderer.Singleton();
-            this._spriteList = new List<Sprite2>();
-            _spriteList.Add(new Face(texManager.Get("face")));
-            _spriteList.Add(new Face(texManager.Get("faceAlpha")));
+            //this._spriteList = new List<Sprite2>();
+            //_spriteList.Add(new Face(texManager.Get("face")));
+            //_spriteList.Add(new Face(texManager.Get("faceAlpha")));
 
-            _spriteList[1].SetColor(new Color(1, 0, 0, 1));
-            _spriteList[1].SetPosition(256, 256);
+            //_spriteList[1].SetColor(new Color(1, 0, 0, 1));
+            //_spriteList[1].SetPosition(256, 256);
         }
 
         /*

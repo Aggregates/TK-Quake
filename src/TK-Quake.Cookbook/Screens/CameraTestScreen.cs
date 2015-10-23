@@ -35,8 +35,8 @@ namespace TKQuake.Cookbook.Screens
 
         public CameraTestScreen(string BSPFile)
         {
-            _renderer = Renderer.Singleton ();
-            _textureManager = TextureManager.Singleton ();
+            _renderer = Renderer.Singleton();
+            _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
 
             InitEntities();
@@ -56,17 +56,17 @@ namespace TKQuake.Cookbook.Screens
             Components.Add(new UserInputComponent(_camera));
 
             //skybox
-//            var skyboxPath = Path.Combine("skybox", "space");
-//            var skybox = new SkyboxComponent(this, "skybox")
-//            {
-//                Back = Path.Combine(skyboxPath, "back.bmp"),
-//                Front = Path.Combine(skyboxPath, "front.bmp"),
-//                Top = Path.Combine(skyboxPath, "top.bmp"),
-//                Bottom = Path.Combine(skyboxPath, "top.bmp"),
-//                Left = Path.Combine(skyboxPath, "left.bmp"),
-//                Right = Path.Combine(skyboxPath, "right.bmp")
-//            };
-//            Components.Add(skybox);
+            //            var skyboxPath = Path.Combine("skybox", "space");
+            //            var skybox = new SkyboxComponent(this, "skybox")
+            //            {
+            //                Back = Path.Combine(skyboxPath, "back.bmp"),
+            //                Front = Path.Combine(skyboxPath, "front.bmp"),
+            //                Top = Path.Combine(skyboxPath, "top.bmp"),
+            //                Bottom = Path.Combine(skyboxPath, "top.bmp"),
+            //                Left = Path.Combine(skyboxPath, "left.bmp"),
+            //                Right = Path.Combine(skyboxPath, "right.bmp")
+            //            };
+            //            Components.Add(skybox);
 
             foreach (var component in Components)
             {
@@ -91,7 +91,7 @@ namespace TKQuake.Cookbook.Screens
             gunEntity.Id = "gun";
             gunEntity.Position = new Vector3(0, 0, 0);
             gunEntity.Scale = 0.05f;
-            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI/2, 0)));
+            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI / 2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
             Children.Add(gunEntity);
@@ -128,7 +128,7 @@ namespace TKQuake.Cookbook.Screens
                 var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
                 var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
 
-                vertices.AddRange(new []
+                vertices.AddRange(new[]
                 {
                     new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
                     new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
@@ -136,7 +136,7 @@ namespace TKQuake.Cookbook.Screens
                     new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
                 });
 
-                indices.AddRange(new []
+                indices.AddRange(new[]
                 {
                     index, index + 1, index,
                     index + 2, index + 3, index + 2

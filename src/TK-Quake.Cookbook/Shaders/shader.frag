@@ -13,5 +13,13 @@ void main()
 {
     vec4 text = texture(Texture, TexCoord);
     vec4 lm   = texture(LightMap, LightMapCoord);
-    outColor  = text * (lm + vec4(0.5, 0.5, 0.5, 0.5));
+
+	// Tyler made this change because it interferes with particles
+	//outColor  = text * (lm + vec4(0.5, 0.5, 0.5, 0.5));
+	outColor  = text * (lm + vec4(1, 1, 1, 1));
+	
+	// Test texure pixel alpha value
+	if (outColor.a < 0.5)
+		discard;
+
 }

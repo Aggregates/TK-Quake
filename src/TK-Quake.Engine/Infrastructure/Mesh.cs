@@ -24,6 +24,10 @@ namespace TKQuake.Engine.Infrastructure
         public int EboId { get; set; }
         public Texture.Texture texture;
         public Texture.Texture lightMap;
+
+        public Vector3 Min { get; set; }
+        public Vector3 Max { get; set; }
+
     }
 
     public static class MeshExtensions
@@ -41,6 +45,13 @@ namespace TKQuake.Engine.Infrastructure
             var inPositions = new List<Vector3>();
             var inNormals = new List<Vector3>();
             var inTextures = new List<Vector2>();
+            
+
+            // Mins and Maxs
+            float minX = int.MaxValue, minY = int.MaxValue, minZ = int.MaxValue;
+            float maxX = int.MinValue, maxY = int.MinValue, maxZ = int.MinValue;
+
+            var indiceList = new List<int>();
             foreach (var group in res.Groups)
             {
                 foreach (var face in group.Faces)
@@ -73,6 +84,14 @@ namespace TKQuake.Engine.Infrastructure
                 else
                 {
                     vertices.Add(v);
+                    // Update Min/Max vertices for Bounding Box
+                    minX = (v.Position.X < minX) ? v.Position.X : minX;
+                    minY = (v.Position.Y < minY) ? v.Position.Y : minY;
+                    minZ = (v.Position.Z < minZ) ? v.Position.Z : minZ;
+
+                    maxX = (v.Position.X > maxX) ? v.Position.X : maxX;
+                    maxY = (v.Position.Y > maxY) ? v.Position.Y : maxY;
+                    maxZ = (v.Position.Z > maxZ) ? v.Position.Z : maxZ;
 
                     var index = vertices.Count - 1;
                     indicies.Add(index);
@@ -83,6 +102,9 @@ namespace TKQuake.Engine.Infrastructure
             //set mesh
             mesh.Indices = indicies.ToArray();
             mesh.Vertices = vertices.ToArray();
+
+            mesh.Min = new Vector3(minX, minY, minZ);
+            mesh.Max = new Vector3(maxX, maxY, maxZ);
 
             return mesh;
         }

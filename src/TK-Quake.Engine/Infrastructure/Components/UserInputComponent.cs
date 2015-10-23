@@ -42,6 +42,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             if (state[Key.Right]) HandleInput(Key.Right, elapsedTime);
             if (state[Key.Up]) HandleInput(Key.Up, elapsedTime);
             if (state[Key.Down]) HandleInput(Key.Down, elapsedTime);
+            if (state[Key.Space]) HandleInput(Key.Space, elapsedTime);
 
             HandleMouseInput();
         }
@@ -96,8 +97,8 @@ namespace TKQuake.Engine.Infrastructure.Components
         public void HandleInput(Key k, double elapsedTime)
         {
             ICommand command = null;
-            Func<Vector3, Vector3> moveVector = (v) => v*(Vector3.UnitX+Vector3.UnitZ);
-            var moveSpeed = _entity.MoveSpeed*elapsedTime;
+            Func<Vector3, Vector3> moveVector = (v) => v*(10 *(Vector3.UnitX+Vector3.UnitZ));
+            var moveSpeed = _entity.MoveSpeed * elapsedTime;
 
             Action<Vector3> move =
                 (v) => command = CommandFactory.Create(typeof (MoveCommand), moveVector(v), moveSpeed);
@@ -150,6 +151,12 @@ namespace TKQuake.Engine.Infrastructure.Components
                 case Key.Down:
                     {
                         rotate(-Vector3.UnitX);
+                        break;
+                    }
+                case Key.Space:
+                    {
+                        command = CommandFactory.Create(typeof(JumpCommand),
+                            new Vector3(0,1,0), 10.0 * elapsedTime);
                         break;
                     }
             }

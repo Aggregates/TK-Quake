@@ -9,9 +9,9 @@ using TKQuake.Engine.Infrastructure.Texture;
 
 namespace TKQuake.Sprites
 {
-    public class Face : Sprite2
+    public class Face// : Sprite2
     {
-        public Face(Texture texture) : base(texture)
+        public Face(Texture texture)// : base(texture)
         {
 
         }
@@ -24,7 +24,6 @@ namespace TKQuake.Sprites
             //ScaleY *= 0.999;
             this.ScaleUniform(1.005);
         }
-        */
 
         public override void Render()
         {
@@ -68,5 +67,8 @@ namespace TKQuake.Sprites
             GL.End();
 
         }
+
+        */
+
     }
 }

@@ -31,6 +31,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Isg.Range, Version=1.0.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Isg.Range.1.0.1\lib\net40\Isg.Range.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LanguageExt.1.0.0\lib\LanguageExt.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -64,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Camera.cs" />
+    <Compile Include="Debug\DebugPositionComponent.cs" />
     <Compile Include="Debug\FramesPerSecond.cs" />
     <Compile Include="Extensions\GLX.cs" />
     <Compile Include="Infrastructure\Components\BobComponent.cs" />
@@ -83,10 +92,19 @@
     <Compile Include="Infrastructure\Font\FontManager.cs" />
     <Compile Include="Infrastructure\GameScreen\GameScreen.cs" />
     <Compile Include="Infrastructure\GameScreen\ScreenManager.cs" />
+    <Compile Include="Infrastructure\Input\JumpCommand.cs" />
+    <Compile Include="Infrastructure\Math\Line3.cs" />
     <Compile Include="Infrastructure\Math\Point.cs" />
     <Compile Include="Infrastructure\Math\Vertex.cs" />
     <Compile Include="Infrastructure\Mesh.cs" />
     <Compile Include="Infrastructure\MeshManager.cs" />
+    <Compile Include="Infrastructure\Physics\BoundingBoxEntity.cs" />
+    <Compile Include="Infrastructure\Physics\CollisionDetector.cs" />
+    <Compile Include="Infrastructure\Physics\CollisionEventArgs.cs" />
+    <Compile Include="Infrastructure\Physics\FloorEntity.cs" />
+    <Compile Include="Infrastructure\Physics\GravityComponent.cs" />
+    <Compile Include="Infrastructure\Physics\Particle.cs" />
+    <Compile Include="Infrastructure\Physics\ParticleEmitter.cs" />
     <Compile Include="Infrastructure\Texture\Color.cs" />
     <Compile Include="Infrastructure\Texture\Texture.cs" />
     <Compile Include="Infrastructure\Texture\TextureManager.cs" />

@@ -57,6 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fonts\MyriadPro.cs" />
+    <Compile Include="Components\PickupComponent.cs" />
+    <Compile Include="Physics\WindTunnel.cs" />
     <Compile Include="ScreenStates\DrawSpritesScreen.cs" />
     <Compile Include="ScreenStates\SplashScreen.cs" />
     <Compile Include="ScreenStates\TestFontScreen.cs" />
@@ -93,6 +95,9 @@
     <Content Include="Resources\Fonts\MyriadPro.tga">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Shaders\MotionBlur.shader">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
