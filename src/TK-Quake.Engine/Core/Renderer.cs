@@ -182,64 +182,25 @@ namespace TKQuake.Engine.Core
         {
            
             var mesh = _meshes.Get(entity.Id);
-            //System.Diagnostics.Debug.Assert(mesh != null, "Null mesh");
 
-//            var rotation = Matrix4.CreateRotationX(entity.Rotation.X)*
-//                           Matrix4.CreateRotationY(entity.Rotation.Y)*
-//                           Matrix4.CreateRotationZ(entity.Rotation.Z);
-
-//            var model = rotation*entity.Translation*Matrix4.CreateTranslation(entity.Position)*Matrix4.CreateScale(entity.Scale);
             var model = entity.Transform;
             GL.UniformMatrix4(_uniModel, false, ref model);
-            /*
-            var rotate = Matrix4.CreateRotationX(entity.Rotation.X)*
-                         Matrix4.CreateRotationY(entity.Rotation.Y)*
-                         Matrix4.CreateRotationZ(entity.Rotation.Z);
 
-            var translate = Matrix4.CreateTranslation(entity.Position);
-            var scale = Vector3.One*entity.Scale;
-
-            GL.PushMatrix();
-            GL.MultMatrix(ref translate);
-            GL.MultMatrix(ref rotate);
-            GL.Scale(scale);
-
-            var model = Matrix4.CreateScale(entity.Scale) * rotation * entity.Translation * Matrix4.CreateTranslation(entity.Position);
-            var uniModel = GL.GetUniformLocation(Program, "model");
-            GL.UniformMatrix4(uniModel, false, ref model);
-            */
-
-
-            //bind texture
+            // Bind texture
             if (mesh.texture != null)
-            {
                 TextureManager.Bind(mesh.texture);
-            }
-
-            else if (TextureManager.Registered (entity.Id) == true)
-            {
+            else if (TextureManager.Registered(entity.Id) == true)
                 TextureManager.Bind(entity.TextureId ?? entity.Id);
-            }
-
             else
-            {
                 TextureManager.Unbind();
-            }
+
 
             if (mesh.lightMap != null)
-            {
                 TextureManager.BindUV(mesh.lightMap);
-            }
-
             else
-            {
                 TextureManager.UnbindUV();
-            }
 
             DrawVbo(mesh);
-
-            //reset translation matrix?
-            //entity.Translation = Matrix4.Identity;
         }
 
         private void DrawVbo(Mesh mesh)

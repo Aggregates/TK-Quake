@@ -13,7 +13,6 @@ using TKQuake.Engine.Extensions;
 using TKQuake.Engine.Infrastructure.Abstract;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Math;
-using TKQuake.Engine.Infrastructure.Physics;
 using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
@@ -40,13 +39,6 @@ namespace TKQuake.Cookbook.Screens
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
 
-            CollisionDetector collisionDetector = CollisionDetector.Singleton();
-            Children.Add(collisionDetector);
-
-            _camera.Position = new Vector3(0, 10, 0);
-            _camera.Rotation = new Vector3(0, MathHelper.PiOver2, 0);
-            _camera.Components.Add(new GravityComponent(_camera));
-
             InitEntities();
             InitComponents();
 
@@ -64,17 +56,17 @@ namespace TKQuake.Cookbook.Screens
             Components.Add(new UserInputComponent(_camera));
 
             //skybox
-//            var skyboxPath = Path.Combine("skybox", "space");
-//            var skybox = new SkyboxComponent(this, "skybox")
-//            {
-//                Back = Path.Combine(skyboxPath, "back.bmp"),
-//                Front = Path.Combine(skyboxPath, "front.bmp"),
-//                Top = Path.Combine(skyboxPath, "top.bmp"),
-//                Bottom = Path.Combine(skyboxPath, "top.bmp"),
-//                Left = Path.Combine(skyboxPath, "left.bmp"),
-//                Right = Path.Combine(skyboxPath, "right.bmp")
-//            };
-//            Components.Add(skybox);
+            //            var skyboxPath = Path.Combine("skybox", "space");
+            //            var skybox = new SkyboxComponent(this, "skybox")
+            //            {
+            //                Back = Path.Combine(skyboxPath, "back.bmp"),
+            //                Front = Path.Combine(skyboxPath, "front.bmp"),
+            //                Top = Path.Combine(skyboxPath, "top.bmp"),
+            //                Bottom = Path.Combine(skyboxPath, "top.bmp"),
+            //                Left = Path.Combine(skyboxPath, "left.bmp"),
+            //                Right = Path.Combine(skyboxPath, "right.bmp")
+            //            };
+            //            Components.Add(skybox);
 
             foreach (var component in Components)
             {
@@ -88,46 +80,20 @@ namespace TKQuake.Cookbook.Screens
         {
             Children.Add(_camera);
 
-            var floor1 = new FloorEntity(new Vector3(0, 0, 0), 100, 100, "floor1", true);
-            var floor2 = new FloorEntity(new Vector3(0, -10, 100), 100, 100, "floor2", true);
-            var floor3 = new FloorEntity(new Vector3(100, -10, 0), 100, 100, "floor3", true);
-
-            floor1.TextureId = "floor";
-            floor2.TextureId = "floor";
-            floor3.TextureId = "floor";
-
-            _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-            _renderer.RegisterMesh("floor3", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
-
-            Children.Add(floor1);
-            Children.Add(floor2);
-            Children.Add(floor3);
-
             //register the mesh to the renderer
             var fileStream = File.OpenRead("nerfrevolver.obj");
             var mesh = _objLoader.Load(fileStream).ToMesh();
 
             _renderer.RegisterMesh("gun", mesh);
 
+            // Add gun entitiy
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
             gunEntity.Position = new Vector3(0, 0, 0);
-            gunEntity.Scale = 1f;
-            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float) Math.PI/2, 0)));
+            gunEntity.Scale = 0.05f;
+            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI / 2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
-
             _textureManager.Add("gun", "nerfrevolverMapped.bmp");
-            _textureManager.Add("floor", "floor.jpg");
-
-            //gunEntity.Components.Add(new GravityComponent(gunEntity));
-            gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, 1, 0)));
-
-            BoundingBoxEntity box = new BoundingBoxEntity(gunEntity, mesh.Max, mesh.Min, true);
-            gunEntity.Children.Add(box);
-
-            box.Collided += Box_Collided;
-
             Children.Add(gunEntity);
 
             foreach (var entity in Children)
@@ -138,10 +104,50 @@ namespace TKQuake.Cookbook.Screens
                 }
             }
         }
+    }
 
-        private void Box_Collided(object sender, CollisionEventArgs e)
+    static class FloorGridEntity
+    {
+        public static Mesh Mesh()
         {
-            // Do World-Scope collision detection
+            var lineLength = 1000f;
+            var lineSpacing = 2.5f;
+            var y = -2.5f;
+
+            var vertices = new List<Vertex>();
+            var indices = new List<int>();
+            for (int i = 0; i < 100; i++)
+            {
+                var index = vertices.Count;
+
+                //parallel to x-axis
+                var v1 = new Vector3(-lineLength, y, i * lineSpacing - 100f);
+                var v2 = new Vector3(lineLength, y, i * lineSpacing - 100f);
+
+                //perpendicular to x-axis
+                var v3 = new Vector3(i + lineSpacing - 50f, y, -lineLength);
+                var v4 = new Vector3(i + lineSpacing - 50f, y, lineLength);
+
+                vertices.AddRange(new[]
+                {
+                    new Vertex(v1, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v2, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v3, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                    new Vertex(v4, Vector3.Zero, Vector2.Zero, Vector2.Zero),
+                });
+
+                indices.AddRange(new[]
+                {
+                    index, index + 1, index,
+                    index + 2, index + 3, index + 2
+                });
+            }
+
+            return new Mesh
+            {
+                Vertices = vertices.ToArray(),
+                Indices = indices.ToArray()
+            };
         }
     }
 }

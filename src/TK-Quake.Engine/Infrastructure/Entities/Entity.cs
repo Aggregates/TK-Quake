@@ -47,6 +47,13 @@ namespace TKQuake.Engine.Infrastructure.Entities
             {
                 entity.Update(elapsedTime);
             }
+
+            // Update the transform
+            // Remember, this is done LEFT TO RIGHT!
+            var rotation = Matrix4.CreateRotationX(Rotation.X) *
+                           Matrix4.CreateRotationY(Rotation.Y) *
+                           Matrix4.CreateRotationZ(Rotation.Z);
+            this.Transform = Matrix4.CreateScale(Scale) * rotation * Translation * Matrix4.CreateTranslation(Position);
         }
 
         /// <summary>
