@@ -260,9 +260,14 @@ namespace TKQuake.Cookbook.Screens
             }
         }
 
+        /// <summary>
+        /// Searches through the BSP entity list until it finds the first wav audio file 
+        /// (Quake only had support for .wav so all specified audio files should be this format)
+        /// </summary>
         private void LoadAudio()
         {
             String filename = "";
+            //Iterates through entities until one contains a string matching the Regex, then updates filename and ceases iteration
             foreach (TKQuake.Engine.Loader.BSP.Entity.EntityEntry entity in loader.GetEntities())
             {
                 string orig = entity.entity.ToString();
@@ -274,9 +279,11 @@ namespace TKQuake.Cookbook.Screens
                     break;
                 }
             }
+            //Splits and recombines about /'s to allow for different OS's
             var splitFN = filename.Split('/');
             filename = Path.Combine(splitFN);
-            Console.Out.WriteLine(filename);
+            //Console.Out.WriteLine(filename);
+            //Adds and plays the audio file.
             new Thread(delegate ()
             {
                 using (AudioContext context = new AudioContext())
