@@ -18,6 +18,16 @@ namespace TKQuake.Engine.Infrastructure.Audio
             get;
             set; }
 
+        /// <summary>
+        /// Full constructor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <param name="channels"></param>
+        /// <param name="bits"></param>
+        /// <param name="rate"></param>
+        /// <param name="filename"></param>
+        /// <param name="loop"></param>
         public Audio (int id, byte[] data, int channels, int bits, int rate, string filename, bool loop)
         {
             this.Id = id;
@@ -29,6 +39,11 @@ namespace TKQuake.Engine.Infrastructure.Audio
             this.Loop = loop;
         }
 
+        /// <summary>
+        /// Partial constructor
+        /// </summary>
+        /// <param name="filename">Filepath to audio file</param>
+        /// <param name="loop">Whether or not the audio file should repeat</param>
         public Audio(string filename, bool loop) 
         {
             Id = -1;

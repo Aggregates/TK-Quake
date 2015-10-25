@@ -52,11 +52,19 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteBuffer(aud.Id);
         }
 
+        /// <summary>
+        /// Updates the listener position of OpenAL
+        /// </summary>
+        /// <param name="listenerPos"></param>
         public void UpdateListenerPosition(Vector3 listenerPos)
         {
             AL.Listener(ALListener3f.Position, ref listenerPos);
         }
 
+        /// <summary>
+        /// Identifies file format then plays using correct decoder. Does not make use of sources.
+        /// </summary>
+        /// <param name="key">Filepath of audio file</param>
         public void PlayAsAmbient(String key)
         {
             var audio = this.Get(key);
@@ -70,6 +78,11 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
+        /// <summary>
+        /// Identifies file format then plays using correct decoder. Uses sources
+        /// </summary>
+        /// <param name="key">Filepath of audio file</param>
+        /// <param name="sourcePos">Position to play the audio file from</param>
         public void PlayAtSource(String key, Vector3 sourcePos)
         {
             var audio = this.Get(key);
@@ -83,6 +96,10 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
+        /// <summary>
+        /// Plays a specified .ogg file using NVorbis decoder.
+        /// </summary>
+        /// <param name="audioIn"></param>
         private void PlayOggAsAmbient(Audio audioIn)
         {
             using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
@@ -99,24 +116,33 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
+        /// <summary>
+        /// Would attempt to play .ogg from a specified source, if it were possible
+        /// </summary>
+        /// <param name="audioIn"></param>
+        /// <param name="sourcePos"></param>
         private void PlayOggAtSource(Audio audioIn, Vector3 sourcePos)
         {
+            throw new NotSupportedException(".ogg files cannot yet be played from a position, only as ambient.");
+            ////byte[] data = reader.ReadBytes((int)reader.BaseStream.Length);
+            //using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
+            //using (var waveOut = new NAudio.Wave.WaveOut())
+            //{
+            //    waveOut.Init(vorbis);
+            //    waveOut.Play();
 
-            //byte[] data = reader.ReadBytes((int)reader.BaseStream.Length);
-            using (var vorbis = new NAudio.Vorbis.VorbisWaveReader(audioIn.FileName))
-            using (var waveOut = new NAudio.Wave.WaveOut())
-            {
-                waveOut.Init(vorbis);
-                waveOut.Play();
+            //    while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
+            //    {
+            //        Thread.Sleep(100);
+            //    }
 
-                while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
-                {
-                    Thread.Sleep(100);
-                }
-
-            }
+            //}
         }
         
+        /// <summary>
+        /// Play a specified .wav file
+        /// </summary>
+        /// <param name="audio"></param>
         private void PlayWavAsAmbient(Audio audio)
         { 
             audio = LoadWav(audio);
@@ -148,7 +174,11 @@ namespace TKQuake.Engine.Infrastructure.Audio
         }
 
 
-        //Audio file must be mono
+        /// <summary>
+        /// Plays a specified wav file from a source location, provided it is mono
+        /// </summary>
+        /// <param name="audio"></param>
+        /// <param name="sourcePos"></param>
         private void PlayWavAtSource(Audio audio, Vector3 sourcePos)
         {
             audio = LoadWav(audio);
@@ -184,6 +214,12 @@ namespace TKQuake.Engine.Infrastructure.Audio
             AL.DeleteSource(source);
         }
 
+        /// <summary>
+        /// Reserves an object using partial constructor. Must be fully constructed using LoadFormat methods before attempting to play.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="loop"></param>
+        /// <returns></returns>
         private Audio BindAudio(string filename, bool loop)
         {
             if (filename.Contains(".wav"))
@@ -197,16 +233,33 @@ namespace TKQuake.Engine.Infrastructure.Audio
             else throw new NotSupportedException("Audio format not supported.");
         }
 
+        /// <summary>
+        /// Reserves an object for .ogg format using partial constructor.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="loop"></param>
+        /// <returns></returns>
         private Audio BindOgg(string filename, bool loop)
         {
             return new Audio(filename, loop);
         }
 
+        /// <summary>
+        /// Reserves an object for .wav format using partial constructor
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="loop"></param>
+        /// <returns></returns>
         private Audio BindWav(string filename, bool loop)
         {
             return new Audio(filename, loop);
         }
 
+        /// <summary>
+        /// Decodes wav file and fully constructs the audio object
+        /// </summary>
+        /// <param name="audio"></param>
+        /// <returns></returns>
         //http://www.topherlee.com/software/pcm-tut-wavformat.html << .WAV header format
         private Audio LoadWav(Audio audio)
         {
@@ -291,6 +344,10 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
+        /// <summary>
+        /// Debugging information for decoding wav
+        /// </summary>
+        /// <param name="filename"></param>
         public void printHeader(String filename)
         {
             Stream stream = File.Open(filename, FileMode.Open);
@@ -305,20 +362,12 @@ namespace TKQuake.Engine.Infrastructure.Audio
             }
         }
 
-        public void printHeader(String filename)
-        {
-            Stream stream = File.Open(filename, FileMode.Open);
-            if (stream == null)
-            {
-                throw new ArgumentNullException("stream");
-            }
-            using (BinaryReader reader = new BinaryReader(stream))
-            {
-                String s = new string(reader.ReadChars(80));
-                Console.WriteLine(s);
-            }
-        }
-
+        /// <summary>
+        /// Finds the sound format of a .wav file during loading
+        /// </summary>
+        /// <param name="channels"></param>
+        /// <param name="bits"></param>
+        /// <returns></returns>
         private ALFormat GetSoundFormat(int channels, int bits)
         {
             switch (channels)
