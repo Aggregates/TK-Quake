@@ -18,7 +18,6 @@ namespace TKQuake.Engine.Core
         {
             MoveSpeed = 1;
             RotationSpeed = 1;
-            Position = new Vector3(0, 0.5f, 0);
             Rotation = -Vector3.UnitZ;
 
             CameraComponent cam = new CameraComponent(this);

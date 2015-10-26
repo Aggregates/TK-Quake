@@ -40,6 +40,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Isg.Range, Version=1.0.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Isg.Range.1.0.1\lib\net40\Isg.Range.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
       <Private>True</Private>
@@ -60,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\PickupComponent.cs" />
+    <Compile Include="Entities\FireParticle.cs" />
+    <Compile Include="Entities\FireParticleSystem.cs" />
+    <Compile Include="Entities\SmokeParticle.cs" />
     <Compile Include="Physics\WindTunnel.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="MainGame.cs" />
