@@ -24,6 +24,7 @@ using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TKQuake.Engine.Debug;
 
 namespace TKQuake.ScreenStates
 {
@@ -56,6 +57,7 @@ namespace TKQuake.ScreenStates
         private void InitComponents()
         {
             Components.Add(new UserInputComponent(_camera));
+            _camera.Components.Add(new DebugPositionComponent(_camera));
 
             // Skybox
             var skyboxPath = Path.Combine("skybox", "space");
@@ -91,7 +93,7 @@ namespace TKQuake.ScreenStates
             // Add gun entitiy
             var gunEntity = RenderableEntity.Create();
             gunEntity.Id = "gun";
-            gunEntity.Position = new Vector3(0, 0, 0);
+            gunEntity.Position = new Vector3(-5.5f, 2, 2.3f);
             gunEntity.Scale = 0.05f;
             gunEntity.Components.Add(new RotateOnUpdateComponent(gunEntity, new Vector3(0, (float)Math.PI / 2, 0)));
             gunEntity.Components.Add(new BobComponent(gunEntity, speed: 2, scale: 2));
