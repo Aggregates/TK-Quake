@@ -11,8 +11,6 @@ using TKQuake.Engine.Infrastructure.Abstract;
 using OpenTK;
 
 
-//This is not yet a manager, just me using a tutorial and making sure I could get it working.
-//If NotSupportedException's occur, the music file probably isn't following the strict format
 namespace TKQuake.Engine.Infrastructure.Audio
 {
     public class AudioManager : ResourceManager<Audio>, IDisposable
