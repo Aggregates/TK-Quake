@@ -124,13 +124,16 @@ namespace TKQuake.ScreenStates
             tunnel1.Force = 1f;
             Children.Add(tunnel1);
 
-            // Big Floor
-            var floor1 = new FloorEntity(new Vector3(-85, -0.5f, -60), 150, 150, "floor", true);
-            var floor2 = new FloorEntity(new Vector3(-85, 24.5f, -60), 150, 150, "floor", true);
+            // World Floor
+            //_textureManager.Add("floor", "floor_s.jpg");
             _textureManager.Add("floor", "floor_t.png");
-            _renderer.RegisterMesh("floor", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+
+            var floor1 = new FloorEntity(new Vector3(-110, -0.5f, -85), 200, 200, "floor1", true);
+            floor1.TextureId = "floor";
+            _renderer.RegisterMesh("floor1", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
             Children.Add(floor1);
-            Children.Add(floor2);
+
+            CreateSecondFloor();
 
             foreach (var entity in Children)
             {
@@ -139,6 +142,14 @@ namespace TKQuake.ScreenStates
                     component.Startup();
                 }
             }
+        }
+
+        private void CreateSecondFloor()
+        {
+            var floor2 = new FloorEntity(new Vector3(-59, 24.5f, 20), 90, 80, "floor2", true);
+            floor2.TextureId = "floor";
+            _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            Children.Add(floor2);
         }
 
         private void Entity_Destroy(object sender, EventArgs e)

@@ -189,8 +189,10 @@ namespace TKQuake.Engine.Core
             // Bind texture
             if (mesh.texture != null)
                 TextureManager.Bind(mesh.texture);
-            else if (TextureManager.Registered(entity.Id) == true)
-                TextureManager.Bind(entity.TextureId ?? entity.Id);
+            else if (entity.TextureId != null && TextureManager.Registered(entity.TextureId) == true)
+                TextureManager.Bind(entity.TextureId);
+            else if (entity.Id != null && TextureManager.Registered(entity.Id) == true)
+                TextureManager.Bind(entity.Id);
             else
                 TextureManager.Unbind();
 
