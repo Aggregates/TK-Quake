@@ -61,8 +61,8 @@ namespace TKQuake.ScreenStates
         {
             Components.Add(new UserInputComponent(_camera));
             _camera.Components.Add(new DebugPositionComponent(_camera));
+            _camera.Components.Add(new GravityComponent(_camera));
 
-            
 
             // Skybox
             var skyboxPath = Path.Combine("skybox", "space");
@@ -119,10 +119,18 @@ namespace TKQuake.ScreenStates
             _renderer.RegisterMesh("SmokeParticle", new SmokeParticle().Mesh);
 
             //// Wind Tunnel
-            WindTunnel tunnel1 = new WindTunnel(new Vector3(-25, -23.5f, 22.5f), new Vector3(-31, 0f, 31));
-            tunnel1.Direction = Vector3.UnitX;
-            tunnel1.Force = 0.1f;
+            WindTunnel tunnel1 = new WindTunnel(new Vector3(-27, 25f, 26f), new Vector3(-32, 0f, 33));
+            tunnel1.Direction = Vector3.UnitY;
+            tunnel1.Force = 1f;
             Children.Add(tunnel1);
+
+            // Big Floor
+            var floor1 = new FloorEntity(new Vector3(-85, -0.5f, -60), 150, 150, "floor", true);
+            var floor2 = new FloorEntity(new Vector3(-85, 24.5f, -60), 150, 150, "floor", true);
+            _textureManager.Add("floor", "floor_t.png");
+            _renderer.RegisterMesh("floor", floor1.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            Children.Add(floor1);
+            Children.Add(floor2);
 
             foreach (var entity in Children)
             {

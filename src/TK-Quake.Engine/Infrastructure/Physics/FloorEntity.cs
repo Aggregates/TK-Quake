@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
 
@@ -24,6 +25,8 @@ namespace TKQuake.Engine.Infrastructure.Physics
         /// Gets or sets the Length of the Floor along the Z-Axis, starting from the Floor's Z-Position
         /// </summary>
         public float ZLength { get; set; }
+
+        private Vector3 _anchor;
 
         /// <summary>
         /// Gets or Sets whether to render the floor's grid and bounding box volume to the screen
@@ -59,7 +62,17 @@ namespace TKQuake.Engine.Infrastructure.Physics
 
             this.Id = id;
 
+            this._anchor = anchor;
+
             InitialiseComponents();
+        }
+
+        public override void Update(double elapsedTime)
+        {
+            // HACK: The position was moving without me changing it
+            // This forces the position back to where it's meant to be
+            this.Position = this._anchor;
+            base.Update(elapsedTime);
         }
 
         private void InitialiseComponents()
@@ -94,7 +107,7 @@ namespace TKQuake.Engine.Infrastructure.Physics
             if (this == e.Sender) entity = e.Collider;
 
             // If two floors are overlapping, don't move the floor
-            if (!(entity is FloorEntity) && entity.Position.Y <= this.Position.Y)
+            if ((entity is Camera) && entity.Position.Y <= this.Position.Y)
             {
                 // Stop the other object from falling through
                 entity.Position = new Vector3(entity.Position.X, this.Position.Y, entity.Position.Z);
