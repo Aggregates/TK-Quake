@@ -1,20 +1,11 @@
-﻿using TKQuake.Engine;
-using TKQuake.Engine.Core;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Input;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
-using TKQuake.Engine.Infrastructure.Font;
+using OpenTK.Graphics;
+using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.GameScreen;
-using TKQuake.Engine.Infrastructure.Texture;
 using TKQuake.Engine.Infrastructure.Input;
 using TKQuake.ScreenStates;
 
@@ -22,153 +13,116 @@ namespace TKQuake
 {
     public class Game
     {
-        private bool _fullScreen = false;
-        private readonly ScreenManager _stateManager;
-        private readonly TextureManager _textureManager;
-        private readonly FontManager _fontManager;
-        private readonly GameWindow _game;
-        private static readonly string ResourcesPath =
-            Path.Combine(Path.GetDirectoryName(
-                Assembly.GetExecutingAssembly().Location), "Resources");
-
-        public Game()
-        {
-            _game = new GameWindow();
-            _stateManager = new ScreenManager();
-            _textureManager = new TextureManager();
-            _fontManager = new FontManager();
-
-            SetupViewport();
-        }
-
-        private void RegisterScreens()
-        {
-            SplashScreen splash = new SplashScreen(_stateManager);
-            TitleScreen title = new TitleScreen(_stateManager);
-            DrawSpritesScreen sprites = new DrawSpritesScreen(_stateManager, _textureManager);
-            TestSpriteClassScreen testSprites = new TestSpriteClassScreen(_stateManager, _textureManager);
-            TestFontScreen renderFont = new TestFontScreen(_stateManager, _textureManager, _fontManager);
-
-            _stateManager.Add(SplashScreen.StateNameKey, splash);
-            _stateManager.Add(TitleScreen.StateNameKey, title);
-            _stateManager.Add(DrawSpritesScreen.StateNameKey, sprites);
-            _stateManager.Add(TestSpriteClassScreen.StateNameKey, testSprites);
-            _stateManager.Add(TestFontScreen.StateNameKey, renderFont);
-
-            _stateManager.ChangeScreen(TestFontScreen.StateNameKey);
-        }
-
-        private void RegisterTextures()
-        {
-            //guarantees support cross platform
-            var texturesPath = Path.Combine(ResourcesPath, "Textures");
-            var fontsPath = Path.Combine(ResourcesPath, "Fonts");
-
-            _textureManager.Add("face", Path.Combine(texturesPath, "Face.bmp"));
-            _textureManager.Add("faceAlpha",
-                Path.Combine(texturesPath, "FaceAlpha.png"));
-            _textureManager.Add("myriadPro",
-                Path.Combine(fontsPath, "MyriadPro.tga"));
-        }
-
-        private void RegisterFonts()
-        {
-            var fontsPath = Path.Combine(ResourcesPath, "Fonts");
-
-            Texture myriadText = _textureManager.Get("myriadPro");
-            Font myriadPro = new Font(myriadText,
-                Path.Combine(fontsPath, "MyriadPro.fnt"));
-            _fontManager.Add("myriadPro", myriadPro);
-        }
-
-        /// <summary>
-        /// Modifies GL Viewport to use Top-Left corner as (0,0)
-        /// </summary>
-        private void SetupViewport()
-        {
-            int height = _game.Height;
-            int width = _game.Width;
-
-            GL.Ortho(0, width, height, 0, -1, 1);
-            GL.Viewport(0, 0, width, height);
-        }
-
-        private void Setup2DGraphics(double width, double height)
-        {
-            double halfWidth = width / 2;
-            double halfHeight = height / 2;
-
-            // Update the projection matrix
-            GL.MatrixMode(MatrixMode.Projection);   // Sets the current matrix to use Projection Matrix
-            GL.LoadIdentity();                      // Clear matrix data and reset to Identity Matrix
-            GL.Ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, -100, 100);
-
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-        }
+        private GameWindow game;
+        private GameScreen currentScreen;
 
         public void Run()
         {
-            _game.UpdateFrame += (sender, args) => GameLoop(args.Time);
-            _game.Load += Load;
-            _game.Resize += Resize;
-            _game.RenderFrame += Render;
-
-            //start game loop
-            _game.Run();
-        }
-
-        private void GameLoop(double elapsedTime)
-        {
-            _stateManager.Update(elapsedTime);
-        }
-
-        private void Render(object sender, FrameEventArgs e)
-        {
-            // Clear the buffers before rendering frame
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            //_stateManager.Render();
-
-            _game.SwapBuffers();
-        }
-
-        private void Load(object sender, EventArgs e)
-        {
-            /*
-             * Apparently this event is not called at any time. So this may not work.
-             * But something is obviously calling it.
-             */
-            _game.VSync = VSyncMode.On;
-
-            GL.ClearColor(System.Drawing.Color.CornflowerBlue);
-
-            RegisterTextures();
-            RegisterFonts();
-            RegisterScreens();
-
-            // Use fullscreen in production environments
-            if (_fullScreen)
+            using (game = new GameWindow(800, 600, GraphicsMode.Default, "TK-Quake", GameWindowFlags.Default,
+                DisplayDevice.Default, 1, 0, GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
             {
-                _game.WindowState = WindowState.Fullscreen;
+                game.Load += game_Load;
+                game.Resize += game_Resize;
+                game.UpdateFrame += game_UpdateFrame;
+                game.RenderFrame += game_RenderFrame;
+
+                game.Run(60.0, 60.0);
+            }
+        }
+
+        static double _time = 0.0, _frames = 0.0;
+        static int _fps = 0;
+
+        public static int GetFps(double time)
+        {
+            _time += time;
+            if (_time < 1.0)
+            {
+                _frames++;
+                return _fps;
             }
             else
             {
-                _game.WindowState = WindowState.Normal;
-                _game.ClientSize = new System.Drawing.Size(1280, 720);
+                _fps = (int)_frames;
+                _time = 0.0;
+                _frames = 0.0;
+                return _fps;
             }
-
-            // Set the viewport
-            Setup2DGraphics(_game.Width, _game.Height);
         }
 
-        private void Resize(object sender, EventArgs e)
+        private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            // Update the GL Viewport dimensions
-            GL.Viewport(0, 0, _game.Width, _game.Height);
+            Console.Write("FPS: {0}\r", GetFps(e.Time));
 
-            // Update the GL projection matrix
-            Setup2DGraphics(_game.Width, _game.Height);
+            // Store the current view model projection data
+            var renderer = Renderer.Singleton();
+            var model = renderer.GetUniform("model");
+            var view = renderer.GetUniform("view");
+            var proj = renderer.GetUniform("proj");
+
+            var mvp = model * view * proj;
+            var inverseModelView = (model * view).Inverted();
+
+            var uniPrevMvpLocation = GL.GetUniformLocation(renderer.Program, "uPrevModelViewProj");
+            GL.UniformMatrix4(uniPrevMvpLocation, false, ref mvp);
+
+            var uInverseModelViewMat = GL.GetUniformLocation(renderer.Program, "uInverseModelViewMat");
+            GL.UniformMatrix4(uInverseModelViewMat, false, ref inverseModelView);
+
+            game.SwapBuffers();
+        }
+
+        private void game_UpdateFrame(object sender, FrameEventArgs e)
+        {
+            var kbState = Keyboard.GetState();
+            if (kbState[Key.Escape])
+                game.Exit();
+            if (kbState.IsKeyDown(Key.AltLeft) && kbState.IsKeyDown(Key.Enter))
+                game.WindowState = game.WindowState == WindowState.Normal ? WindowState.Fullscreen : WindowState.Normal;
+
+            GL.Enable(EnableCap.DepthTest);
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            currentScreen.Update(e.Time);
+
+            CommandCentre.ExecuteAllCommands();
+        }
+
+        private void game_Resize(object sender, EventArgs e)
+        {
+            var renderer = Renderer.Singleton();
+
+            var proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)game.Width / game.Height, 0.1f, 1000f);
+            var uniProj = GL.GetUniformLocation(renderer.Program, "proj");
+            GL.UniformMatrix4(uniProj, false, ref proj);
+            GL.Viewport(0, 0, game.Width, game.Height);
+        }
+
+        private void game_Load(object sender, EventArgs e)
+        {
+            var renderer = Renderer.Singleton();
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.vert")), ShaderType.VertexShader);
+            renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "shader.frag")), ShaderType.FragmentShader);
+
+            // Motion Blur shader doesn't work and breaks Particle transparency
+            //renderer.LoadShader(File.ReadAllText(Path.Combine("Shaders", "MotionBlur.shader")), ShaderType.FragmentShader);
+
+            renderer.LinkShaders();
+
+            currentScreen = new QuakeScreen("maps/q3dm6.bsp");
+
+            GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
+
+            Console.Write("GL Window loaded");
+            Console.WriteLine();
+            Console.WriteLine("Vendor: " + GL.GetString(StringName.Vendor));
+            Console.WriteLine("Version: " + GL.GetString(StringName.Version));
+            Console.WriteLine("Renderer: " + GL.GetString(StringName.Renderer));
+            Console.WriteLine("Shading Language Version: " + GL.GetString(StringName.ShadingLanguageVersion));
         }
     }
 }
