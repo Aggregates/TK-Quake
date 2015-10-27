@@ -182,6 +182,30 @@ namespace TKQuake.ScreenStates
                 new FloorEntity(new Vector3(-62.5f, 25.5f, 37), 25, 8, "floor" + (++floorCount).ToString())
             };
 
+            // Stairs.
+            List<FloorEntity> stairs = new List<FloorEntity>
+            {
+                new FloorEntity(new Vector3(-32, 2.5f, -42), 8, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(-32, 4.5f, -46), 8, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(-42, 8.5f, -46), 8, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(-42, 11f, -42), 8, 2, "floor" + (++floorCount).ToString()),
+
+                new FloorEntity(new Vector3(-82, 1.5f, -3), 20, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(-76, 5, 9.5f), 20, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(-64, 8, 28), 8, 2, "floor" + (++floorCount).ToString()),
+
+                new FloorEntity(new Vector3(6.5f, 2.5f, 50), 12.5f, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(6.5f, 4.5f, 54), 12.5f, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(6.5f, 7.5f, 58), 12.5f, 2, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(19, 10.5f, 60), 12.5f, 2, "floor" + (++floorCount).ToString()),
+
+                new FloorEntity(new Vector3(33, 15, 21), 2, 8, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(36, 17.5f, 21), 2, 8, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(36, 20.5f, 34), 2, 8, "floor" + (++floorCount).ToString()),
+                new FloorEntity(new Vector3(34, 22.5f, 34), 2, 8, "floor" + (++floorCount).ToString())
+            };
+
+            floors.AddRange(stairs);
             foreach (var floor in floors)
             {
                 floor.TextureId = "floor";
