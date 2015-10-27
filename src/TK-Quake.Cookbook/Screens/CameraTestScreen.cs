@@ -38,7 +38,8 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
-
+            _camera.Position = new Vector3 (-20f, 2, 12f);
+                
             InitEntities();
             InitComponents();
 

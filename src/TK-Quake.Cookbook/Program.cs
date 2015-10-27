@@ -119,8 +119,8 @@ namespace TKQuake.Cookbook
 
             renderer.LinkShaders();
 
-            //currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
-            currentScreen = new CollisionTestScreen(renderer);
+            currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
+            //currentScreen = new CollisionTestScreen(renderer);
 
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 
