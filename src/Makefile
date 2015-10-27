@@ -24,6 +24,14 @@ assets:
 	curl -kL https://www.dropbox.com/s/gq90ctamnaeimqb/s-right.bmp?dl=1 -o '$(SKYBOX_PATH)\right.bmp'
 	curl -kL https://www.dropbox.com/s/l1o93c402sb6kii/s-top.bmp?dl=1 -o '$(SKYBOX_PATH)\top.bmp'
 
+	curl -kL https://www.dropbox.com/s/rw4l3cfozt5o9ae/FireParticle1.png?dl=0 -o '$(ASSETS_PATH)\FireParticle1.png'
+	curl -kL https://www.dropbox.com/s/r9nz2mmhdaer1h7/FireParticle.png?dl=0 -o '$(ASSETS_PATH)\FireParticle.png'
+	curl -kL https://www.dropbox.com/s/s74sc10dtenvkg2/floor_s.jpg?dl=0 -o '$(ASSETS_PATH)\floor_s.jpg'
+	curl -kL https://www.dropbox.com/s/61un0mszvbiobu3/Floor_t.png?dl=0 -o '$(ASSETS_PATH)\Floor_t.png'
+	curl -kL https://www.dropbox.com/s/j4qyhh6u3u1ncqf/floor_w.jpg?dl=0 -o '$(ASSETS_PATH)\floor_w.jpg'
+	curl -kL https://www.dropbox.com/s/jcy9aznbsr9p4jj/Smoke.png?dl=0 -o '$(ASSETS_PATH)\Smoke.png'
+
+
 	mkdir -p bin/Debug
 	mkdir -p bin/Release
 	cp -R $(ASSETS_PATH)/* bin/Debug
