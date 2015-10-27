@@ -43,6 +43,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             if (state[Key.Up]) HandleInput(Key.Up, elapsedTime);
             if (state[Key.Down]) HandleInput(Key.Down, elapsedTime);
             if (state[Key.Space]) HandleInput(Key.Space, elapsedTime);
+            if (state[Key.Q]) HandleInput(Key.Q, elapsedTime);
 
             HandleMouseInput();
         }
@@ -157,6 +158,12 @@ namespace TKQuake.Engine.Infrastructure.Components
                     {
                         command = CommandFactory.Create(typeof(JumpCommand),
                             new Vector3(0,1,0), 10.0 * elapsedTime);
+                        break;
+                    }
+                case Key.Q:
+                    {
+                        command = CommandFactory.Create(typeof(JumpCommand),
+                            new Vector3(0, -1, 0), 10.0 * elapsedTime);
                         break;
                     }
             }

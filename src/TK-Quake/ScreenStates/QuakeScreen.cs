@@ -44,6 +44,7 @@ namespace TKQuake.ScreenStates
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
+            _camera.Position =new Vector3(-20f, 2, 12f);
 
             InitEntities();
             InitComponents();
@@ -146,10 +147,20 @@ namespace TKQuake.ScreenStates
 
         private void CreateSecondFloor()
         {
-            var floor2 = new FloorEntity(new Vector3(-59, 24.5f, 20), 90, 80, "floor2", true);
+            var floor2 = new FloorEntity(new Vector3(-59, 24.5f, 24), 90, 80, "floor2", true);
             floor2.TextureId = "floor";
             _renderer.RegisterMesh("floor2", floor2.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
             Children.Add(floor2);
+
+            var floor3 = new FloorEntity(new Vector3(-83, 0.5f, 0), 25, 7, "floor3", true);
+            floor3.TextureId = "floor";
+            _renderer.RegisterMesh("floor3", floor3.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            Children.Add(floor3);
+
+            var floor4 = new FloorEntity(new Vector3(-52, 13f, -38), 17, 83, "floor4", true);
+            floor4.TextureId = "floor";
+            _renderer.RegisterMesh("floor4", floor4.Children.OfType<BoundingBoxEntity>().FirstOrDefault().ToMesh());
+            Children.Add(floor4);
         }
 
         private void Entity_Destroy(object sender, EventArgs e)

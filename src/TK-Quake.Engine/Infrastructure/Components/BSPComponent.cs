@@ -158,15 +158,17 @@ namespace TKQuake.Engine.Infrastructure.Components
                         // Create a renderable entity for this mesh.
                         RenderableEntity BSPEntity = RenderableEntity.Create ();
                         BSPEntity.Id = id;
-                        BSPEntity.Position = camera.Position;
+                        BSPEntity.Position = Vector3.Zero; //camera.Position;
                         BSPEntity.Scale = 0.01f;
                         BSPEntity.Translation = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
                         BSPEntity.Rotation = Vector3.Zero;
 
-                        BSPEntity.Transform = Matrix4.CreateScale(0.05f) *
-                            Matrix4.CreateRotationX (0.0f) * Matrix4.CreateRotationY (0.0f) * Matrix4.CreateRotationZ (0.0f) * 
-                            Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f) * 
-                            Matrix4.CreateTranslation(camera.Position);
+                        BSPEntity.Transform = Matrix4.CreateScale(0.05f)*
+                                              Matrix4.CreateRotationX(0.0f)*
+                                              Matrix4.CreateRotationY(0.0f)*
+                                              Matrix4.CreateRotationZ(0.0f)*
+                                              Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
+//                        Matrix4.CreateTranslation(camera.Position);
 
                         // Add it to our renderable entity dictionary.
                         BSPEntities[meshSet.Key].Add(BSPEntity);
