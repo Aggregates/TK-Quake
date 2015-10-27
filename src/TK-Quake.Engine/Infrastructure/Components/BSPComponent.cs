@@ -108,10 +108,20 @@ namespace TKQuake.Engine.Infrastructure.Components
         /// <param name="elapsedTime">Not used.</param>
         public void Update(double elapsedTime)
         {
+            Vector4 clipPlane;
             BoundingBoxEntity box = camera.Children.OfType<BoundingBoxEntity>().FirstOrDefault();
-            Vector3 pos = CheckBoxCollisions(previousCameraPosition, camera.Position, box.Bottom, box.Top);
+            Vector3 pos = CheckBoxCollisions(previousCameraPosition, camera.Position, box.Bottom, box.Top, out clipPlane);
 
-            camera.Position = pos;
+            if ((clipPlane[2] > 0.0f) && (clipPlane[2] <= 0.7f))
+            {
+                camera.Position = pos + new Vector3(0.0f, 0.0f, clipPlane[2] + EPSILON);
+            }
+
+            else
+            {
+                camera.Position = pos;
+            }
+
             previousCameraPosition = camera.Position;
 
             var visibleFaces = BSPEntities.Keys;
@@ -182,7 +192,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                         BSPEntity.Translation = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
                         BSPEntity.Rotation = Vector3.Zero;
 
-                        BSPEntity.Transform = Matrix4.CreateScale(0.05f) * 
+                        BSPEntity.Transform = Matrix4.CreateScale(0.05f) *
                             Matrix4.CreateRotationX (0.0f) * Matrix4.CreateRotationY (0.0f) * Matrix4.CreateRotationZ (0.0f) *
                             Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
 
@@ -327,17 +337,17 @@ namespace TKQuake.Engine.Infrastructure.Components
             }
         }
 
-        private Vector3 CheckRayCollisions(Vector3 inputStart, Vector3 inputEnd)
+        private Vector3 CheckRayCollisions(Vector3 inputStart, Vector3 inputEnd, out Vector4 clipPlane)
         {
-            bool  outputStartsOut = true;
-            bool  outputAllSolid  = false;
+//            bool  outputStartsOut = true;
+//            bool  outputAllSolid  = false;
             float outputFraction  = 1.0f;
 
             Vector4 start = new Vector4(inputStart, 1.0f);
             Vector4 end   = new Vector4(inputEnd, 1.0f);
 
             // walk through the BSP tree
-            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, 0.0f, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, 0.0f, Vector3.Zero, Vector3.Zero, Vector3.Zero, out clipPlane);
 
             // nothing blocked the trace
             if (outputFraction == 1.0f)
@@ -352,17 +362,17 @@ namespace TKQuake.Engine.Infrastructure.Components
             }
         }
 
-        private Vector3 CheckSphereCollisions(Vector3 inputStart, Vector3 inputEnd, float radius)
+        private Vector3 CheckSphereCollisions(Vector3 inputStart, Vector3 inputEnd, float radius, out Vector4 clipPlane)
         {
-            bool  outputStartsOut = true;
-            bool  outputAllSolid  = false;
+//            bool  outputStartsOut = true;
+//            bool  outputAllSolid  = false;
             float outputFraction  = 1.0f;
 
             Vector4 start = new Vector4(inputStart, 1.0f);
             Vector4 end   = new Vector4(inputEnd, 1.0f);
 
             // walk through the BSP tree
-            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, radius, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, radius, Vector3.Zero, Vector3.Zero, Vector3.Zero, out clipPlane);
 
             // nothing blocked the trace
             if (outputFraction == 1.0f)
@@ -377,15 +387,15 @@ namespace TKQuake.Engine.Infrastructure.Components
             }
         }
 
-        private Vector3 CheckBoxCollisions(Vector3 inputStart, Vector3 inputEnd, Vector3 mins, Vector3 maxs)
+        private Vector3 CheckBoxCollisions(Vector3 inputStart, Vector3 inputEnd, Vector3 mins, Vector3 maxs, out Vector4 clipPlane)
         {
             if ((mins == Vector3.Zero) && (maxs == Vector3.Zero))
             {
-                CheckRayCollisions(inputStart, inputEnd);
+                return(CheckRayCollisions(inputStart, inputEnd, out clipPlane));
             }
 
-            bool  outputStartsOut = true;
-            bool  outputAllSolid  = false;
+//            bool  outputStartsOut = true;
+//            bool  outputAllSolid  = false;
             float outputFraction  = 1.0f;
 
             Vector4 start   = new Vector4(inputStart, 1.0f);
@@ -395,7 +405,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                                           (-mins[2] > maxs[2]) ? -mins[2] : maxs[2]);
 
             // walk through the BSP tree
-            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, 0.0f, mins, maxs, extents);
+            outputFraction = CheckNode(0, 0.0f, 1.0f, start, end, 0.0f, mins, maxs, extents, out clipPlane);
 
             // nothing blocked the trace
             if (outputFraction == 1.0f)
@@ -410,7 +420,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             }
         }
 
-        private float CheckNode(int nodeIndex, float startFraction, float endFraction, Vector4 start, Vector4 end, float radius, Vector3 mins, Vector3 maxs, Vector3 extents)
+        private float CheckNode(int nodeIndex, float startFraction, float endFraction, Vector4 start, Vector4 end, float radius, Vector3 mins, Vector3 maxs, Vector3 extents, out Vector4 clipPlane)
         {
             // this is a leaf
             if (nodeIndex < 0)
@@ -424,12 +434,12 @@ namespace TKQuake.Engine.Infrastructure.Components
                     // contents & 1 ===> 1 means the brush volume is solid.
                     if ((brush.n_brushSides > 0) && ((loader.GetTexture(brush.texture).contents & 1) == 1))
                     {
-                        return(CheckBrush(brush, start, end, radius, mins, maxs, extents));
+                        return(CheckBrush(brush, start, end, radius, mins, maxs, extents, out clipPlane));
                     }
                 }
 
                 // don't have to do anything else for leaves
-                return(0.0f);
+                return(1.0f);
             }
 
             Node.NodeEntry node  = loader.GetNode(nodeIndex);
@@ -439,7 +449,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             float endDistance = Vector4.Dot (end, plane);
 
             // this is just a dot product, but we want the absolute values
-            if ((mins != Vector3.Zero) && (maxs != Vector3.Zero) && (extents != Vector3.Zero))
+            if ((mins != Vector3.Zero) || (maxs != Vector3.Zero) || (extents != Vector3.Zero))
             {
                 radius  = System.Math.Abs (extents [0] * plane [0]) + System.Math.Abs (extents [1] * plane [1]) + System.Math.Abs (extents [2] * plane [2]);
             }
@@ -447,13 +457,13 @@ namespace TKQuake.Engine.Infrastructure.Components
             // both points are in front of the plane, so check the front child
             if (startDistance >= radius && endDistance >= radius)
             {
-                return(CheckNode(node.children[0], startFraction, endFraction, start, end, radius, mins, maxs, extents));
+                return(CheckNode(node.children[0], startFraction, endFraction, start, end, radius, mins, maxs, extents, out clipPlane));
             }
 
             // both points are behind the plane, so check the back child
             else if (startDistance < -radius && endDistance < -radius)
             {
-                return(CheckNode(node.children[1], startFraction, endFraction, start, end, radius, mins, maxs, extents));
+                return(CheckNode(node.children[1], startFraction, endFraction, start, end, radius, mins, maxs, extents, out clipPlane));
             }
 
             // the line spans the splitting plane
@@ -512,24 +522,26 @@ namespace TKQuake.Engine.Infrastructure.Components
                 middle = start + fraction1 * (end - start);
 
                 // STEP 4: check the first side
-                return(CheckNode(node.children[side], startFraction, middleFraction, start, middle, radius, mins, maxs, extents));
+                float outputFraction1 = CheckNode(node.children[side], startFraction, middleFraction, start, middle, radius, mins, maxs, extents, out clipPlane);
 
                 // STEP 5: calculate the middle point for the second side
                 middleFraction = startFraction + (endFraction - startFraction) * fraction2;
                 middle = start + fraction2 * (end - start);
 
                 // STEP 6: check the second side
-                return(CheckNode(node.children[(side == 1) ? 0 : 1], middleFraction, endFraction, middle, end, radius, mins, maxs, extents));
+                float outputFraction2 = CheckNode(node.children[(side == 1) ? 0 : 1], middleFraction, endFraction, middle, end, radius, mins, maxs, extents, out clipPlane);
+                return(System.Math.Min (outputFraction1, outputFraction2));
             }
         }
 
-        private float CheckBrush(Loader.BSP.Brush.BrushEntry brush, Vector4 start, Vector4 end, float radius, Vector3 mins, Vector3 maxs, Vector3 extents)
+        private float CheckBrush(Loader.BSP.Brush.BrushEntry brush, Vector4 start, Vector4 end, float radius, Vector3 mins, Vector3 maxs, Vector3 extents, out Vector4 clipPlane)
         {
             float startFraction  = -1.0f;
             float endFraction    = 1.0f;
             float outputFraction = 0.0f;
             bool  startsOut      = false;
-            bool  endsOut        = false;
+//            bool  endsOut        = false;
+            clipPlane = Vector4.Zero;
 
             for (int i = 0; i < brush.n_brushSides; i++)
             {
@@ -560,16 +572,16 @@ namespace TKQuake.Engine.Infrastructure.Components
                     startsOut = true;
                 }
 
-                if (endDistance > 0)
-                {
-                    endsOut = true;
-                }
+//                if (endDistance > 0)
+//                {
+//                    endsOut = true;
+//                }
 
                 // make sure the trace isn't completely on one side of the brush
                 // both are in front of the plane, its outside of this brush
                 if (startDistance > 0 && endDistance > 0)
                 {
-                    return(0.0f);
+                    return(1.0f);
                 }
 
                 // both are behind this plane, it will get clipped by another one
@@ -588,6 +600,7 @@ namespace TKQuake.Engine.Infrastructure.Components
                     if (fraction > startFraction)
                     {
                         startFraction = fraction;
+                        clipPlane = plane;
                     }
                 }
 
