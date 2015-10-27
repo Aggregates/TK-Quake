@@ -18,12 +18,15 @@ using TKQuake.Engine.Infrastructure.Components;
 using TKQuake.Engine.Infrastructure.Entities;
 using TKQuake.Engine.Loader;
 using TKQuake.Engine.Loader.BSP;
+using TKQuake.Engine.Infrastructure.Audio;
 using ObjLoader.Loader.Loaders;
 using OpenTK.Graphics;
 using TKQuake.Engine.Infrastructure;
 using Vertex = TKQuake.Engine.Infrastructure.Math.Vertex;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
+using OpenTK.Audio;
 
 namespace TKQuake.Cookbook.Screens
 {
@@ -38,10 +41,12 @@ namespace TKQuake.Cookbook.Screens
             _renderer = Renderer.Singleton();
             _textureManager = TextureManager.Singleton();
             _BSP = BSPFile;
+            var _audioManager = AudioManager.Singleton();
+            _audioManager.UpdateListenerPosition(_camera.Position);
 
             InitEntities();
             InitComponents();
-
+            
             // List loaded 'components'
             Console.WriteLine("\n++++++++++++++++++++++\nLOADED COMPONENTS\n++++++++++++++++++++++\n");
             foreach (var component in Components)
@@ -49,7 +54,20 @@ namespace TKQuake.Cookbook.Screens
                 Console.WriteLine(component.ToString());
             }
             Console.WriteLine("\n++++++++++++++++++++++\nFIN.LOADED COMPONENTS\n++++++++++++++++++++++\n");
+            
+            _audioManager.UpdateListenerPosition(_camera.Position);
+            
+            //Maintains listener position for audio
+            new Thread(delegate ()
+            {
+                    while (true)
+                    {
+                        _audioManager.UpdateListenerPosition(_camera.Position);
+                        Thread.Sleep(1000);
+                    }
+            }).Start();
         }
+        
 
         private void InitComponents()
         {
@@ -150,4 +168,5 @@ namespace TKQuake.Cookbook.Screens
             };
         }
     }
+
 }
