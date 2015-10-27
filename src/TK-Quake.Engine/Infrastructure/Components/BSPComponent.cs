@@ -84,6 +84,7 @@ namespace TKQuake.Engine.Infrastructure.Components
             // Order is important here.
             LoadAllTextures();
             LoadAllMeshes();
+            LoadAudio();
         }
 
         public void Startup() { }
@@ -306,6 +307,40 @@ namespace TKQuake.Engine.Infrastructure.Components
                         texManager.Remove (TGA);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Searches entity list for an entity matching regex, then loads it as an audio file. Will loop forever. Sorry.
+        /// </summary>
+        private void LoadAudio()
+        {
+            var audioManager = Infrastructure.Audio.AudioManager.Singleton();
+            String filename = "";
+            foreach (TKQuake.Engine.Loader.BSP.Entity.EntityEntry entity in loader.GetEntities())
+            {
+                string orig = entity.entity.ToString();
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("([^\"]((\\w|\\d|_)*|\\/)*\\.wav)");
+                string result = regex.Match(orig).ToString();
+                if (result.Equals("") == false)
+                {
+                    filename = result;
+                    break;
+                }
+            }
+            var splitFN = filename.Split('/');
+            filename = Path.Combine(splitFN);
+            //Console.Out.WriteLine(filename);
+            if (File.Exists(filename))
+            {
+                new System.Threading.Thread(delegate ()
+                {
+                    using (OpenTK.Audio.AudioContext context = new OpenTK.Audio.AudioContext())
+                    {
+                        audioManager.Add("bgm", filename, true);
+                        audioManager.PlayAtSource("bgm", new Vector3(0f, 0f, 0f));
+                    }
+                }).Start();
             }
         }
     }
