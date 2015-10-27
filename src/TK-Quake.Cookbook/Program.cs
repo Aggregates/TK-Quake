@@ -8,6 +8,7 @@ using TKQuake.Cookbook.Screens;
 using TKQuake.Engine.Core;
 using TKQuake.Engine.Infrastructure.GameScreen;
 using TKQuake.Engine.Infrastructure.Input;
+using TKQuake.ScreenStates;
 
 namespace TKQuake.Cookbook
 {
@@ -58,7 +59,7 @@ namespace TKQuake.Cookbook
 
         private void game_RenderFrame(object sender, FrameEventArgs e)
         {
-            Console.Write("FPS: {0}\r", GetFps(e.Time));
+            //Console.Write("FPS: {0}\r", GetFps(e.Time));
             
             // Store the current view model projection data
             var renderer = Renderer.Singleton();
@@ -120,7 +121,8 @@ namespace TKQuake.Cookbook
             renderer.LinkShaders();
 
             //currentScreen = new CameraTestScreen("maps/q3dm6.bsp");
-            currentScreen = new CollisionTestScreen(renderer);
+            //currentScreen = new CollisionTestScreen(renderer);
+            currentScreen = new QuakeScreen("maps/q3dm6.bsp");
 
             GL.ClearColor(0.25f, 0.25f, 0.25f, 1);
 
